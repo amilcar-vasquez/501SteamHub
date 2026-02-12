@@ -1,6 +1,6 @@
 -- UP
 
-CREATE TABLE resource_access (
+CREATE TABLE IF NOT EXISTS resource_access (
   access_id SERIAL PRIMARY KEY,
   resource_id INT NOT NULL,
   user_id INT NOT NULL,
@@ -10,8 +10,3 @@ CREATE TABLE resource_access (
 );
 
 CREATE INDEX idx_resource_access_resource_id ON resource_access (resource_id);
-
--- DOWN
-
-DROP INDEX IF EXISTS idx_resource_access_resource_id;
-DROP TABLE IF EXISTS resource_access;

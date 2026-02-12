@@ -1,6 +1,6 @@
 -- UP
 
-CREATE TABLE resources (
+CREATE TABLE IF NOT EXISTS resources (
   resource_id SERIAL PRIMARY KEY,
   title VARCHAR(255) NOT NULL,
   category resource_category NOT NULL,
@@ -22,11 +22,3 @@ CREATE INDEX idx_resources_status ON resources (status);
 CREATE INDEX idx_resources_subject ON resources (subject);
 CREATE INDEX idx_resources_grade_level ON resources (grade_level);
 CREATE INDEX idx_resources_contributor_id ON resources (contributor_id);
-
--- DOWN
-
-DROP INDEX IF EXISTS idx_resources_contributor_id;
-DROP INDEX IF EXISTS idx_resources_grade_level;
-DROP INDEX IF EXISTS idx_resources_subject;
-DROP INDEX IF EXISTS idx_resources_status;
-DROP TABLE IF EXISTS resources;
