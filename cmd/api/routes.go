@@ -51,13 +51,6 @@ func (a *app) routes() http.Handler {
 		a.requireActivatedUser(http.HandlerFunc(a.getAllTeachersHandler)))
 	router.Handler(http.MethodPost, apiV1Route+"/teachers",
 		a.requireActivatedUser(http.HandlerFunc(a.createTeacherHandler)))
-	// TODO: Add sub-resource routes when handlers are implemented
-	// router.Handler(http.MethodGet, apiV1Route+"/teachers/:id/education",
-	// 	a.requireActivatedUser(http.HandlerFunc(a.getEducationByTeacherHandler)))
-	// router.Handler(http.MethodGet, apiV1Route+"/teachers/:id/qualifications",
-	// 	a.requireActivatedUser(http.HandlerFunc(a.getQualificationsByTeacherHandler)))
-	// router.Handler(http.MethodGet, apiV1Route+"/teachers/:id/documents",
-	// 	a.requireActivatedUser(http.HandlerFunc(a.getDocumentsByTeacherHandler)))
 	router.Handler(http.MethodGet, apiV1Route+"/teachers/:id",
 		a.requireActivatedUser(http.HandlerFunc(a.getTeacherHandler)))
 	router.Handler(http.MethodPatch, apiV1Route+"/teachers/:id",
