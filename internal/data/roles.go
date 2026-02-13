@@ -1,46 +1,53 @@
-//filename: internal/data/roles.go
-
+// Filename: internal/data/roles.go
 package data
 
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"time"
+
+	"github.com/amilcar-vasquez/501SteamHub/internal/validator"
 )
 
+// Role struct represents a system role
 type Role struct {
-	ID          int64  `json:"role_id"`
-	Name        string `json:"name"`
-	Description string `json:"description,omitempty"`
+	ID       int    `json:"id"`
+	RoleName string `json:"role_name"`
 }
 
+// ValidateRole validates a role struct
+func ValidateRole(v *validator.Validator, role *Role) {
+	v.Check(role.RoleName != "", "role_name", "must be provided")
+	v.Check(len(role.RoleName) <= 50, "role_name", "must not be more than 50 characters long")
+}
+
+// RoleModel wraps a database connection pool
 type RoleModel struct {
 	DB *sql.DB
 }
 
-// Insert a new role into the database
-func (m RoleModel) Insert(role *Role) error {
+// Insert a new role record in the database
+func (r *RoleModel) Insert(role *Role) error {
 	query := `
-		INSERT INTO roles (name, description)
-		VALUES ($1, $2)
+		INSERT INTO roles (name)
+		VALUES ($1)
 		RETURNING role_id`
-
-	args := []any{role.Name, role.Description}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	return m.DB.QueryRowContext(ctx, query, args...).Scan(&role.ID)
+	return r.DB.QueryRowContext(ctx, query, role.RoleName).Scan(&role.ID)
 }
 
-// Get a role by ID
-func (m RoleModel) Get(id int64) (*Role, error) {
+// Get retrieves a specific role based on its ID
+func (r *RoleModel) Get(id int) (*Role, error) {
 	if id < 1 {
 		return nil, ErrRecordNotFound
 	}
 
 	query := `
-		SELECT role_id, name, description
+		SELECT role_id, name
 		FROM roles
 		WHERE role_id = $1`
 
@@ -49,15 +56,14 @@ func (m RoleModel) Get(id int64) (*Role, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	err := m.DB.QueryRowContext(ctx, query, id).Scan(
+	err := r.DB.QueryRowContext(ctx, query, id).Scan(
 		&role.ID,
-		&role.Name,
-		&role.Description,
+		&role.RoleName,
 	)
 
 	if err != nil {
 		switch {
-		case err == sql.ErrNoRows:
+		case errors.Is(err, sql.ErrNoRows):
 			return nil, ErrRecordNotFound
 		default:
 			return nil, err
@@ -67,10 +73,10 @@ func (m RoleModel) Get(id int64) (*Role, error) {
 	return &role, nil
 }
 
-// Get a role by name
-func (m RoleModel) GetByName(name string) (*Role, error) {
+// GetByName retrieves a role by its name (useful for authentication)
+func (r *RoleModel) GetByName(name string) (*Role, error) {
 	query := `
-		SELECT role_id, name, description
+		SELECT role_id, name
 		FROM roles
 		WHERE name = $1`
 
@@ -79,15 +85,14 @@ func (m RoleModel) GetByName(name string) (*Role, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	err := m.DB.QueryRowContext(ctx, query, name).Scan(
+	err := r.DB.QueryRowContext(ctx, query, name).Scan(
 		&role.ID,
-		&role.Name,
-		&role.Description,
+		&role.RoleName,
 	)
 
 	if err != nil {
 		switch {
-		case err == sql.ErrNoRows:
+		case errors.Is(err, sql.ErrNoRows):
 			return nil, ErrRecordNotFound
 		default:
 			return nil, err
@@ -97,17 +102,17 @@ func (m RoleModel) GetByName(name string) (*Role, error) {
 	return &role, nil
 }
 
-// Get all roles
-func (m RoleModel) GetAll() ([]*Role, error) {
+// GetAll retrieves all roles from the database
+func (r *RoleModel) GetAll() ([]*Role, error) {
 	query := `
-		SELECT role_id, name, description
+		SELECT role_id, name
 		FROM roles
-		ORDER BY role_id`
+		ORDER BY name`
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	rows, err := m.DB.QueryContext(ctx, query)
+	rows, err := r.DB.QueryContext(ctx, query)
 	if err != nil {
 		return nil, err
 	}
@@ -117,14 +122,15 @@ func (m RoleModel) GetAll() ([]*Role, error) {
 
 	for rows.Next() {
 		var role Role
+
 		err := rows.Scan(
 			&role.ID,
-			&role.Name,
-			&role.Description,
+			&role.RoleName,
 		)
 		if err != nil {
 			return nil, err
 		}
+
 		roles = append(roles, &role)
 	}
 
@@ -135,50 +141,37 @@ func (m RoleModel) GetAll() ([]*Role, error) {
 	return roles, nil
 }
 
-// Update a role
-func (m RoleModel) Update(role *Role) error {
+// Update an existing role record in the database
+func (r *RoleModel) Update(role *Role) error {
 	query := `
 		UPDATE roles
-		SET name = $1, description = $2
-		WHERE role_id = $3
-		RETURNING role_id`
+		SET name = $2
+		WHERE role_id = $1`
 
-	args := []any{
-		role.Name,
-		role.Description,
+	args := []interface{}{
 		role.ID,
+		role.RoleName,
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	err := m.DB.QueryRowContext(ctx, query, args...).Scan(&role.ID)
-	if err != nil {
-		switch {
-		case err == sql.ErrNoRows:
-			return ErrRecordNotFound
-		default:
-			return err
-		}
-	}
-
-	return nil
+	_, err := r.DB.ExecContext(ctx, query, args...)
+	return err
 }
 
-// Delete a role
-func (m RoleModel) Delete(id int64) error {
+// Delete removes a role record from the database
+func (r *RoleModel) Delete(id int) error {
 	if id < 1 {
 		return ErrRecordNotFound
 	}
 
-	query := `
-		DELETE FROM roles
-		WHERE role_id = $1`
+	query := `DELETE FROM roles WHERE role_id = $1`
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	result, err := m.DB.ExecContext(ctx, query, id)
+	result, err := r.DB.ExecContext(ctx, query, id)
 	if err != nil {
 		return err
 	}
