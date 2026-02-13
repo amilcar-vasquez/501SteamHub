@@ -46,7 +46,7 @@ func (a *app) routes() http.Handler {
 	router.Handler(http.MethodDelete, apiV1Route+"/roles/:id",
 		a.requireRole("admin", http.HandlerFunc(a.deleteRoleHandler)))
 
-	// Teacher routes - All authenticated users can list/view, admin/CEO/TSC/DEC can create (must be activated)
+	// Teacher routes - All authenticated users can list/view
 	router.Handler(http.MethodGet, apiV1Route+"/teachers",
 		a.requireActivatedUser(http.HandlerFunc(a.getAllTeachersHandler)))
 	router.Handler(http.MethodPost, apiV1Route+"/teachers",
