@@ -149,8 +149,6 @@ func (a *app) getAllTeachersHandler(w http.ResponseWriter, r *http.Request) {
 	v := validator.New()
 
 	input.District = a.getSingleQueryParameter(qs, "district", "")
-	input.SubjectSpecialization = a.getSingleQueryParameter(qs, "subject_specialization", "")
-	input.ProfileStatus = a.getSingleQueryParameter(qs, "profile_status", "")
 
 	input.Filters.Page = a.getSingleIntegerParameter(qs, "page", 1, v)
 	input.Filters.PageSize = a.getSingleIntegerParameter(qs, "page_size", 20, v)

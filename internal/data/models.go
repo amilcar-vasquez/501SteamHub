@@ -9,14 +9,14 @@ import (
 // Models struct wraps all the data models
 type Models struct {
 	Users           *UserModel
-	Roles           *RoleModel
-	Teachers        *TeacherModel
-	Resources       *ResourceModel
+	Roles           RoleModelInterface
+	Teachers        TeacherModelInterface
+	Resources       ResourceModelInterface
 	ResourceReviews *ResourceReviewModel
 	ResourceAccess  *ResourceAccessModel
-	Contributions   *ContributionModel
-	Tokens		 	*TokenModel
-	Notifications  *NotificationModel
+	Contributions   ContributionModelInterface
+	Tokens          *TokenModel
+	Notifications   NotificationModelInterface
 }
 
 // NewModels returns a Models struct containing all the initialized models
@@ -29,8 +29,8 @@ func NewModels(db *sql.DB) *Models {
 		ResourceReviews: &ResourceReviewModel{DB: db},
 		ResourceAccess:  &ResourceAccessModel{DB: db},
 		Contributions:   &ContributionModel{DB: db},
-		Tokens:			&TokenModel{DB: db},
-		Notifications:  &NotificationModel{DB: db},
+		Tokens:          &TokenModel{DB: db},
+		Notifications:   &NotificationModel{DB: db},
 	}
 }
 
@@ -46,7 +46,7 @@ func NewTestModels() *Models {
 		ResourceReviews: &ResourceReviewModel{DB: nil},
 		ResourceAccess:  &ResourceAccessModel{DB: nil},
 		Contributions:   &ContributionModel{DB: nil},
-		Tokens:			&TokenModel{DB: nil},
-		Notifications:  &NotificationModel{DB: nil},
+		Tokens:          &TokenModel{DB: nil},
+		Notifications:   &NotificationModel{DB: nil},
 	}
 }

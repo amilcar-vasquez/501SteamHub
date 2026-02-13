@@ -5,6 +5,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"io"
 	"log/slog"
 	"net/http"
@@ -13,6 +14,7 @@ import (
 
 	"github.com/amilcar-vasquez/501SteamHub/internal/data"
 	"github.com/amilcar-vasquez/501SteamHub/internal/mailer"
+	"github.com/julienschmidt/httprouter"
 )
 
 // newTestApp creates a test application instance with test models
@@ -55,27 +57,46 @@ func TestHealthCheckHandler(t *testing.T) {
 
 // TestGetAllRolesHandler tests the get all roles endpoint
 func TestGetAllRolesHandler(t *testing.T) {
-	t.Skip("Skipping test that requires database connection")
-
 	tests := []struct {
 		name           string
-		method         string
+		mockSetup      func() *MockRoleModel
 		expectedStatus int
 		checkResponse  bool
 	}{
 		{
-			name:           "Valid GET request",
-			method:         http.MethodGet,
+			name: "Valid GET request returns roles",
+			mockSetup: func() *MockRoleModel {
+				return &MockRoleModel{
+					GetAllFunc: func() ([]*data.Role, error) {
+						return []*data.Role{
+							{ID: 1, RoleName: "admin"},
+							{ID: 2, RoleName: "user"},
+						}, nil
+					},
+				}
+			},
 			expectedStatus: http.StatusOK,
 			checkResponse:  true,
+		},
+		{
+			name: "Database error returns 500",
+			mockSetup: func() *MockRoleModel {
+				return &MockRoleModel{
+					GetAllFunc: func() ([]*data.Role, error) {
+						return nil, errors.New("database error")
+					},
+				}
+			},
+			expectedStatus: http.StatusInternalServerError,
+			checkResponse:  false,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			app := newTestApp(t)
+			app := newTestAppWithMocks(t, tt.mockSetup(), nil, nil, nil, nil)
 
-			req := httptest.NewRequest(tt.method, "/v1/roles", nil)
+			req := httptest.NewRequest(http.MethodGet, "/v1/roles", nil)
 			rr := httptest.NewRecorder()
 
 			handler := http.HandlerFunc(app.getAllRolesHandler)
@@ -85,7 +106,7 @@ func TestGetAllRolesHandler(t *testing.T) {
 				t.Errorf("handler returned wrong status code: got %v want %v", status, tt.expectedStatus)
 			}
 
-			if tt.checkResponse && tt.method == http.MethodGet {
+			if tt.checkResponse {
 				var response envelope
 				err := json.NewDecoder(rr.Body).Decode(&response)
 				if err != nil {
@@ -102,32 +123,60 @@ func TestGetAllRolesHandler(t *testing.T) {
 
 // TestCreateRoleHandler tests creating a new role
 func TestCreateRoleHandler(t *testing.T) {
-	t.Skip("Skipping test that requires database connection")
-
 	tests := []struct {
 		name           string
 		requestBody    map[string]interface{}
+		mockSetup      func() *MockRoleModel
 		expectedStatus int
+		checkResponse  bool
 	}{
 		{
 			name: "Valid role creation",
 			requestBody: map[string]interface{}{
 				"role_name": "TestRole",
 			},
+			mockSetup: func() *MockRoleModel {
+				return &MockRoleModel{
+					InsertFunc: func(role *data.Role) error {
+						role.ID = 1
+						return nil
+					},
+				}
+			},
 			expectedStatus: http.StatusCreated,
+			checkResponse:  true,
 		},
 		{
 			name: "Missing role name",
 			requestBody: map[string]interface{}{
 				"role_name": "",
 			},
+			mockSetup: func() *MockRoleModel {
+				return &MockRoleModel{}
+			},
 			expectedStatus: http.StatusUnprocessableEntity,
+			checkResponse:  false,
+		},
+		{
+			name: "Database error on insert",
+			requestBody: map[string]interface{}{
+				"role_name": "TestRole",
+			},
+			mockSetup: func() *MockRoleModel {
+				return &MockRoleModel{
+					InsertFunc: func(role *data.Role) error {
+						return errors.New("database error")
+					},
+				}
+			},
+			expectedStatus: http.StatusInternalServerError,
+			checkResponse:  false,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			app := newTestApp(t)
+			app := newTestAppWithMocks(t, tt.mockSetup(), nil, nil, nil, nil)
 
 			body, _ := json.Marshal(tt.requestBody)
 			req := httptest.NewRequest(http.MethodPost, "/v1/roles", bytes.NewBuffer(body))
@@ -140,6 +189,18 @@ func TestCreateRoleHandler(t *testing.T) {
 			if status := rr.Code; status != tt.expectedStatus {
 				t.Errorf("handler returned wrong status code: got %v want %v\nResponse: %s",
 					status, tt.expectedStatus, rr.Body.String())
+			}
+
+			if tt.checkResponse {
+				var response envelope
+				err := json.NewDecoder(rr.Body).Decode(&response)
+				if err != nil {
+					t.Fatalf("Failed to decode response: %v", err)
+				}
+
+				if _, ok := response["role"]; !ok {
+					t.Error("Expected 'role' key in response")
+				}
 			}
 		})
 	}
@@ -240,11 +301,10 @@ func TestReadJSON(t *testing.T) {
 
 // TestCreateResourceHandler tests creating a new resource
 func TestCreateResourceHandler(t *testing.T) {
-	t.Skip("Skipping test that requires database connection")
-
 	tests := []struct {
 		name           string
 		requestBody    map[string]interface{}
+		mockSetup      func() *MockResourceModel
 		expectedStatus int
 	}{
 		{
@@ -258,6 +318,14 @@ func TestCreateResourceHandler(t *testing.T) {
 				"status":         "pending",
 				"contributor_id": 1,
 			},
+			mockSetup: func() *MockResourceModel {
+				return &MockResourceModel{
+					InsertFunc: func(r *data.Resource) error {
+						r.ID = 1
+						return nil
+					},
+				}
+			},
 			expectedStatus: http.StatusCreated,
 		},
 		{
@@ -265,13 +333,36 @@ func TestCreateResourceHandler(t *testing.T) {
 			requestBody: map[string]interface{}{
 				"title": "",
 			},
+			mockSetup: func() *MockResourceModel {
+				return &MockResourceModel{}
+			},
 			expectedStatus: http.StatusUnprocessableEntity,
+		},
+		{
+			name: "Database error on insert",
+			requestBody: map[string]interface{}{
+				"title":          "Test Resource",
+				"category":       "Lesson Plan",
+				"subject":        "Mathematics",
+				"grade_level":    "Grade 5",
+				"ilo":            "ILO1",
+				"status":         "pending",
+				"contributor_id": 1,
+			},
+			mockSetup: func() *MockResourceModel {
+				return &MockResourceModel{
+					InsertFunc: func(r *data.Resource) error {
+						return errors.New("database error")
+					},
+				}
+			},
+			expectedStatus: http.StatusInternalServerError,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			app := newTestApp(t)
+			app := newTestAppWithMocks(t, nil, tt.mockSetup(), nil, nil, nil)
 
 			body, _ := json.Marshal(tt.requestBody)
 			req := httptest.NewRequest(http.MethodPost, "/v1/resources", bytes.NewBuffer(body))
@@ -291,11 +382,10 @@ func TestCreateResourceHandler(t *testing.T) {
 
 // TestCreateNotificationHandler tests creating a notification
 func TestCreateNotificationHandler(t *testing.T) {
-	t.Skip("Skipping test that requires database connection")
-
 	tests := []struct {
 		name           string
 		requestBody    map[string]interface{}
+		mockSetup      func() *MockNotificationModel
 		expectedStatus int
 	}{
 		{
@@ -305,6 +395,14 @@ func TestCreateNotificationHandler(t *testing.T) {
 				"message": "Test notification",
 				"channel": "email",
 			},
+			mockSetup: func() *MockNotificationModel {
+				return &MockNotificationModel{
+					InsertFunc: func(n *data.Notification) error {
+						n.ID = 1
+						return nil
+					},
+				}
+			},
 			expectedStatus: http.StatusCreated,
 		},
 		{
@@ -312,13 +410,32 @@ func TestCreateNotificationHandler(t *testing.T) {
 			requestBody: map[string]interface{}{
 				"message": "Test notification",
 			},
+			mockSetup: func() *MockNotificationModel {
+				return &MockNotificationModel{}
+			},
 			expectedStatus: http.StatusUnprocessableEntity,
+		},
+		{
+			name: "Database error on insert",
+			requestBody: map[string]interface{}{
+				"user_id": 1,
+				"message": "Test notification",
+				"channel": "email",
+			},
+			mockSetup: func() *MockNotificationModel {
+				return &MockNotificationModel{
+					InsertFunc: func(n *data.Notification) error {
+						return errors.New("database error")
+					},
+				}
+			},
+			expectedStatus: http.StatusInternalServerError,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			app := newTestApp(t)
+			app := newTestAppWithMocks(t, nil, nil, nil, tt.mockSetup(), nil)
 
 			body, _ := json.Marshal(tt.requestBody)
 			req := httptest.NewRequest(http.MethodPost, "/v1/notifications", bytes.NewBuffer(body))
@@ -372,6 +489,366 @@ func TestErrorResponses(t *testing.T) {
 			if status := rr.Code; status != tt.expectedStatus {
 				t.Errorf("handler returned wrong status code: got %v want %v",
 					status, tt.expectedStatus)
+			}
+		})
+	}
+}
+
+// TestGetRoleHandler tests retrieving a role by ID
+func TestGetRoleHandler(t *testing.T) {
+	tests := []struct {
+		name           string
+		roleID         string
+		mockSetup      func() *MockRoleModel
+		expectedStatus int
+	}{
+		{
+			name:   "Valid role retrieval",
+			roleID: "1",
+			mockSetup: func() *MockRoleModel {
+				return &MockRoleModel{
+					GetFunc: func(id int) (*data.Role, error) {
+						return &data.Role{
+							ID:       1,
+							RoleName: "TestRole",
+						}, nil
+					},
+				}
+			},
+			expectedStatus: http.StatusOK,
+		},
+		{
+			name:   "Role not found",
+			roleID: "999",
+			mockSetup: func() *MockRoleModel {
+				return &MockRoleModel{
+					GetFunc: func(id int) (*data.Role, error) {
+						return nil, data.ErrRecordNotFound
+					},
+				}
+			},
+			expectedStatus: http.StatusNotFound,
+		},
+		{
+			name:   "Invalid role ID",
+			roleID: "invalid",
+			mockSetup: func() *MockRoleModel {
+				return &MockRoleModel{}
+			},
+			expectedStatus: http.StatusNotFound,
+		},
+		{
+			name:   "Database error",
+			roleID: "1",
+			mockSetup: func() *MockRoleModel {
+				return &MockRoleModel{
+					GetFunc: func(id int) (*data.Role, error) {
+						return nil, errors.New("database error")
+					},
+				}
+			},
+			expectedStatus: http.StatusInternalServerError,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			app := newTestAppWithMocks(t, tt.mockSetup(), nil, nil, nil, nil)
+
+			req := httptest.NewRequest(http.MethodGet, "/v1/roles/"+tt.roleID, nil)
+			rr := httptest.NewRecorder()
+
+			router := httprouter.New()
+			router.HandlerFunc(http.MethodGet, "/v1/roles/:id", app.getRoleHandler)
+			router.ServeHTTP(rr, req)
+
+			if status := rr.Code; status != tt.expectedStatus {
+				t.Errorf("handler returned wrong status code: got %v want %v\nResponse: %s",
+					status, tt.expectedStatus, rr.Body.String())
+			}
+		})
+	}
+}
+
+// TestDeleteRoleHandler tests deleting a role
+func TestDeleteRoleHandler(t *testing.T) {
+	tests := []struct {
+		name           string
+		roleID         string
+		mockSetup      func() *MockRoleModel
+		expectedStatus int
+	}{
+		{
+			name:   "Valid role deletion",
+			roleID: "1",
+			mockSetup: func() *MockRoleModel {
+				return &MockRoleModel{
+					DeleteFunc: func(id int) error {
+						return nil
+					},
+				}
+			},
+			expectedStatus: http.StatusOK,
+		},
+		{
+			name:   "Role not found",
+			roleID: "999",
+			mockSetup: func() *MockRoleModel {
+				return &MockRoleModel{
+					DeleteFunc: func(id int) error {
+						return data.ErrRecordNotFound
+					},
+				}
+			},
+			expectedStatus: http.StatusNotFound,
+		},
+		{
+			name:   "Database error",
+			roleID: "1",
+			mockSetup: func() *MockRoleModel {
+				return &MockRoleModel{
+					DeleteFunc: func(id int) error {
+						return errors.New("database error")
+					},
+				}
+			},
+			expectedStatus: http.StatusInternalServerError,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			app := newTestAppWithMocks(t, tt.mockSetup(), nil, nil, nil, nil)
+
+			req := httptest.NewRequest(http.MethodDelete, "/v1/roles/"+tt.roleID, nil)
+			rr := httptest.NewRecorder()
+
+			router := httprouter.New()
+			router.HandlerFunc(http.MethodDelete, "/v1/roles/:id", app.deleteRoleHandler)
+			router.ServeHTTP(rr, req)
+
+			if status := rr.Code; status != tt.expectedStatus {
+				t.Errorf("handler returned wrong status code: got %v want %v\nResponse: %s",
+					status, tt.expectedStatus, rr.Body.String())
+			}
+		})
+	}
+}
+
+// TestUpdateRoleHandler tests updating a role
+func TestUpdateRoleHandler(t *testing.T) {
+	tests := []struct {
+		name           string
+		roleID         string
+		requestBody    map[string]interface{}
+		mockSetup      func() *MockRoleModel
+		expectedStatus int
+	}{
+		{
+			name:   "Valid role update",
+			roleID: "1",
+			requestBody: map[string]interface{}{
+				"role_name": "UpdatedRole",
+			},
+			mockSetup: func() *MockRoleModel {
+				return &MockRoleModel{
+					GetFunc: func(id int) (*data.Role, error) {
+						return &data.Role{
+							ID:       1,
+							RoleName: "OldRole",
+						}, nil
+					},
+					UpdateFunc: func(role *data.Role) error {
+						return nil
+					},
+				}
+			},
+			expectedStatus: http.StatusOK,
+		},
+		{
+			name:   "Role not found",
+			roleID: "999",
+			requestBody: map[string]interface{}{
+				"role_name": "UpdatedRole",
+			},
+			mockSetup: func() *MockRoleModel {
+				return &MockRoleModel{
+					GetFunc: func(id int) (*data.Role, error) {
+						return nil, data.ErrRecordNotFound
+					},
+				}
+			},
+			expectedStatus: http.StatusNotFound,
+		},
+		{
+			name:   "Database error on update",
+			roleID: "1",
+			requestBody: map[string]interface{}{
+				"role_name": "UpdatedRole",
+			},
+			mockSetup: func() *MockRoleModel {
+				return &MockRoleModel{
+					GetFunc: func(id int) (*data.Role, error) {
+						return &data.Role{
+							ID:       1,
+							RoleName: "OldRole",
+						}, nil
+					},
+					UpdateFunc: func(role *data.Role) error {
+						return errors.New("database error")
+					},
+				}
+			},
+			expectedStatus: http.StatusInternalServerError,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			app := newTestAppWithMocks(t, tt.mockSetup(), nil, nil, nil, nil)
+
+			body, _ := json.Marshal(tt.requestBody)
+			req := httptest.NewRequest(http.MethodPatch, "/v1/roles/"+tt.roleID, bytes.NewBuffer(body))
+			req.Header.Set("Content-Type", "application/json")
+			rr := httptest.NewRecorder()
+
+			router := httprouter.New()
+			router.HandlerFunc(http.MethodPatch, "/v1/roles/:id", app.updateRoleHandler)
+			router.ServeHTTP(rr, req)
+
+			if status := rr.Code; status != tt.expectedStatus {
+				t.Errorf("handler returned wrong status code: got %v want %v\nResponse: %s",
+					status, tt.expectedStatus, rr.Body.String())
+			}
+		})
+	}
+}
+
+// TestDeleteResourceHandler tests deleting a resource
+func TestDeleteResourceHandler(t *testing.T) {
+	tests := []struct {
+		name           string
+		resourceID     string
+		mockSetup      func() *MockResourceModel
+		expectedStatus int
+	}{
+		{
+			name:       "Valid resource deletion",
+			resourceID: "1",
+			mockSetup: func() *MockResourceModel {
+				return &MockResourceModel{
+					DeleteFunc: func(id int64) error {
+						return nil
+					},
+				}
+			},
+			expectedStatus: http.StatusOK,
+		},
+		{
+			name:       "Resource not found",
+			resourceID: "999",
+			mockSetup: func() *MockResourceModel {
+				return &MockResourceModel{
+					DeleteFunc: func(id int64) error {
+						return data.ErrRecordNotFound
+					},
+				}
+			},
+			expectedStatus: http.StatusNotFound,
+		},
+		{
+			name:       "Database error",
+			resourceID: "1",
+			mockSetup: func() *MockResourceModel {
+				return &MockResourceModel{
+					DeleteFunc: func(id int64) error {
+						return errors.New("database error")
+					},
+				}
+			},
+			expectedStatus: http.StatusInternalServerError,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			app := newTestAppWithMocks(t, nil, tt.mockSetup(), nil, nil, nil)
+
+			req := httptest.NewRequest(http.MethodDelete, "/v1/resources/"+tt.resourceID, nil)
+			rr := httptest.NewRecorder()
+
+			router := httprouter.New()
+			router.HandlerFunc(http.MethodDelete, "/v1/resources/:id", app.deleteResourceHandler)
+			router.ServeHTTP(rr, req)
+
+			if status := rr.Code; status != tt.expectedStatus {
+				t.Errorf("handler returned wrong status code: got %v want %v\nResponse: %s",
+					status, tt.expectedStatus, rr.Body.String())
+			}
+		})
+	}
+}
+
+// TestDeleteNotificationHandler tests deleting a notification
+func TestDeleteNotificationHandler(t *testing.T) {
+	tests := []struct {
+		name           string
+		notificationID string
+		mockSetup      func() *MockNotificationModel
+		expectedStatus int
+	}{
+		{
+			name:           "Valid notification deletion",
+			notificationID: "1",
+			mockSetup: func() *MockNotificationModel {
+				return &MockNotificationModel{
+					DeleteFunc: func(id int) error {
+						return nil
+					},
+				}
+			},
+			expectedStatus: http.StatusOK,
+		},
+		{
+			name:           "Notification not found",
+			notificationID: "999",
+			mockSetup: func() *MockNotificationModel {
+				return &MockNotificationModel{
+					DeleteFunc: func(id int) error {
+						return data.ErrRecordNotFound
+					},
+				}
+			},
+			expectedStatus: http.StatusNotFound,
+		},
+		{
+			name:           "Database error",
+			notificationID: "1",
+			mockSetup: func() *MockNotificationModel {
+				return &MockNotificationModel{
+					DeleteFunc: func(id int) error {
+						return errors.New("database error")
+					},
+				}
+			},
+			expectedStatus: http.StatusInternalServerError,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			app := newTestAppWithMocks(t, nil, nil, nil, tt.mockSetup(), nil)
+
+			req := httptest.NewRequest(http.MethodDelete, "/v1/notifications/"+tt.notificationID, nil)
+			rr := httptest.NewRecorder()
+
+			router := httprouter.New()
+			router.HandlerFunc(http.MethodDelete, "/v1/notifications/:id", app.deleteNotificationHandler)
+			router.ServeHTTP(rr, req)
+
+			if status := rr.Code; status != tt.expectedStatus {
+				t.Errorf("handler returned wrong status code: got %v want %v\nResponse: %s",
+					status, tt.expectedStatus, rr.Body.String())
 			}
 		})
 	}
