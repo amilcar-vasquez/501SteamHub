@@ -2,3 +2,28 @@ time=2026-02-16T09:20:59.377-06:00 level=INFO msg="Starting server" address=:400
 time=2026-02-16T10:47:26.902-06:00 level=ERROR msg="pq: insert or update on table \"users\" violates foreign key constraint \"users_role_id_fkey\" (23503)" method=POST uri=/v1/users
 time=2026-02-16T10:49:23.808-06:00 level=ERROR msg="pq: insert or update on table \"users\" violates foreign key constraint \"users_role_id_fkey\" (23503)" method=POST uri=/v1/users
 time=2026-02-16T10:54:57.906-06:00 level=INFO msg="Activating user" user_id=3 username=amilcar email=belizeno@gmail.com
+time=2026-02-16T13:10:32.374-06:00 level=INFO msg="Shutting down server" signal=interrupt
+time=2026-02-16T13:10:32.376-06:00 level=INFO msg="Completing background tasks" address=:4000
+time=2026-02-16T13:10:32.376-06:00 level=INFO msg="Server stopped" addr=:4000
+time=2026-02-16T13:10:48.865-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-16T13:13:37.518-06:00 level=INFO msg="Shutting down server" signal=interrupt
+time=2026-02-16T13:13:37.519-06:00 level=INFO msg="Completing background tasks" address=:4000
+time=2026-02-16T13:13:37.519-06:00 level=INFO msg="Server stopped" addr=:4000
+time=2026-02-16T13:41:23.619-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-16T13:57:45.704-06:00 level=INFO msg="Shutting down server" signal=interrupt
+time=2026-02-16T13:57:45.704-06:00 level=INFO msg="Completing background tasks" address=:4000
+time=2026-02-16T13:57:45.704-06:00 level=INFO msg="Server stopped" addr=:4000
+time=2026-02-16T13:57:53.043-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-16T14:01:23.509-06:00 level=INFO msg="Shutting down server" signal=interrupt
+time=2026-02-16T14:01:23.510-06:00 level=INFO msg="Completing background tasks" address=:4000
+time=2026-02-16T14:01:23.510-06:00 level=INFO msg="Server stopped" addr=:4000
+time=2026-02-16T14:01:31.720-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-16T14:07:22.269-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-16T14:07:22.269-06:00 level=ERROR msg="listen tcp :4000: bind: address already in use"
+time=2026-02-16T14:08:14.641-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-16T14:08:14.641-06:00 level=ERROR msg="listen tcp :4000: bind: address already in use"
+time=2026-02-16T14:08:42.139-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-16T14:14:53.297-06:00 level=INFO msg="Receiving resource creation request" method=POST path=/v1/resources
+time=2026-02-16T14:14:53.297-06:00 level=INFO msg="Parsed resource data" title="testing hopefully this time it works" category=Video grade_level="Standard 1" contributor_id=3
+time=2026-02-16T14:14:53.297-06:00 level=INFO msg="Attempting to insert resource into database"
+time=2026-02-16T14:14:53.303-06:00 level=INFO msg="Resource created successfully" resource_id=1

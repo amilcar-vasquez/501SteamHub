@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix Auth Token Issue</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #7c3d82;
+            margin-top: 0;
+        }
+        h2 {
+            color: #069ec9;
+        }
+        .error {
+            background: #fee;
+            border-left: 4px solid #f00;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .solution {
+            background: #efe;
+            border-left: 4px solid #0a0;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        ol {
+            line-height: 1.8;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        .check-button {
+            background: #069ec9;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .check-button:hover {
+            background: #0587a8;
+        }
+        #result {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success { background: #dfd; color: #060; }
+        .fail { background: #fdd; color: #600; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🔧 Fix Auth Token Issue</h1>
+        
+        <div class="error">
+            <h2>Problem Identified:</h2>
+            <p><strong>Auth Token: null</strong></p>
+            <p>You're logged in (user object exists) but the authentication token is missing. This happened because you signed in before the token storage feature was fully implemented.</p>
+        </div>
+
+        <div class="solution">
+            <h2>✅ Solution:</h2>
+            <ol>
+                <li>Open http://localhost:3000 in your browser</li>
+                <li>Click on your avatar in the top-right corner</li>
+                <li>Click "Sign Out"</li>
+                <li>Click "Sign In" again</li>
+                <li>Enter your credentials:
+                    <ul>
+                        <li>Email: <code>belizeno@gmail.com</code></li>
+                        <li>Password: <em>(your password)</em></li>
+                    </ul>
+                </li>
+                <li>After signing in, open Browser Console (F12)</li>
+                <li>Type: <code>localStorage.getItem('authToken')</code></li>
+                <li>You should see a token string starting with "eyJ..."</li>
+            </ol>
+        </div>
+
+        <h2>Verify Token Storage:</h2>
+        <button class="check-button" onclick="checkToken()">Check Token Status</button>
+        <div id="result"></div>
+
+        <h2>Fixed Issues:</h2>
+        <ul>
+            <li>✅ Added <code>helperText</code> prop to TextField component</li>
+            <li>✅ Enhanced logging throughout the submission flow</li>
+            <li>✅ Both servers are running:
+                <ul>
+                    <li>UI: http://localhost:3000</li>
+                    <li>API: http://localhost:4000</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h2>After Re-Signing In:</h2>
+        <ol>
+            <li>Navigate to Submit Resource page</li>
+            <li>Open Browser Console (F12 → Console tab)</li>
+            <li>Fill out the form</li>
+            <li>Click Submit</li>
+            <li>Check the console logs - you should now see:
+                <ul>
+                    <li><code>=== SUBMIT RESOURCE START ===</code></li>
+                    <li><code>Auth Token:</code> should show a token (not null)</li>
+                    <li>API request should succeed</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <script>
+        function checkToken() {
+            const result = document.getElementById('result');
+            const token = localStorage.getItem('authToken');
+            const user = localStorage.getItem('authUser');
+            
+            if (!token && !user) {
+                result.className = 'fail';
+                result.innerHTML = '❌ No auth data found. Please sign in.';
+            } else if (user && !token) {
+                result.className = 'fail';
+                result.innerHTML = '❌ User exists but token is missing. <strong>Please sign out and sign back in.</strong>';
+            } else if (token && !user) {
+                result.className = 'fail';
+                result.innerHTML = '⚠️ Token exists but user is missing. Please sign out and sign back in.';
+            } else {
+                result.className = 'success';
+                result.innerHTML = '✅ Auth token and user data are both present! You can submit resources.';
+            }
+        }
+        
+        // Auto-check on page load
+        window.onload = checkToken;
+    </script>
+</body>
+</html>

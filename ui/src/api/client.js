@@ -13,6 +13,13 @@ class APIError extends Error {
 async function request(endpoint, options = {}) {
   const url = `${API_BASE_URL}${endpoint}`;
   
+  console.log('API Request:', {
+    url,
+    method: options.method || 'GET',
+    headers: options.headers,
+    body: options.body ? JSON.parse(options.body) : null
+  });
+  
   const config = {
     headers: {
       'Content-Type': 'application/json',
@@ -25,6 +32,12 @@ async function request(endpoint, options = {}) {
     const response = await fetch(url, config);
     const data = await response.json();
 
+    console.log('API Response:', {
+      status: response.status,
+      ok: response.ok,
+      data
+    });
+
     if (!response.ok) {
       throw new APIError(
         data.error || 'An error occurred',
@@ -35,6 +48,7 @@ async function request(endpoint, options = {}) {
 
     return data;
   } catch (error) {
+    console.error('API Request Failed:', error);
     if (error instanceof APIError) {
       throw error;
     }
@@ -73,6 +87,51 @@ export const tokenAPI = {
     return request('/tokens/authentication', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
+    });
+  },
+};
+
+// Resource API methods
+export const resourceAPI = {
+  create: async (resourceData, authToken) => {
+    return request('/resources', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${authToken}`,
+      },
+      body: JSON.stringify(resourceData),
+    });
+  },
+
+  getAll: async (filters = {}) => {
+    const params = new URLSearchParams();
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value) params.append(key, value);
+    });
+    const queryString = params.toString();
+    return request(`/resources${queryString ? `?${queryString}` : ''}`);
+  },
+
+  get: async (id) => {
+    return request(`/resources/${id}`);
+  },
+
+  update: async (id, resourceData, authToken) => {
+    return request(`/resources/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Authorization': `Bearer ${authToken}`,
+      },
+      body: JSON.stringify(resourceData),
+    });
+  },
+
+  delete: async (id, authToken) => {
+    return request(`/resources/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${authToken}`,
+      },
     });
   },
 };

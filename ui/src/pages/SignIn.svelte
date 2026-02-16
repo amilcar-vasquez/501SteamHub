@@ -36,7 +36,11 @@
   async function handleSubmit(e) {
     e.preventDefault();
     
+    console.log('=== SIGN IN START ===');
+    console.log('Email:', formData.email);
+    
     if (!validateForm()) {
+      console.log('Validation failed:', errors);
       return;
     }
     
@@ -49,14 +53,31 @@
         formData.password
       );
       
+      console.log('Sign in response:', response);
+      console.log('Token from response:', response.token);
+      console.log('Token plaintext:', response.token?.plaintext);
+      console.log('User from response:', response.user);
+      
       // Store authentication token and user data
-      authToken.set(response.token.plaintext);
+      // The token field is named "token" in JSON, not "plaintext"
+      const tokenValue = response.token?.token || response.token;
+      console.log('Setting token value:', tokenValue);
+      authToken.set(tokenValue);
       currentUser.set(response.user);
+      
+      // Verify storage
+      console.log('Token after set:', localStorage.getItem('authToken'));
+      console.log('User after set:', localStorage.getItem('authUser'));
+      
+      console.log('=== SIGN IN SUCCESS ===');
       
       // Navigate to home
       dispatch('navigate', { page: 'home' });
       
     } catch (error) {
+      console.error('=== SIGN IN ERROR ===');
+      console.error('Error:', error);
+      
       if (error instanceof APIError) {
         if (error.status === 401) {
           errors.general = 'Invalid email or password';

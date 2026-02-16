@@ -3,8 +3,9 @@
   import SignIn from './pages/SignIn.svelte';
   import Activate from './pages/Activate.svelte';
   import Home from './pages/Home.svelte';
+  import SubmitResource from './pages/SubmitResource.svelte';
   
-  let currentPage = 'home'; // home, signup, signin, activate
+  let currentPage = 'home'; // home, signup, signin, activate, submit
   
   function navigate(event) {
     currentPage = event.detail.page;
@@ -35,6 +36,8 @@
     <SignIn on:navigate={navigate} />
   {:else if currentPage === 'activate'}
     <Activate on:navigate={navigate} />
+  {:else if currentPage === 'submit'}
+    <SubmitResource on:navigate={navigate} />
   {:else}
     <Home on:navigate={navigate} />
   {/if}

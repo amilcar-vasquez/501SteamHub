@@ -24,7 +24,16 @@
   ];
   
   const gradeLevels = [
-    'K-2', '3-5', '6-8', '9-10', '11-12'
+    'Preschool',
+    'Infant 1',
+    'Infant 2',
+    'Standard 1',
+    'Standard 2',
+    'Standard 3',
+    'Standard 4',
+    'Standard 5',
+    'Standard 6',
+    'Mixed'
   ];
   
   const resourceTypes = [

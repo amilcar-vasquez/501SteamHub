@@ -36,6 +36,10 @@
     window.location.hash = 'signin';
   }
   
+  function handleSubmitResource() {
+    window.location.hash = 'submit';
+  }
+  
   // Close menu when clicking outside
   function handleClickOutside(event) {
     if (showUserMenu && !event.target.closest('.user-menu-container')) {
@@ -82,6 +86,12 @@
     <!-- Right: User avatar -->
     <div class="app-bar-right">
       {#if $currentUser}
+        <button class="submit-resource-button" on:click={handleSubmitResource}>
+          <span class="material-symbols-outlined">add_circle</span>
+          {#if !isMobile}
+            <span>Submit Resource</span>
+          {/if}
+        </button>
         <button class="icon-button">
           <span class="material-symbols-outlined">notifications</span>
         </button>
@@ -236,6 +246,31 @@
     font-size: 20px;
   }
   
+  .submit-resource-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--md-sys-color-secondary);
+    color: var(--md-sys-color-on-secondary);
+    border: none;
+    padding: 10px 20px;
+    border-radius: var(--md-sys-shape-corner-full);
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.2s;
+    box-shadow: var(--md-sys-elevation-1);
+  }
+  
+  .submit-resource-button:hover {
+    background-color: rgba(6, 158, 201, 0.85);
+    box-shadow: var(--md-sys-elevation-2);
+  }
+  
+  .submit-resource-button .material-symbols-outlined {
+    font-size: 24px;
+  }
+  
   .avatar-button {
     background: none;
     border: none;
@@ -388,6 +423,13 @@
     
     .search-input::placeholder {
       font-size: 14px;
+    }
+    
+    .submit-resource-button {
+      padding: 8px 12px;
+      font-size: 14px;
+      min-width: 48px;
+      justify-content: center;
     }
   }
 </style>

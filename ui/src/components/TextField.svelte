@@ -7,6 +7,7 @@
   export let required = false;
   export let disabled = false;
   export let id = '';
+  export let helperText = '';
   
   $: inputId = id || label.toLowerCase().replace(/\s+/g, '-');
 </script>
@@ -73,6 +74,10 @@
   {#if error}
     <span id="{inputId}-error" class="error-message label-medium">
       {error}
+    </span>
+  {:else if helperText}
+    <span class="helper-text label-medium">
+      {helperText}
     </span>
   {/if}
 </div>
@@ -149,5 +154,9 @@
     display: flex;
     align-items: center;
     gap: var(--md-sys-spacing-xs);
+  }
+  
+  .helper-text {
+    color: var(--md-sys-color-on-surface-variant);
   }
 </style>

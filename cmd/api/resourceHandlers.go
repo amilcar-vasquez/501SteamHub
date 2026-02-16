@@ -24,11 +24,22 @@ func (a *app) createResourceHandler(w http.ResponseWriter, r *http.Request) {
 		ContributorID int64   `json:"contributor_id"`
 	}
 
+	// Log the incoming request
+	a.logger.Info("Receiving resource creation request", "method", r.Method, "path", r.URL.Path)
+
 	err := a.readJSON(w, r, &input)
 	if err != nil {
+		a.logger.Error("Failed to read JSON", "error", err.Error())
 		a.badRequestResponse(w, r, err)
 		return
 	}
+
+	// Log the parsed input
+	a.logger.Info("Parsed resource data",
+		"title", input.Title,
+		"category", input.Category,
+		"grade_level", input.GradeLevel,
+		"contributor_id", input.ContributorID)
 
 	resource := &data.Resource{
 		Title:         input.Title,
@@ -43,26 +54,38 @@ func (a *app) createResourceHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	v := validator.New()
-	// TODO: Add resource validation
+	// Add comprehensive validation
 	v.Check(resource.Title != "", "title", "must be provided")
+	v.Check(len(resource.Title) <= 255, "title", "must not be more than 255 characters")
+	v.Check(resource.Category != "", "category", "must be provided")
+	v.Check(resource.Subject != "", "subject", "must be provided")
+	v.Check(resource.GradeLevel != "", "grade_level", "must be provided")
+	v.Check(resource.ILO != "", "ilo", "must be provided")
 	v.Check(resource.Status != "", "status", "must be provided")
+	v.Check(resource.ContributorID > 0, "contributor_id", "must be provided")
 
 	if !v.IsEmpty() {
+		a.logger.Error("Validation failed", "errors", v.Errors)
 		a.failedValidationResponse(w, r, v.Errors)
 		return
 	}
 
+	a.logger.Info("Attempting to insert resource into database")
 	err = a.models.Resources.Insert(resource)
 	if err != nil {
+		a.logger.Error("Failed to insert resource", "error", err.Error())
 		a.serverErrorResponse(w, r, err)
 		return
 	}
+
+	a.logger.Info("Resource created successfully", "resource_id", resource.ID)
 
 	response := envelope{
 		"resource": resource,
 	}
 	err = a.writeJSON(w, http.StatusCreated, response, nil)
 	if err != nil {
+		a.logger.Error("Failed to write JSON response", "error", err.Error())
 		a.serverErrorResponse(w, r, err)
 	}
 }

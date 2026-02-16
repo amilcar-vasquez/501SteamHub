@@ -42,7 +42,7 @@
       title: 'Introduction to Renewable Energy Systems',
       description: 'A comprehensive lesson plan exploring solar, wind, and hydroelectric power generation with hands-on activities.',
       subject: 'Science',
-      grade: '9-10',
+      grade: 'Standard 5',
       iloCount: 5,
       contributor: 'Dr. Sarah Mitchell',
       viewCount: 1234,
@@ -55,7 +55,7 @@
       title: 'The Water Cycle Explained',
       description: 'An animated video demonstrating evaporation, condensation, and precipitation in Earth\'s water cycle.',
       subject: 'Science',
-      grade: '6-8',
+      grade: 'Standard 3',
       iloCount: 3,
       contributor: 'Prof. James Chen',
       viewCount: 2891,
@@ -68,7 +68,7 @@
       title: 'Algebra I: Linear Equations Quiz',
       description: 'A formative assessment covering solving one and two-step linear equations with variables on both sides.',
       subject: 'Mathematics',
-      grade: '8-9',
+      grade: 'Standard 4',
       iloCount: 8,
       contributor: 'Maria Rodriguez',
       viewCount: 567,
@@ -81,7 +81,7 @@
       title: 'Digital Citizenship and Online Safety',
       description: 'Interactive lesson teaching students about responsible internet use, privacy, and identifying misinformation.',
       subject: 'Technology',
-      grade: '7-9',
+      grade: 'Standard 6',
       iloCount: 6,
       contributor: 'Alex Thompson',
       viewCount: 1876,
@@ -94,7 +94,7 @@
       title: 'Photosynthesis in Plants',
       description: 'Visual explanation of how plants convert sunlight into energy through the process of photosynthesis.',
       subject: 'Biology',
-      grade: '9-11',
+      grade: 'Standard 6',
       iloCount: 4,
       contributor: 'Dr. Emily Zhang',
       viewCount: 3421,
@@ -107,7 +107,7 @@
       title: 'Colonial America: Historical Analysis',
       description: 'Document-based assessment examining primary sources from the colonial period of American history.',
       subject: 'History',
-      grade: '10-11',
+      grade: 'Standard 5',
       iloCount: 7,
       contributor: 'Robert Williams',
       viewCount: 892,
@@ -120,7 +120,7 @@
       title: 'Introduction to Python Programming',
       description: 'Beginner-friendly introduction to Python covering variables, data types, and basic control structures.',
       subject: 'Computer Science',
-      grade: '9-12',
+      grade: 'Standard 6',
       iloCount: 9,
       contributor: 'Lisa Patel',
       viewCount: 2156,
@@ -133,7 +133,7 @@
       title: 'Shakespeare\'s Romeo and Juliet Analysis',
       description: 'Comprehensive analysis of themes, characters, and literary devices in Romeo and Juliet.',
       subject: 'English',
-      grade: '9-10',
+      grade: 'Standard 5',
       iloCount: 5,
       contributor: 'Catherine Moore',
       viewCount: 1543,
@@ -255,6 +255,13 @@
       {/if}
     </main>
   </div>
+  
+  <!-- Floating Action Button for submitting resources -->
+  {#if $currentUser}
+    <button class="fab" on:click={() => window.location.hash = 'submit'}>
+      <span class="material-symbols-outlined">add</span>
+    </button>
+  {/if}
 </div>
 
 <style>
@@ -385,6 +392,41 @@
     box-shadow: var(--md-sys-elevation-1);
   }
   
+  /* Floating Action Button */
+  .fab {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 64px;
+    height: 64px;
+    border-radius: var(--md-sys-shape-corner-lg);
+    background-color: var(--md-sys-color-secondary);
+    color: var(--md-sys-color-on-secondary);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--md-sys-elevation-3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 999;
+  }
+  
+  .fab:hover {
+    box-shadow: var(--md-sys-elevation-4);
+    transform: scale(1.05);
+    background-color: rgba(6, 158, 201, 0.9);
+  }
+  
+  .fab:active {
+    transform: scale(0.95);
+  }
+  
+  .fab .material-symbols-outlined {
+    font-size: 32px;
+    font-weight: 500;
+  }
+  
   /* Tablet */
   @media (max-width: 1024px) {
     .resource-grid {
@@ -413,6 +455,17 @@
     
     .main-content {
       padding: var(--md-sys-spacing-md);
+    }
+    
+    .fab {
+      width: 56px;
+      height: 56px;
+      bottom: 16px;
+      right: 16px;
+    }
+    
+    .fab .material-symbols-outlined {
+      font-size: 28px;
     }
   }
 </style>
