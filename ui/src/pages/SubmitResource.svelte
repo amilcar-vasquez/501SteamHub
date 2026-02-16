@@ -7,6 +7,7 @@
   import Select from '../components/Select.svelte';
   import MultiSelect from '../components/MultiSelect.svelte';
   import Button from '../components/Button.svelte';
+  import LessonBuilder from '../components/LessonBuilder.svelte';
 
   let formData = {
     title: '',
@@ -15,6 +16,11 @@
     grade_levels: [],
     summary: '',
     drive_link: '',
+  };
+
+  let lessonContent = {
+    version: 1,
+    blocks: []
   };
 
   let errors = {};
@@ -98,6 +104,19 @@
         errors.drive_link = 'Please enter a valid URL';
       }
     }
+
+    // Lesson plan specific validation
+    if (formData.category === 'LessonPlan') {
+      if (lessonContent.blocks.length === 0) {
+        errors.lesson_content = 'Lesson plan must have at least one block';
+      } else {
+        // Check if at least one objectives block exists
+        const hasObjectives = lessonContent.blocks.some(block => block.type === 'objectives');
+        if (!hasObjectives) {
+          errors.lesson_content = 'Lesson plan must include at least one Learning Objectives block';
+        }
+      }
+    }
     
     return Object.keys(errors).length === 0;
   }
@@ -110,6 +129,11 @@
     
     if (!validateForm()) {
       console.log('Validation failed:', errors);
+
+      // Include lesson_content if this is a lesson plan
+      if (formData.category === 'LessonPlan') {
+        resourceData.lesson_content = lessonContent;
+      }
       return;
     }
     
@@ -142,6 +166,11 @@
         grade_levels: [],
         summary: '',
         drive_link: '',
+      };
+      
+      lessonContent = {
+        version: 1,
+        blocks: []
       };
       
       // Scroll to top to see success message
@@ -264,6 +293,16 @@
         helperText="A short summary to help others understand what this resource is about"
       />
     </div>
+
+    {#if formData.category === 'LessonPlan'}
+      <div class="form-section lesson-plan-section">
+        <h2>Lesson Plan Structure</h2>
+        <LessonBuilder bind:lessonContent />
+        {#if errors.lesson_content}
+          <p class="error-text">{errors.lesson_content}</p>
+        {/if}
+      </div>
+    {/if}
 
     <div class="form-section">
       <h2>Resource Link (Optional)</h2>
@@ -405,6 +444,20 @@
   .error-banner p {
     margin: 0;
     color: var(--md-sys-color-on-surface);
+  }
+
+  .lesson-plan-section {
+    background: linear-gradient(135deg, rgba(6, 158, 201, 0.05) 0%, rgba(252, 180, 21, 0.05) 100%);
+    border: 2px solid var(--md-sys-color-primary);
+  }
+
+  .error-text {
+    color: var(--md-sys-color-error);
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
   }
 
   .form-section {
