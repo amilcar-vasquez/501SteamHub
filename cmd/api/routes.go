@@ -68,6 +68,26 @@ func (a *app) routes() http.Handler {
 	router.Handler(http.MethodDelete, apiV1Route+"/resources/:id",
 		a.requireAnyRole([]string{"admin", "CEO", "DEC"}, http.HandlerFunc(a.deleteResourceHandler)))
 
+	// Lesson routes - Public can view, authenticated users can create/modify
+	router.HandlerFunc(http.MethodGet, apiV1Route+"/resources/:id/lessons", a.getResourceLessonsHandler)
+	router.Handler(http.MethodPost, apiV1Route+"/lessons",
+		a.requireActivatedUser(http.HandlerFunc(a.createLessonHandler)))
+	router.HandlerFunc(http.MethodGet, apiV1Route+"/lessons/:id", a.getLessonHandler)
+	router.Handler(http.MethodPatch, apiV1Route+"/lessons/:id",
+		a.requireActivatedUser(http.HandlerFunc(a.updateLessonHandler)))
+	router.Handler(http.MethodDelete, apiV1Route+"/lessons/:id",
+		a.requireAnyRole([]string{"admin", "CEO", "DEC"}, http.HandlerFunc(a.deleteLessonHandler)))
+
+	// Comment routes - Public can view, authenticated users can create/modify
+	router.HandlerFunc(http.MethodGet, apiV1Route+"/resources/:id/comments", a.getResourceCommentsHandler)
+	router.Handler(http.MethodPost, apiV1Route+"/comments",
+		a.requireActivatedUser(http.HandlerFunc(a.createCommentHandler)))
+	router.HandlerFunc(http.MethodGet, apiV1Route+"/comments/:id", a.getCommentHandler)
+	router.Handler(http.MethodPatch, apiV1Route+"/comments/:id",
+		a.requireActivatedUser(http.HandlerFunc(a.updateCommentHandler)))
+	router.Handler(http.MethodDelete, apiV1Route+"/comments/:id",
+		a.requireActivatedUser(http.HandlerFunc(a.deleteCommentHandler)))
+
 	// Resource Review routes - admin/CEO/TSC/DEC can create reviews (must be activated)
 	router.Handler(http.MethodGet, apiV1Route+"/resource-reviews",
 		a.requireActivatedUser(http.HandlerFunc(a.getAllResourceReviewsHandler)))

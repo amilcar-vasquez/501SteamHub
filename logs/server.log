@@ -42,3 +42,15 @@ time=2026-02-16T14:41:53.645-06:00 level=ERROR msg="pq: invalid input value for 
 time=2026-02-16T14:41:53.664-06:00 level=ERROR msg="pq: invalid input value for enum resource_status: \"\" at position 4:30 (22P02)" method=GET uri=/v1/resources
 time=2026-02-16T14:41:53.667-06:00 level=ERROR msg="pq: invalid input value for enum resource_status: \"\" at position 4:30 (22P02)" method=GET uri=/v1/resources
 time=2026-02-16T14:42:38.898-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-16T15:47:46.521-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-16T15:48:25.057-06:00 level=ERROR msg="pq: DISTINCT is not implemented for window functions at position 2:11 (0A000)" method=GET uri="/v1/resources?subject=Computer+Science"
+time=2026-02-16T15:48:26.380-06:00 level=ERROR msg="pq: DISTINCT is not implemented for window functions at position 2:11 (0A000)" method=GET uri="/v1/resources?subject=Science"
+time=2026-02-16T15:56:52.806-06:00 level=ERROR msg="pq: DISTINCT is not implemented for window functions at position 2:11 (0A000)" method=GET uri="/v1/resources?subject=Science"
+time=2026-02-16T15:56:55.093-06:00 level=ERROR msg="pq: DISTINCT is not implemented for window functions at position 2:11 (0A000)" method=GET uri="/v1/resources?subject=Information+Technology"
+time=2026-02-16T15:56:56.445-06:00 level=ERROR msg="pq: DISTINCT is not implemented for window functions at position 2:11 (0A000)" method=GET uri="/v1/resources?subject=Computer+Science"
+time=2026-02-16T15:57:04.229-06:00 level=ERROR msg="pq: DISTINCT is not implemented for window functions at position 2:11 (0A000)" method=GET uri="/v1/resources?grade_level=Standard+3"
+time=2026-02-16T15:57:06.266-06:00 level=ERROR msg="pq: DISTINCT is not implemented for window functions at position 2:11 (0A000)" method=GET uri="/v1/resources?grade_level=Standard+1"
+time=2026-02-16T15:59:15.709-06:00 level=ERROR msg="pq: DISTINCT is not implemented for window functions at position 2:11 (0A000)" method=GET uri="/v1/resources?subject=Belizean+History"
+time=2026-02-16T16:00:57.450-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-16T16:01:38.856-06:00 level=ERROR msg="pq: syntax error at or near \"FROM\" at position 14:4 (42601)" method=GET uri="/v1/resources?subject=Computer%20Science"
+time=2026-02-16T16:03:29.331-06:00 level=INFO msg="Starting server" address=:4000 env=development

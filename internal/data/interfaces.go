@@ -19,6 +19,10 @@ type ResourceModelInterface interface {
 	GetAll(status, subject, gradeLevel string, filters Filters) ([]*Resource, Metadata, error)
 	Update(*Resource) error
 	Delete(int64) error
+	GetSubjects(int64) ([]string, error)
+	GetGradeLevels(int64) ([]string, error)
+	SetSubjects(int64, []string) error
+	SetGradeLevels(int64, []string) error
 }
 
 // TeacherModelInterface defines the interface for teacher operations

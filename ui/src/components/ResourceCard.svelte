@@ -4,7 +4,9 @@
   export let title;
   export let description;
   export let subject;
+  export let subjects = []; // Optional array of all subjects
   export let grade;
+  export let grades = []; // Optional array of all grades
   export let iloCount;
   export let contributor;
   export let viewCount;
@@ -13,6 +15,10 @@
   export let showStatus = false;
   
   let isHovered = false;
+  
+  // Display text for subjects/grades
+  $: subjectDisplay = subjects.length > 1 ? `${subject} +${subjects.length - 1}` : subject;
+  $: gradeDisplay = grades.length > 1 ? `${grade} +${grades.length - 1}` : grade;
   
   function handleClick() {
     console.log('Resource clicked:', id);
@@ -79,15 +85,11 @@
     <div class="metadata-chips">
       <div class="assist-chip label-medium">
         <span class="material-symbols-outlined">book</span>
-        {subject}
+        {subjectDisplay}
       </div>
       <div class="assist-chip label-medium">
         <span class="material-symbols-outlined">school</span>
-        {grade}
-      </div>
-      <div class="assist-chip label-medium">
-        <span class="material-symbols-outlined">checklist</span>
-        {iloCount} ILOs
+        {gradeDisplay}
       </div>
     </div>
     

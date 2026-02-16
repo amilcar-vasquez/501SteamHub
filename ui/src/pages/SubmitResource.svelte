@@ -5,14 +5,15 @@
   import TextField from '../components/TextField.svelte';
   import TextArea from '../components/TextArea.svelte';
   import Select from '../components/Select.svelte';
+  import MultiSelect from '../components/MultiSelect.svelte';
   import Button from '../components/Button.svelte';
 
   let formData = {
     title: '',
     category: '',
-    subject: '',
-    grade_level: '',
-    ilo: '',
+    subjects: [],
+    grade_levels: [],
+    summary: '',
     drive_link: '',
   };
 
@@ -77,18 +78,16 @@
       errors.category = 'Category is required';
     }
     
-    if (!formData.subject.trim()) {
-      errors.subject = 'Subject is required';
+    if (formData.subjects.length === 0) {
+      errors.subjects = 'At least one subject is required';
     }
     
-    if (!formData.grade_level) {
-      errors.grade_level = 'Grade level is required';
+    if (formData.grade_levels.length === 0) {
+      errors.grade_levels = 'At least one grade level is required';
     }
     
-    if (!formData.ilo.trim()) {
-      errors.ilo = 'Intended Learning Outcomes are required';
-    } else if (formData.ilo.length < 10) {
-      errors.ilo = 'Please provide more detail (at least 10 characters)';
+    if (formData.summary.trim() && formData.summary.length < 10) {
+      errors.summary = 'Summary should be at least 10 characters if provided';
     }
     
     // Drive link is optional, but if provided, should be a valid URL
@@ -139,9 +138,9 @@
       formData = {
         title: '',
         category: '',
-        subject: '',
-        grade_level: '',
-        ilo: '',
+        subjects: [],
+        grade_levels: [],
+        summary: '',
         drive_link: '',
       };
       
@@ -231,37 +230,38 @@
         helperText="What type of resource is this?"
       />
 
-      <Select
-        label="Subject"
-        bind:value={formData.subject}
+      <MultiSelect
+        label="Subjects"
+        bind:value={formData.subjects}
         options={subjectOptions}
-        error={errors.subject}
+        error={errors.subjects}
         required
-        helperText="What subject does this resource cover?"
+        helperText="Select all subjects this resource covers"
+        placeholder="Select subjects..."
       />
 
-      <Select
-        label="Grade Level"
-        bind:value={formData.grade_level}
+      <MultiSelect
+        label="Grade Levels"
+        bind:value={formData.grade_levels}
         options={gradeLevelOptions}
-        error={errors.grade_level}
+        error={errors.grade_levels}
         required
-        helperText="Which grade level is this resource designed for?"
+        helperText="Select all grade levels this resource is designed for"
+        placeholder="Select grade levels..."
       />
     </div>
 
     <div class="form-section">
-      <h2>Learning Outcomes</h2>
+      <h2>Description</h2>
       
       <TextArea
-        label="Intended Learning Outcomes (ILO)"
-        bind:value={formData.ilo}
-        error={errors.ilo}
-        required
-        rows={6}
-        maxLength={1000}
-        placeholder="Describe what students will learn or be able to do after using this resource..."
-        helperText="What skills or knowledge will students gain?"
+        label="Summary (Optional)"
+        bind:value={formData.summary}
+        error={errors.summary}
+        rows={4}
+        maxLength={500}
+        placeholder="Provide a brief description of this resource and what it covers..."
+        helperText="A short summary to help others understand what this resource is about"
       />
     </div>
 

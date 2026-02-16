@@ -82,10 +82,12 @@
         id: resource.resource_id,
         category: resource.category,
         title: resource.title,
-        description: resource.ilo ? resource.ilo.substring(0, 150) + '...' : 'No description available',
-        subject: resource.subject,
-        grade: resource.grade_level,
-        iloCount: resource.ilo ? resource.ilo.split('.').filter(s => s.trim()).length : 0,
+        description: resource.summary || 'No description available',
+        subject: resource.subjects && resource.subjects.length > 0 ? resource.subjects[0] : 'General',
+        subjects: resource.subjects || [],
+        grade: resource.grade_levels && resource.grade_levels.length > 0 ? resource.grade_levels[0] : 'Mixed',
+        grades: resource.grade_levels || [],
+        iloCount: 0, // No longer tracking ILO in new schema
         contributor: `Contributor #${resource.contributor_id}`, // TODO: fetch user name
         viewCount: 0, // TODO: implement view tracking
         contributionScore: 0, // TODO: implement scoring system

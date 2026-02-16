@@ -13,15 +13,16 @@ import (
 // createResourceHandler creates a new resource
 func (a *app) createResourceHandler(w http.ResponseWriter, r *http.Request) {
 	var input struct {
-		Title         string  `json:"title"`
-		Category      string  `json:"category"`
-		Subject       string  `json:"subject"`
-		GradeLevel    string  `json:"grade_level"`
-		ILO           string  `json:"ilo"`
-		DriveLink     *string `json:"drive_link"`
-		Status        string  `json:"status"`
-		PublishedURL  *string `json:"published_url"`
-		ContributorID int64   `json:"contributor_id"`
+		Title         string   `json:"title"`
+		Category      string   `json:"category"`
+		Slug          *string  `json:"slug"`
+		Summary       *string  `json:"summary"`
+		Subjects      []string `json:"subjects"`
+		GradeLevels   []string `json:"grade_levels"`
+		DriveLink     *string  `json:"drive_link"`
+		Status        string   `json:"status"`
+		PublishedURL  *string  `json:"published_url"`
+		ContributorID int64    `json:"contributor_id"`
 	}
 
 	// Log the incoming request
@@ -38,15 +39,15 @@ func (a *app) createResourceHandler(w http.ResponseWriter, r *http.Request) {
 	a.logger.Info("Parsed resource data",
 		"title", input.Title,
 		"category", input.Category,
-		"grade_level", input.GradeLevel,
+		"subjects", input.Subjects,
+		"grade_levels", input.GradeLevels,
 		"contributor_id", input.ContributorID)
 
 	resource := &data.Resource{
 		Title:         input.Title,
 		Category:      input.Category,
-		Subject:       input.Subject,
-		GradeLevel:    input.GradeLevel,
-		ILO:           input.ILO,
+		Slug:          input.Slug,
+		Summary:       input.Summary,
 		DriveLink:     input.DriveLink,
 		Status:        input.Status,
 		PublishedURL:  input.PublishedURL,
@@ -58,9 +59,8 @@ func (a *app) createResourceHandler(w http.ResponseWriter, r *http.Request) {
 	v.Check(resource.Title != "", "title", "must be provided")
 	v.Check(len(resource.Title) <= 255, "title", "must not be more than 255 characters")
 	v.Check(resource.Category != "", "category", "must be provided")
-	v.Check(resource.Subject != "", "subject", "must be provided")
-	v.Check(resource.GradeLevel != "", "grade_level", "must be provided")
-	v.Check(resource.ILO != "", "ilo", "must be provided")
+	v.Check(len(input.Subjects) > 0, "subjects", "at least one subject must be provided")
+	v.Check(len(input.GradeLevels) > 0, "grade_levels", "at least one grade level must be provided")
 	v.Check(resource.Status != "", "status", "must be provided")
 	v.Check(resource.ContributorID > 0, "contributor_id", "must be provided")
 
@@ -74,6 +74,33 @@ func (a *app) createResourceHandler(w http.ResponseWriter, r *http.Request) {
 	err = a.models.Resources.Insert(resource)
 	if err != nil {
 		a.logger.Error("Failed to insert resource", "error", err.Error())
+		a.serverErrorResponse(w, r, err)
+		return
+	}
+
+	// Set subjects and grade levels
+	if len(input.Subjects) > 0 {
+		err = a.models.Resources.SetSubjects(resource.ID, input.Subjects)
+		if err != nil {
+			a.logger.Error("Failed to set subjects", "error", err.Error())
+			a.serverErrorResponse(w, r, err)
+			return
+		}
+	}
+
+	if len(input.GradeLevels) > 0 {
+		err = a.models.Resources.SetGradeLevels(resource.ID, input.GradeLevels)
+		if err != nil {
+			a.logger.Error("Failed to set grade levels", "error", err.Error())
+			a.serverErrorResponse(w, r, err)
+			return
+		}
+	}
+
+	// Reload resource to get subjects and grade levels
+	resource, err = a.models.Resources.Get(resource.ID)
+	if err != nil {
+		a.logger.Error("Failed to reload resource", "error", err.Error())
 		a.serverErrorResponse(w, r, err)
 		return
 	}
@@ -181,14 +208,15 @@ func (a *app) updateResourceHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var input struct {
-		Title        *string `json:"title"`
-		Category     *string `json:"category"`
-		Subject      *string `json:"subject"`
-		GradeLevel   *string `json:"grade_level"`
-		ILO          *string `json:"ilo"`
-		DriveLink    *string `json:"drive_link"`
-		Status       *string `json:"status"`
-		PublishedURL *string `json:"published_url"`
+		Title        *string  `json:"title"`
+		Category     *string  `json:"category"`
+		Slug         *string  `json:"slug"`
+		Summary      *string  `json:"summary"`
+		Subjects     []string `json:"subjects"`
+		GradeLevels  []string `json:"grade_levels"`
+		DriveLink    *string  `json:"drive_link"`
+		Status       *string  `json:"status"`
+		PublishedURL *string  `json:"published_url"`
 	}
 
 	err = a.readJSON(w, r, &input)
@@ -203,14 +231,11 @@ func (a *app) updateResourceHandler(w http.ResponseWriter, r *http.Request) {
 	if input.Category != nil {
 		resource.Category = *input.Category
 	}
-	if input.Subject != nil {
-		resource.Subject = *input.Subject
+	if input.Slug != nil {
+		resource.Slug = input.Slug
 	}
-	if input.GradeLevel != nil {
-		resource.GradeLevel = *input.GradeLevel
-	}
-	if input.ILO != nil {
-		resource.ILO = *input.ILO
+	if input.Summary != nil {
+		resource.Summary = input.Summary
 	}
 	if input.DriveLink != nil {
 		resource.DriveLink = input.DriveLink
@@ -240,6 +265,31 @@ func (a *app) updateResourceHandler(w http.ResponseWriter, r *http.Request) {
 		default:
 			a.serverErrorResponse(w, r, err)
 		}
+		return
+	}
+
+	// Update subjects if provided
+	if input.Subjects != nil {
+		err = a.models.Resources.SetSubjects(resource.ID, input.Subjects)
+		if err != nil {
+			a.serverErrorResponse(w, r, err)
+			return
+		}
+	}
+
+	// Update grade levels if provided
+	if input.GradeLevels != nil {
+		err = a.models.Resources.SetGradeLevels(resource.ID, input.GradeLevels)
+		if err != nil {
+			a.serverErrorResponse(w, r, err)
+			return
+		}
+	}
+
+	// Reload resource to get updated subjects and grade levels
+	resource, err = a.models.Resources.Get(resource.ID)
+	if err != nil {
+		a.serverErrorResponse(w, r, err)
 		return
 	}
 
