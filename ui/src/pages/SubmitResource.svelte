@@ -42,15 +42,17 @@
   ];
 
   const subjectOptions = [
-    { value: 'Mathematics', label: '➕ Mathematics' },
+    { value: 'Computer Science', label: '💻 Computer Science' },
+    { value: 'Information Technology', label: '🖥️ Information Technology' },
     { value: 'Science', label: '🔬 Science' },
+    { value: 'Engineering', label: '⚙️ Engineering' },
+    { value: 'Robotics', label: '🤖 Robotics' },
+    { value: 'Arts', label: '🎨 Arts' },
+    { value: 'Belizean History', label: '🇧🇿 Belizean History' },
+    { value: 'Mathematics', label: '➕ Mathematics' },
     { value: 'English Language Arts', label: '📖 English Language Arts' },
     { value: 'Social Studies', label: '🌍 Social Studies' },
-    { value: 'Arts', label: '🎨 Arts' },
     { value: 'Physical Education', label: '⚽ Physical Education' },
-    { value: 'Technology', label: '💻 Technology' },
-    { value: 'Music', label: '🎵 Music' },
-    { value: 'Other', label: '📚 Other' },
   ];
 
   onMount(() => {

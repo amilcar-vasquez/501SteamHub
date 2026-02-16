@@ -27,3 +27,7 @@ time=2026-02-16T14:14:53.297-06:00 level=INFO msg="Receiving resource creation r
 time=2026-02-16T14:14:53.297-06:00 level=INFO msg="Parsed resource data" title="testing hopefully this time it works" category=Video grade_level="Standard 1" contributor_id=3
 time=2026-02-16T14:14:53.297-06:00 level=INFO msg="Attempting to insert resource into database"
 time=2026-02-16T14:14:53.303-06:00 level=INFO msg="Resource created successfully" resource_id=1
+time=2026-02-16T14:24:05.310-06:00 level=INFO msg="Receiving resource creation request" method=POST path=/v1/resources
+time=2026-02-16T14:24:05.310-06:00 level=INFO msg="Parsed resource data" title="Intro to Functions" category=LessonPlan grade_level="Infant 1" contributor_id=3
+time=2026-02-16T14:24:05.310-06:00 level=INFO msg="Attempting to insert resource into database"
+time=2026-02-16T14:24:05.315-06:00 level=INFO msg="Resource created successfully" resource_id=2

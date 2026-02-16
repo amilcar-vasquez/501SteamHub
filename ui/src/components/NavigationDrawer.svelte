@@ -19,8 +19,17 @@
   }
   
   const subjects = [
-    'Science', 'Mathematics', 'Technology', 'Engineering', 
-    'Arts', 'English', 'History', 'Biology', 'Chemistry', 'Physics'
+    'Computer Science',
+    'Information Technology',
+    'Science',
+    'Engineering',
+    'Robotics',
+    'Arts',
+    'Belizean History',
+    'Mathematics',
+    'English Language Arts',
+    'Social Studies',
+    'Physical Education'
   ];
   
   const gradeLevels = [
