@@ -1,14 +1,12 @@
 <script>
   import SignUp from './pages/SignUp.svelte';
-  import SignIn from './pages/SignIn.svelte';
   import Activate from './pages/Activate.svelte';
   import Home from './pages/Home.svelte';
   
-  let currentPage = 'home'; // home, signup, signin, activate
+  let currentPage = 'home'; // home, signup, activate, signin
   
   function navigate(event) {
     currentPage = event.detail.page;
-    window.location.hash = event.detail.page;
     window.scrollTo(0, 0);
   }
   
@@ -17,8 +15,6 @@
     const hash = window.location.hash.slice(1);
     if (hash) {
       currentPage = hash;
-    } else {
-      currentPage = 'home';
     }
   }
   
@@ -31,8 +27,6 @@
 <div class="app-root">
   {#if currentPage === 'signup'}
     <SignUp on:navigate={navigate} />
-  {:else if currentPage === 'signin'}
-    <SignIn on:navigate={navigate} />
   {:else if currentPage === 'activate'}
     <Activate on:navigate={navigate} />
   {:else}

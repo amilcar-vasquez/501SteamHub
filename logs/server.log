@@ -1,1 +1,4 @@
 time=2026-02-16T09:20:59.377-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-16T10:47:26.902-06:00 level=ERROR msg="pq: insert or update on table \"users\" violates foreign key constraint \"users_role_id_fkey\" (23503)" method=POST uri=/v1/users
+time=2026-02-16T10:49:23.808-06:00 level=ERROR msg="pq: insert or update on table \"users\" violates foreign key constraint \"users_role_id_fkey\" (23503)" method=POST uri=/v1/users
+time=2026-02-16T10:54:57.906-06:00 level=INFO msg="Activating user" user_id=3 username=amilcar email=belizeno@gmail.com

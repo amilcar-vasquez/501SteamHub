@@ -1,11 +1,13 @@
 <script>
   import { createEventDispatcher } from 'svelte';
+  import { currentUser, signOut } from '../stores/auth.js';
   
   export let searchQuery = '';
   
   const dispatch = createEventDispatcher();
   
   let isMobile = false;
+  let showUserMenu = false;
   
   function checkMobile() {
     isMobile = window.innerWidth < 1024;
@@ -18,6 +20,31 @@
   
   function handleSearch(e) {
     searchQuery = e.target.value;
+  }
+  
+  function toggleUserMenu() {
+    showUserMenu = !showUserMenu;
+  }
+  
+  function handleSignOut() {
+    signOut();
+    showUserMenu = false;
+    window.location.hash = 'home';
+  }
+  
+  function handleSignIn() {
+    window.location.hash = 'signin';
+  }
+  
+  // Close menu when clicking outside
+  function handleClickOutside(event) {
+    if (showUserMenu && !event.target.closest('.user-menu-container')) {
+      showUserMenu = false;
+    }
+  }
+  
+  if (typeof window !== 'undefined') {
+    window.addEventListener('click', handleClickOutside);
   }
 </script>
 
@@ -54,19 +81,45 @@
     
     <!-- Right: User avatar -->
     <div class="app-bar-right">
-      <button class="icon-button">
-        <span class="material-symbols-outlined">notifications</span>
-      </button>
-      <button class="avatar-button">
-        <span class="material-symbols-outlined">account_circle</span>
-      </button>
+      {#if $currentUser}
+        <button class="icon-button">
+          <span class="material-symbols-outlined">notifications</span>
+        </button>
+        <div class="user-menu-container">
+          <button class="avatar-button" on:click={toggleUserMenu}>
+            <span class="material-symbols-outlined">account_circle</span>
+          </button>
+          
+          {#if showUserMenu}
+            <div class="user-menu">
+              <div class="user-menu-header">
+                <span class="material-symbols-outlined user-icon">account_circle</span>
+                <div class="user-info">
+                  <p class="user-name label-large">{$currentUser.username}</p>
+                  <p class="user-email body-medium">{$currentUser.email}</p>
+                  <p class="user-role label-medium">{$currentUser.role_name || 'User'}</p>
+                </div>
+              </div>
+              <div class="menu-divider"></div>
+              <button class="menu-item label-large" on:click={handleSignOut}>
+                <span class="material-symbols-outlined">logout</span>
+                Sign Out
+              </button>
+            </div>
+          {/if}
+        </div>
+      {:else}
+        <button class="sign-in-button label-large" on:click={handleSignIn}>
+          Sign In
+        </button>
+      {/if}
     </div>
   </div>
 </header>
 
 <style>
   .top-app-bar {
-    background-color: var(--md-sys-color-surface);
+    background-color: var(--md-sys-color-primary);
     box-shadow: var(--md-sys-elevation-2);
     position: sticky;
     top: 0;
@@ -92,7 +145,7 @@
   }
   
   .app-title {
-    color: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
     white-space: nowrap;
     user-select: none;
   }
@@ -106,7 +159,7 @@
   .search-field {
     display: flex;
     align-items: center;
-    background-color: var(--md-sys-color-surface-container-high);
+    background-color: rgba(255, 255, 255, 0.15);
     border-radius: var(--md-sys-shape-corner-full);
     padding: 0 var(--md-sys-spacing-md);
     height: 48px;
@@ -114,12 +167,12 @@
   }
   
   .search-field:focus-within {
-    background-color: var(--md-sys-color-surface-container-highest);
+    background-color: rgba(255, 255, 255, 0.25);
     box-shadow: var(--md-sys-elevation-1);
   }
   
   .search-icon {
-    color: var(--md-sys-color-on-surface-variant);
+    color: rgba(255, 255, 255, 0.9);
     margin-right: var(--md-sys-spacing-sm);
   }
   
@@ -128,11 +181,11 @@
     border: none;
     background: transparent;
     outline: none;
-    color: var(--md-sys-color-on-surface);
+    color: var(--md-sys-color-on-primary);
   }
   
   .search-input::placeholder {
-    color: var(--md-sys-color-on-surface-variant);
+    color: rgba(255, 255, 255, 0.7);
   }
   
   .app-bar-right {
@@ -153,12 +206,12 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    color: var(--md-sys-color-on-surface-variant);
+    color: var(--md-sys-color-on-primary);
     transition: background-color 0.2s;
   }
   
   .icon-button:hover {
-    background-color: rgba(0, 0, 0, var(--md-sys-state-hover-opacity));
+    background-color: rgba(255, 255, 255, 0.1);
   }
   
   .icon-button-small {
@@ -171,12 +224,12 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    color: var(--md-sys-color-on-surface-variant);
+    color: var(--md-sys-color-on-primary);
     transition: background-color 0.2s;
   }
   
   .icon-button-small:hover {
-    background-color: rgba(0, 0, 0, var(--md-sys-state-hover-opacity));
+    background-color: rgba(255, 255, 255, 0.1);
   }
   
   .icon-button-small .material-symbols-outlined {
@@ -193,16 +246,112 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    color: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
     transition: background-color 0.2s;
   }
   
   .avatar-button:hover {
-    background-color: rgba(124, 61, 130, var(--md-sys-state-hover-opacity));
+    background-color: rgba(255, 255, 255, 0.1);
   }
   
   .avatar-button .material-symbols-outlined {
     font-size: 32px;
+  }
+  
+  .user-menu-container {
+    position: relative;
+  }
+  
+  .user-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background-color: var(--md-sys-color-surface);
+    border-radius: var(--md-sys-shape-corner-md);
+    box-shadow: var(--md-sys-elevation-3);
+    min-width: 280px;
+    overflow: hidden;
+    z-index: 1000;
+  }
+  
+  .user-menu-header {
+    display: flex;
+    align-items: center;
+    gap: var(--md-sys-spacing-md);
+    padding: var(--md-sys-spacing-md);
+    background-color: var(--md-sys-color-surface-variant);
+  }
+  
+  .user-icon {
+    font-size: 48px;
+    color: var(--md-sys-color-primary);
+  }
+  
+  .user-info {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .user-name {
+    color: var(--md-sys-color-on-surface);
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+  
+  .user-email {
+    color: var(--md-sys-color-on-surface-variant);
+    font-size: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .user-role {
+    color: var(--md-sys-color-secondary);
+    text-transform: capitalize;
+    margin-top: 4px;
+  }
+  
+  .menu-divider {
+    height: 1px;
+    background-color: var(--md-sys-color-outline-variant);
+  }
+  
+  .menu-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: var(--md-sys-spacing-md);
+    padding: var(--md-sys-spacing-md);
+    background: none;
+    border: none;
+    color: var(--md-sys-color-on-surface);
+    cursor: pointer;
+    transition: background-color 0.2s;
+    text-align: left;
+  }
+  
+  .menu-item:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  
+  .menu-item .material-symbols-outlined {
+    font-size: 20px;
+    color: var(--md-sys-color-on-surface-variant);
+  }
+  
+  .sign-in-button {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: var(--md-sys-color-on-primary);
+    border: none;
+    padding: 8px 16px;
+    border-radius: var(--md-sys-shape-corner-full);
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .sign-in-button:hover {
+    background-color: rgba(255, 255, 255, 0.25);
   }
   
   /* Tablet and Mobile */
