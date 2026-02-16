@@ -31,3 +31,14 @@ time=2026-02-16T14:24:05.310-06:00 level=INFO msg="Receiving resource creation r
 time=2026-02-16T14:24:05.310-06:00 level=INFO msg="Parsed resource data" title="Intro to Functions" category=LessonPlan grade_level="Infant 1" contributor_id=3
 time=2026-02-16T14:24:05.310-06:00 level=INFO msg="Attempting to insert resource into database"
 time=2026-02-16T14:24:05.315-06:00 level=INFO msg="Resource created successfully" resource_id=2
+time=2026-02-16T14:39:50.299-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-16T14:39:50.299-06:00 level=ERROR msg="listen tcp :4000: bind: address already in use"
+time=2026-02-16T14:40:19.260-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-16T14:40:29.342-06:00 level=ERROR msg="pq: invalid input value for enum resource_status: \"\" at position 4:30 (22P02)" method=GET uri=/v1/resources
+time=2026-02-16T14:40:29.359-06:00 level=ERROR msg="pq: invalid input value for enum resource_status: \"\" at position 4:30 (22P02)" method=GET uri=/v1/resources
+time=2026-02-16T14:40:29.363-06:00 level=ERROR msg="pq: invalid input value for enum resource_status: \"\" at position 4:30 (22P02)" method=GET uri=/v1/resources
+time=2026-02-16T14:40:35.431-06:00 level=ERROR msg="pq: invalid input value for enum resource_status: \"\" at position 4:30 (22P02)" method=GET uri=/v1/resources
+time=2026-02-16T14:41:53.645-06:00 level=ERROR msg="pq: invalid input value for enum resource_status: \"\" at position 4:30 (22P02)" method=GET uri=/v1/resources
+time=2026-02-16T14:41:53.664-06:00 level=ERROR msg="pq: invalid input value for enum resource_status: \"\" at position 4:30 (22P02)" method=GET uri=/v1/resources
+time=2026-02-16T14:41:53.667-06:00 level=ERROR msg="pq: invalid input value for enum resource_status: \"\" at position 4:30 (22P02)" method=GET uri=/v1/resources
+time=2026-02-16T14:42:38.898-06:00 level=INFO msg="Starting server" address=:4000 env=development

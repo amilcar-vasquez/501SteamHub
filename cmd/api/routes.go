@@ -58,13 +58,11 @@ func (a *app) routes() http.Handler {
 	router.Handler(http.MethodDelete, apiV1Route+"/teachers/:id",
 		a.requireAnyRole([]string{"admin", "CEO", "TSC"}, http.HandlerFunc(a.deleteTeacherHandler)))
 
-	// Resource routes - All authenticated users can list/view, create (must be activated)
-	router.Handler(http.MethodGet, apiV1Route+"/resources",
-		a.requireActivatedUser(http.HandlerFunc(a.getAllResourcesHandler)))
+	// Resource routes - Public can view, authenticated users can create/modify
+	router.HandlerFunc(http.MethodGet, apiV1Route+"/resources", a.getAllResourcesHandler)
 	router.Handler(http.MethodPost, apiV1Route+"/resources",
 		a.requireActivatedUser(http.HandlerFunc(a.createResourceHandler)))
-	router.Handler(http.MethodGet, apiV1Route+"/resources/:id",
-		a.requireActivatedUser(http.HandlerFunc(a.getResourceHandler)))
+	router.HandlerFunc(http.MethodGet, apiV1Route+"/resources/:id", a.getResourceHandler)
 	router.Handler(http.MethodPatch, apiV1Route+"/resources/:id",
 		a.requireActivatedUser(http.HandlerFunc(a.updateResourceHandler)))
 	router.Handler(http.MethodDelete, apiV1Route+"/resources/:id",
@@ -119,7 +117,7 @@ func (a *app) routes() http.Handler {
 	router.HandlerFunc(http.MethodPost, apiV1Route+"/tokens/authentication", a.createAuthTokenHandler)
 	router.HandlerFunc(http.MethodPost, apiV1Route+"/tokens/activation", a.createActivationTokenHandler)
 	router.Handler(http.MethodDelete, apiV1Route+"/tokens/user/:user_id",
-	a.authenticate(a.requireActivatedUser(a.requireRole("admin", http.HandlerFunc(a.deleteAllTokensForUserHandler)))))
+		a.authenticate(a.requireActivatedUser(a.requireRole("admin", http.HandlerFunc(a.deleteAllTokensForUserHandler)))))
 	// Apply middleware
 	handler := a.recoverPanic(router)
 	handler = a.enableCORS(handler)

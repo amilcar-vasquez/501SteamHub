@@ -1,4 +1,5 @@
 <script>
+  import { onMount } from 'svelte';
   import TopAppBar from '../components/TopAppBar.svelte';
   import NavigationDrawer from '../components/NavigationDrawer.svelte';
   import ResourceCard from '../components/ResourceCard.svelte';
@@ -7,12 +8,14 @@
   import Button from '../components/Button.svelte';
   import { createEventDispatcher } from 'svelte';
   import { currentUser } from '../stores/auth.js';
+  import { resourceAPI } from '../api/client.js';
   
   const dispatch = createEventDispatcher();
   
   let searchQuery = '';
   let isMobileFilterOpen = false;
-  let isLoading = false;
+  let isLoading = true;
+  let loadError = '';
   let showRoleBasedStatus = false; // Toggle for admin/fellow view
   
   // Filter state
@@ -28,121 +31,77 @@
   // Active filters for chips display
   $: activeFilters = [
     ...filters.subjects.map(s => ({ type: 'subject', value: s, label: s })),
-    ...filters.gradeLevels.map(g => ({ type: 'gradeLevel', value: g, label: `Grade ${g}` })),
+    ...filters.gradeLevels.map(g => ({ type: 'gradeLevel', value: g, label: g })),
     ...filters.resourceTypes.map(r => ({ type: 'resourceType', value: r, label: r })),
     ...(filters.contributor ? [{ type: 'contributor', value: filters.contributor, label: filters.contributor }] : []),
     ...(filters.school ? [{ type: 'school', value: filters.school, label: filters.school }] : [])
   ];
   
-  // Mock resources data
-  let resources = [
-    {
-      id: 1,
-      category: 'Lesson Plan',
-      title: 'Introduction to Renewable Energy Systems',
-      description: 'A comprehensive lesson plan exploring solar, wind, and hydroelectric power generation with hands-on activities.',
-      subject: 'Science',
-      grade: 'Standard 5',
-      iloCount: 5,
-      contributor: 'Dr. Sarah Mitchell',
-      viewCount: 1234,
-      contributionScore: 87,
-      status: 'Published'
-    },
-    {
-      id: 2,
-      category: 'Video',
-      title: 'The Water Cycle Explained',
-      description: 'An animated video demonstrating evaporation, condensation, and precipitation in Earth\'s water cycle.',
-      subject: 'Science',
-      grade: 'Standard 3',
-      iloCount: 3,
-      contributor: 'Prof. James Chen',
-      viewCount: 2891,
-      contributionScore: 92,
-      status: 'Published'
-    },
-    {
-      id: 3,
-      category: 'Assessment',
-      title: 'Algebra I: Linear Equations Quiz',
-      description: 'A formative assessment covering solving one and two-step linear equations with variables on both sides.',
-      subject: 'Mathematics',
-      grade: 'Standard 4',
-      iloCount: 8,
-      contributor: 'Maria Rodriguez',
-      viewCount: 567,
-      contributionScore: 78,
-      status: 'Under Review'
-    },
-    {
-      id: 4,
-      category: 'Lesson Plan',
-      title: 'Digital Citizenship and Online Safety',
-      description: 'Interactive lesson teaching students about responsible internet use, privacy, and identifying misinformation.',
-      subject: 'Information Technology',
-      grade: 'Standard 6',
-      iloCount: 6,
-      contributor: 'Alex Thompson',
-      viewCount: 1876,
-      contributionScore: 85,
-      status: 'Published'
-    },
-    {
-      id: 5,
-      category: 'Video',
-      title: 'Photosynthesis in Plants',
-      description: 'Visual explanation of how plants convert sunlight into energy through the process of photosynthesis.',
-      subject: 'Science',
-      grade: 'Standard 6',
-      iloCount: 4,
-      contributor: 'Dr. Emily Zhang',
-      viewCount: 3421,
-      contributionScore: 95,
-      status: 'Published'
-    },
-    {
-      id: 6,
-      category: 'Assessment',
-      title: 'Colonial America: Historical Analysis',
-      description: 'Document-based assessment examining primary sources from the colonial period of American history.',
-      subject: 'Social Studies',
-      grade: 'Standard 5',
-      iloCount: 7,
-      contributor: 'Robert Williams',
-      viewCount: 892,
-      contributionScore: 81,
-      status: 'Approved'
-    },
-    {
-      id: 7,
-      category: 'Lesson Plan',
-      title: 'Introduction to Python Programming',
-      description: 'Beginner-friendly introduction to Python covering variables, data types, and basic control structures.',
-      subject: 'Computer Science',
-      grade: 'Standard 6',
-      iloCount: 9,
-      contributor: 'Lisa Patel',
-      viewCount: 2156,
-      contributionScore: 88,
-      status: 'Published'
-    },
-    {
-      id: 8,
-      category: 'Video',
-      title: 'Shakespeare\'s Romeo and Juliet Analysis',
-      description: 'Comprehensive analysis of themes, characters, and literary devices in Romeo and Juliet.',
-      subject: 'English Language Arts',
-      grade: 'Standard 5',
-      iloCount: 5,
-      contributor: 'Catherine Moore',
-      viewCount: 1543,
-      contributionScore: 83,
-      status: 'Submitted'
-    }
-  ];
+  // Resources from API
+  let resources = [];
+  let metadata = {};
   
   $: resultCount = resources.length;
+  
+  // Load resources on mount and when filters change
+  onMount(() => {
+    loadResources();
+  });
+  
+  // Reload when filters change
+  $: if (filters.subjects || filters.gradeLevels || searchQuery) {
+    loadResources();
+  }
+  
+  async function loadResources() {
+    isLoading = true;
+    loadError = '';
+    
+    try {
+      const params = {};
+      
+      // Note: Current API supports single filter values, not arrays
+      // For now, we'll use the first value if multiple are selected
+      if (filters.subjects.length > 0) {
+        params.subject = filters.subjects[0];
+      }
+      if (filters.gradeLevels.length > 0) {
+        params.grade_level = filters.gradeLevels[0];
+      }
+      if (searchQuery) {
+        params.search = searchQuery;
+      }
+      
+      console.log('Loading resources with params:', params);
+      const response = await resourceAPI.getAll(params);
+      console.log('Resources loaded:', response);
+      
+      // Map API response to match ResourceCard props
+      const apiResources = response.resources || [];
+      resources = apiResources.map(resource => ({
+        id: resource.resource_id,
+        category: resource.category,
+        title: resource.title,
+        description: resource.ilo ? resource.ilo.substring(0, 150) + '...' : 'No description available',
+        subject: resource.subject,
+        grade: resource.grade_level,
+        iloCount: resource.ilo ? resource.ilo.split('.').filter(s => s.trim()).length : 0,
+        contributor: `Contributor #${resource.contributor_id}`, // TODO: fetch user name
+        viewCount: 0, // TODO: implement view tracking
+        contributionScore: 0, // TODO: implement scoring system
+        status: resource.status,
+      }));
+      
+      metadata = response.metadata || {};
+      
+    } catch (error) {
+      console.error('Failed to load resources:', error);
+      loadError = 'Failed to load resources. Please try again.';
+      resources = [];
+    } finally {
+      isLoading = false;
+    }
+  }
   
   function removeFilter(filter) {
     if (filter.type === 'subject') {
@@ -228,7 +187,16 @@
       </div>
       
       <!-- Resource grid -->
-      {#if isLoading}
+      {#if loadError}
+        <div class="zero-state error-state">
+          <span class="material-symbols-outlined zero-state-icon">error</span>
+          <h2 class="title-large">Error Loading Resources</h2>
+          <p class="body-medium">{loadError}</p>
+          <button class="clear-filters-btn" on:click={loadResources}>
+            Try Again
+          </button>
+        </div>
+      {:else if isLoading}
         <div class="resource-grid">
           {#each Array(6) as _}
             <LoadingSkeleton />
@@ -247,7 +215,17 @@
         <div class="resource-grid">
           {#each resources as resource (resource.id)}
             <ResourceCard 
-              {...resource} 
+              id={resource.id}
+              category={resource.category}
+              title={resource.title}
+              description={resource.description}
+              subject={resource.subject}
+              grade={resource.grade}
+              iloCount={resource.iloCount}
+              contributor={resource.contributor}
+              viewCount={resource.viewCount}
+              contributionScore={resource.contributionScore}
+              status={resource.status}
               showStatus={showRoleBasedStatus}
             />
           {/each}
@@ -367,6 +345,10 @@
   .zero-state p {
     color: var(--md-sys-color-on-surface-variant);
     margin-bottom: var(--md-sys-spacing-lg);
+  }
+  
+  .error-state .zero-state-icon {
+    color: var(--md-sys-color-error);
   }
   
   .clear-filters-btn {

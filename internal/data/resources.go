@@ -98,9 +98,9 @@ func (m ResourceModel) GetAll(status string, subject string, gradeLevel string, 
 	query := `
 		SELECT COUNT(*) OVER(), resource_id, title, category, subject, grade_level, ilo, drive_link, status, published_url, contributor_id, created_at
 		FROM resources
-		WHERE (status = $1 OR $1 = '')
-		AND (subject = $2 OR $2 = '')
-		AND (grade_level = $3 OR $3 = '')
+		WHERE ($1 = '' OR status = $1::resource_status)
+		AND ($2 = '' OR subject = $2::subject)
+		AND ($3 = '' OR grade_level = $3::grade_level)
 		ORDER BY created_at DESC
 		LIMIT $4 OFFSET $5`
 
