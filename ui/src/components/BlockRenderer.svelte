@@ -1,4 +1,5 @@
 <script>
+  import { slide } from 'svelte/transition';
   import ObjectivesBlock from './lesson-blocks/ObjectivesBlock.svelte';
   import MaterialsBlock from './lesson-blocks/MaterialsBlock.svelte';
   import WarmupBlock from './lesson-blocks/WarmupBlock.svelte';
@@ -10,10 +11,8 @@
   export let block;
   export let onUpdate;
   export let onRemove;
-  export let onMoveUp;
-  export let onMoveDown;
-  export let isFirst;
-  export let isLast;
+
+  let collapsed = false;
 
   const blockTypeLabels = {
     objectives: '🎯 Learning Objectives',
@@ -35,6 +34,7 @@
     teacher_notes: 'note',
   };
 
+  // Pure update functions - return new object
   function handleContentUpdate(newContent) {
     onUpdate({ ...block, content: newContent });
   }
@@ -42,74 +42,106 @@
   function handleTitleUpdate(event) {
     onUpdate({ ...block, title: event.target.value });
   }
+
+  function toggleCollapsed() {
+    collapsed = !collapsed;
+  }
+
+  function toggleVisibility() {
+    const newVisibility = block.visibility === 'public' ? 'teacher' : 'public';
+    onUpdate({ ...block, visibility: newVisibility });
+  }
 </script>
 
-<div class="block-container">
+<div class="block-container" class:teacher-only={block.visibility === 'teacher'} class:collapsed>
   <div class="block-header">
-    <div class="block-type">
-      <span class="material-symbols-outlined">{blockTypeIcons[block.type]}</span>
-      <span class="type-label">{blockTypeLabels[block.type]}</span>
+    <div class="header-left">
+      <div
+        class="drag-handle"
+        role="button"
+        aria-label="Drag to reorder"
+        tabindex="0"
+      >
+        <span class="material-symbols-outlined">drag_indicator</span>
+      </div>
+      
+      <div class="block-type">
+        <span class="material-symbols-outlined">{blockTypeIcons[block.type]}</span>
+        <span class="type-label">{blockTypeLabels[block.type]}</span>
+      </div>
     </div>
 
     <div class="block-actions">
       <button
         type="button"
-        class="icon-btn"
-        on:click={onMoveUp}
-        disabled={isFirst}
-        title="Move up"
+        class="icon-btn visibility-toggle"
+        on:click={toggleVisibility}
+        title={block.visibility === 'public' ? 'Visible to all' : 'Teacher only'}
+        aria-label={block.visibility === 'public' ? 'Make teacher only' : 'Make visible to all'}
       >
-        <span class="material-symbols-outlined">arrow_upward</span>
+        <span class="material-symbols-outlined">
+          {block.visibility === 'public' ? 'visibility' : 'visibility_off'}
+        </span>
       </button>
+      
       <button
         type="button"
-        class="icon-btn"
-        on:click={onMoveDown}
-        disabled={isLast}
-        title="Move down"
+        class="icon-btn collapse-toggle"
+        on:click={toggleCollapsed}
+        title={collapsed ? 'Expand block' : 'Collapse block'}
+        aria-label={collapsed ? 'Expand' : 'Collapse'}
       >
-        <span class="material-symbols-outlined">arrow_downward</span>
+        <span class="material-symbols-outlined">
+          {collapsed ? 'expand_more' : 'expand_less'}
+        </span>
       </button>
+      
       <button
         type="button"
         class="icon-btn delete"
         on:click={onRemove}
         title="Remove block"
+        aria-label="Delete block"
       >
         <span class="material-symbols-outlined">delete</span>
       </button>
     </div>
   </div>
 
-  {#if block.type !== 'objectives' && block.type !== 'materials'}
-    <div class="block-title-input">
-      <input
-        type="text"
-        bind:value={block.title}
-        on:input={handleTitleUpdate}
-        placeholder="Block title (optional)"
-        class="title-input"
-      />
+  {#if !collapsed}
+    <div class="block-body" transition:slide={{ duration: 200 }}>
+      {#if block.type !== 'objectives' && block.type !== 'materials'}
+        <div class="block-title-input">
+          <input
+            type="text"
+            bind:value={block.title}
+            on:input={handleTitleUpdate}
+            placeholder="Block title (optional)"
+            class="title-input"
+            aria-label="Block title"
+          />
+        </div>
+      {/if}
+
+      <div class="block-content">
+        {#if block.type === 'objectives'}
+          <ObjectivesBlock content={block.content} onUpdate={handleContentUpdate} />
+        {:else if block.type === 'materials'}
+          <MaterialsBlock content={block.content} onUpdate={handleContentUpdate} />
+        {:else if block.type === 'warmup'}
+          <WarmupBlock content={block.content} onUpdate={handleContentUpdate} />
+        {:else if block.type === 'activity'}
+          <ActivityBlock content={block.content} onUpdate={handleContentUpdate} />
+        {:else if block.type === 'assessment'}
+          <AssessmentBlock content={block.content} onUpdate={handleContentUpdate} />
+        {:else if block.type === 'extension'}
+          <ExtensionBlock content={block.content} onUpdate={handleContentUpdate} />
+        {:else if block.type === 'teacher_notes'}
+          <TeacherNotesBlock content={block.content} onUpdate={handleContentUpdate} />
+        {/if}
+      </div>
     </div>
   {/if}
-
-  <div class="block-content">
-    {#if block.type === 'objectives'}
-      <ObjectivesBlock content={block.content} onUpdate={handleContentUpdate} />
-    {:else if block.type === 'materials'}
-      <MaterialsBlock content={block.content} onUpdate={handleContentUpdate} />
-    {:else if block.type === 'warmup'}
-      <WarmupBlock content={block.content} onUpdate={handleContentUpdate} />
-    {:else if block.type === 'activity'}
-      <ActivityBlock content={block.content} onUpdate={handleContentUpdate} />
-    {:else if block.type === 'assessment'}
-      <AssessmentBlock content={block.content} onUpdate={handleContentUpdate} />
-    {:else if block.type === 'extension'}
-      <ExtensionBlock content={block.content} onUpdate={handleContentUpdate} />
-    {:else if block.type === 'teacher_notes'}
-      <TeacherNotesBlock content={block.content} onUpdate={handleContentUpdate} />
-    {/if}
-  </div>
 </div>
 
 <style>
@@ -118,18 +150,74 @@
     border: 1px solid var(--md-sys-color-outline-variant);
     border-radius: 12px;
     padding: 1.25rem;
-    transition: box-shadow 0.2s;
+    transition: all 0.2s;
+    margin: 0.5rem 0;
+    will-change: transform;
+    position: relative;
   }
 
   .block-container:hover {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
+  .block-container.teacher-only {
+    background: var(--md-sys-color-tertiary-container);
+    border-left: 4px solid var(--md-sys-color-tertiary);
+  }
+
+  .block-container.teacher-only::before {
+    content: 'Teacher Only';
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--md-sys-color-tertiary);
+    opacity: 0.6;
+  }
+
+  .block-container.collapsed {
+    padding: 1rem 1.25rem;
+  }
+
   .block-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+  }
+
+  .drag-handle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--md-sys-color-on-surface-variant);
+    cursor: grab;
+    padding: 0.25rem;
+    border-radius: 4px;
+    transition: all 0.2s;
+    user-select: none;
+  }
+
+  .drag-handle:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: var(--md-sys-color-primary);
+  }
+
+  .drag-handle:active {
+    cursor: grabbing;
+  }
+
+  .drag-handle .material-symbols-outlined {
+    font-size: 20px;
+    pointer-events: none;
   }
 
   .block-type {
@@ -174,6 +262,14 @@
     cursor: not-allowed;
   }
 
+  .icon-btn.visibility-toggle {
+    color: var(--md-sys-color-tertiary);
+  }
+
+  .icon-btn.collapse-toggle {
+    color: var(--md-sys-color-primary);
+  }
+
   .icon-btn.delete {
     color: var(--md-sys-color-error);
   }
@@ -186,8 +282,12 @@
     font-size: 20px;
   }
 
+  .block-body {
+    overflow: hidden;
+  }
+
   .block-title-input {
-    margin-bottom: 1rem;
+    margin-top: 1rem;
   }
 
   .title-input {

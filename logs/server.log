@@ -92,3 +92,7 @@ time=2026-02-17T11:14:17.603-06:00 level=INFO msg="Receiving resource creation r
 time=2026-02-17T11:14:17.603-06:00 level=INFO msg="Parsed resource data" title="Loops and Whiles" category=LessonPlan subjects="[Computer Science]" grade_levels="[Standard 5]" contributor_id=1
 time=2026-02-17T11:14:17.604-06:00 level=INFO msg="Attempting to insert resource into database"
 time=2026-02-17T11:14:17.615-06:00 level=INFO msg="Resource created successfully" resource_id=7
+time=2026-02-17T11:21:37.098-06:00 level=INFO msg="Receiving resource creation request" method=POST path=/v1/resources
+time=2026-02-17T11:21:37.098-06:00 level=INFO msg="Parsed resource data" title="Intro Computers" category=LessonPlan subjects="[Computer Science]" grade_levels="[Standard 4]" contributor_id=1
+time=2026-02-17T11:21:37.098-06:00 level=INFO msg="Attempting to insert resource into database"
+time=2026-02-17T11:21:37.108-06:00 level=INFO msg="Resource created successfully" resource_id=8
