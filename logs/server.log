@@ -54,3 +54,10 @@ time=2026-02-16T15:59:15.709-06:00 level=ERROR msg="pq: DISTINCT is not implemen
 time=2026-02-16T16:00:57.450-06:00 level=INFO msg="Starting server" address=:4000 env=development
 time=2026-02-16T16:01:38.856-06:00 level=ERROR msg="pq: syntax error at or near \"FROM\" at position 14:4 (42601)" method=GET uri="/v1/resources?subject=Computer%20Science"
 time=2026-02-16T16:03:29.331-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-17T10:56:52.578-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-17T11:00:15.329-06:00 level=INFO msg="Activating user" user_id=1 username=belizeno@gmail.com email=belizeno@gmail.com
+time=2026-02-17T11:01:13.498-06:00 level=INFO msg="Receiving resource creation request" method=POST path=/v1/resources
+time=2026-02-17T11:01:13.498-06:00 level=INFO msg="Parsed resource data" title="Test Resouce" category=LessonPlan subjects="[Computer Science]" grade_levels="[Infant 1]" contributor_id=1
+time=2026-02-17T11:01:13.498-06:00 level=INFO msg="Attempting to insert resource into database"
+time=2026-02-17T11:01:13.502-06:00 level=ERROR msg="Failed to set subjects" error="pq: type \"subject\" does not exist at column 70 (42704)"
+time=2026-02-17T11:01:13.502-06:00 level=ERROR msg="pq: type \"subject\" does not exist at column 70 (42704)" method=POST uri=/v1/resources
