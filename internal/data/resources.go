@@ -123,8 +123,8 @@ func (m ResourceModel) GetAll(status string, subject string, gradeLevel string, 
 			LEFT JOIN resource_subjects rs ON r.resource_id = rs.resource_id
 			LEFT JOIN resource_grade_levels rgl ON r.resource_id = rgl.resource_id
 			WHERE ($1 = '' OR r.status = $1::resource_status)
-			AND ($2 = '' OR rs.subject = $2::subject)
-			AND ($3 = '' OR rgl.grade_level = $3::grade_level)`
+			AND ($2 = '' OR rs.subject = $2)
+			AND ($3 = '' OR rgl.grade_level = $3)`
 
 		// Main query with joins
 		query = `
@@ -133,8 +133,8 @@ func (m ResourceModel) GetAll(status string, subject string, gradeLevel string, 
 			LEFT JOIN resource_subjects rs ON r.resource_id = rs.resource_id
 			LEFT JOIN resource_grade_levels rgl ON r.resource_id = rgl.resource_id
 			WHERE ($1 = '' OR r.status = $1::resource_status)
-			AND ($2 = '' OR rs.subject = $2::subject)
-			AND ($3 = '' OR rgl.grade_level = $3::grade_level)
+			AND ($2 = '' OR rs.subject = $2)
+			AND ($3 = '' OR rgl.grade_level = $3)
 			ORDER BY r.created_at DESC
 			LIMIT $4 OFFSET $5`
 
@@ -354,7 +354,7 @@ func (m ResourceModel) SetSubjects(resourceID int64, subjects []string) error {
 	// Insert new subjects
 	for _, subject := range subjects {
 		_, err = tx.ExecContext(ctx,
-			"INSERT INTO resource_subjects (resource_id, subject) VALUES ($1, $2::subject)",
+			"INSERT INTO resource_subjects (resource_id, subject) VALUES ($1, $2)",
 			resourceID, subject)
 		if err != nil {
 			return err
@@ -385,7 +385,7 @@ func (m ResourceModel) SetGradeLevels(resourceID int64, gradeLevels []string) er
 	// Insert new grade levels
 	for _, gradeLevel := range gradeLevels {
 		_, err = tx.ExecContext(ctx,
-			"INSERT INTO resource_grade_levels (resource_id, grade_level) VALUES ($1, $2::grade_level)",
+			"INSERT INTO resource_grade_levels (resource_id, grade_level) VALUES ($1, $2)",
 			resourceID, gradeLevel)
 		if err != nil {
 			return err

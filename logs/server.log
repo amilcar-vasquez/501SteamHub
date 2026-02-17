@@ -61,3 +61,34 @@ time=2026-02-17T11:01:13.498-06:00 level=INFO msg="Parsed resource data" title="
 time=2026-02-17T11:01:13.498-06:00 level=INFO msg="Attempting to insert resource into database"
 time=2026-02-17T11:01:13.502-06:00 level=ERROR msg="Failed to set subjects" error="pq: type \"subject\" does not exist at column 70 (42704)"
 time=2026-02-17T11:01:13.502-06:00 level=ERROR msg="pq: type \"subject\" does not exist at column 70 (42704)" method=POST uri=/v1/resources
+time=2026-02-17T11:02:18.499-06:00 level=INFO msg="Receiving resource creation request" method=POST path=/v1/resources
+time=2026-02-17T11:02:18.500-06:00 level=INFO msg="Parsed resource data" title="Test Resouce" category=LessonPlan subjects="[Computer Science]" grade_levels="[Infant 1]" contributor_id=1
+time=2026-02-17T11:02:18.500-06:00 level=INFO msg="Attempting to insert resource into database"
+time=2026-02-17T11:02:18.504-06:00 level=ERROR msg="Failed to set subjects" error="pq: type \"subject\" does not exist at column 70 (42704)"
+time=2026-02-17T11:02:18.504-06:00 level=ERROR msg="pq: type \"subject\" does not exist at column 70 (42704)" method=POST uri=/v1/resources
+time=2026-02-17T11:02:38.278-06:00 level=INFO msg="Receiving resource creation request" method=POST path=/v1/resources
+time=2026-02-17T11:02:38.279-06:00 level=INFO msg="Parsed resource data" title="Test Resouce" category=LessonPlan subjects="[Computer Science Information Technology]" grade_levels="[Infant 1 Standard 1]" contributor_id=1
+time=2026-02-17T11:02:38.279-06:00 level=INFO msg="Attempting to insert resource into database"
+time=2026-02-17T11:02:38.283-06:00 level=ERROR msg="Failed to set subjects" error="pq: type \"subject\" does not exist at column 70 (42704)"
+time=2026-02-17T11:02:38.283-06:00 level=ERROR msg="pq: type \"subject\" does not exist at column 70 (42704)" method=POST uri=/v1/resources
+time=2026-02-17T11:05:50.525-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-17T11:05:50.525-06:00 level=ERROR msg="listen tcp :4000: bind: address already in use"
+time=2026-02-17T11:06:02.369-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-17T11:06:02.370-06:00 level=ERROR msg="listen tcp :4000: bind: address already in use"
+time=2026-02-17T11:06:13.746-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-17T11:06:40.292-06:00 level=INFO msg="Receiving resource creation request" method=POST path=/v1/resources
+time=2026-02-17T11:06:40.292-06:00 level=INFO msg="Parsed resource data" title="Test Resouce" category=LessonPlan subjects="[Computer Science Information Technology]" grade_levels="[Infant 1 Standard 1]" contributor_id=1
+time=2026-02-17T11:06:40.292-06:00 level=INFO msg="Attempting to insert resource into database"
+time=2026-02-17T11:06:40.310-06:00 level=INFO msg="Resource created successfully" resource_id=4
+time=2026-02-17T11:09:27.755-06:00 level=INFO msg="Receiving resource creation request" method=POST path=/v1/resources
+time=2026-02-17T11:09:27.756-06:00 level=INFO msg="Parsed resource data" title="Intro to Functions" category=LessonPlan subjects="[Computer Science]" grade_levels="[Standard 2]" contributor_id=1
+time=2026-02-17T11:09:27.756-06:00 level=INFO msg="Attempting to insert resource into database"
+time=2026-02-17T11:09:27.768-06:00 level=INFO msg="Resource created successfully" resource_id=5
+time=2026-02-17T11:10:55.110-06:00 level=INFO msg="Receiving resource creation request" method=POST path=/v1/resources
+time=2026-02-17T11:10:55.110-06:00 level=INFO msg="Parsed resource data" title="Intro to fractions" category=Assessment subjects=[Mathematics] grade_levels="[Standard 6]" contributor_id=1
+time=2026-02-17T11:10:55.111-06:00 level=INFO msg="Attempting to insert resource into database"
+time=2026-02-17T11:10:55.125-06:00 level=INFO msg="Resource created successfully" resource_id=6
+time=2026-02-17T11:14:17.603-06:00 level=INFO msg="Receiving resource creation request" method=POST path=/v1/resources
+time=2026-02-17T11:14:17.603-06:00 level=INFO msg="Parsed resource data" title="Loops and Whiles" category=LessonPlan subjects="[Computer Science]" grade_levels="[Standard 5]" contributor_id=1
+time=2026-02-17T11:14:17.604-06:00 level=INFO msg="Attempting to insert resource into database"
+time=2026-02-17T11:14:17.615-06:00 level=INFO msg="Resource created successfully" resource_id=7
