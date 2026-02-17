@@ -117,26 +117,6 @@
       Build your lesson plan by adding structured blocks. Drag to reorder.
     </p>
   </div>
-
-  <div class="add-block-section">
-    <select bind:value={selectedBlockType} class="block-type-select">
-      <option value="">Select block type to add...</option>
-      {#each blockTypes as blockType}
-        <option value={blockType.value}>{blockType.label}</option>
-      {/each}
-    </select>
-    
-    <button
-      type="button"
-      class="add-block-btn"
-      on:click={addBlock}
-      disabled={!selectedBlockType}
-    >
-      <span class="material-symbols-outlined">add_circle</span>
-      Add Block
-    </button>
-  </div>
-
   {#if lessonContent.blocks.length === 0}
     <div class="empty-state">
       <span class="material-symbols-outlined">description</span>
@@ -223,60 +203,7 @@
     color: var(--md-sys-color-on-surface-variant);
     margin: 0;
   }
-
-  .add-block-section {
-    display: flex;
-    gap: 0.75rem;
-    align-items: center;
-  }
-
-  .block-type-select {
-    flex: 1;
-    padding: 0.875rem 1rem;
-    border: 1px solid var(--md-sys-color-outline);
-    border-radius: 8px;
-    font-size: 0.875rem;
-    background: var(--md-sys-color-surface);
-    color: var(--md-sys-color-on-surface);
-    cursor: pointer;
-  }
-
-  .block-type-select:focus {
-    outline: 2px solid var(--md-sys-color-primary);
-    border-color: var(--md-sys-color-primary);
-  }
-
-  .add-block-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.875rem 1.5rem;
-    background: var(--md-sys-color-primary);
-    color: var(--md-sys-color-on-primary);
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 0.875rem;
-    font-weight: 600;
-    transition: all 0.2s;
-    white-space: nowrap;
-  }
-
-  .add-block-btn:hover:not(:disabled) {
-    background: var(--md-sys-color-primary-container);
-    color: var(--md-sys-color-on-primary-container);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  }
-
-  .add-block-btn:disabled {
-    opacity: 0.38;
-    cursor: not-allowed;
-  }
-
-  .add-block-btn .material-symbols-outlined {
-    font-size: 20px;
-  }
-
+  
   .empty-state {
     display: flex;
     flex-direction: column;
@@ -396,20 +323,5 @@
   /* Smooth reordering animation */
   .block-item {
     will-change: transform;
-  }
-
-  @media (max-width: 768px) {
-    .add-block-section {
-      flex-direction: column;
-    }
-
-    .block-type-select {
-      width: 100%;
-    }
-
-    .add-block-btn {
-      width: 100%;
-      justify-content: center;
-    }
   }
 </style>
