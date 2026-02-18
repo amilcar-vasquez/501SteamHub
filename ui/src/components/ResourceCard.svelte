@@ -13,6 +13,7 @@
   export let contributionScore;
   export let status = null;
   export let showStatus = false;
+  export let slug = null; // Add slug prop
   
   let isHovered = false;
   
@@ -20,9 +21,22 @@
   $: subjectDisplay = subjects.length > 1 ? `${subject} +${subjects.length - 1}` : subject;
   $: gradeDisplay = grades.length > 1 ? `${grade} +${grades.length - 1}` : grade;
   
-  function handleClick() {
-    console.log('Resource clicked:', id);
-    // Navigate to resource detail page
+  function handleClick(event) {
+    // Prevent default and stop propagation to ensure the click is handled
+    event?.preventDefault();
+    event?.stopPropagation();
+    
+    console.log('Resource clicked:', { id, slug, title });
+    
+    // Navigate to resource detail page using slug if available, otherwise use ID
+    if (slug) {
+      console.log('Navigating to:', `#resources/${slug}`);
+      window.location.hash = `resources/${slug}`;
+    } else {
+      console.warn('No slug available for resource', id, '- This resource was likely created before slug generation was implemented');
+      // Fallback: Could navigate to ID-based route if implemented, or show error
+      alert(`This resource doesn't have a URL yet. Please contact an administrator.`);
+    }
   }
   
   function getCategoryColor(cat) {
@@ -58,7 +72,7 @@
   on:click={handleClick}
   on:mouseenter={() => isHovered = true}
   on:mouseleave={() => isHovered = false}
-  on:keydown={(e) => e.key === 'Enter' && handleClick()}
+  on:keydown={(e) => e.key === 'Enter' && handleClick(e)}
   role="button"
   tabindex="0"
   aria-label="View resource: {title}"

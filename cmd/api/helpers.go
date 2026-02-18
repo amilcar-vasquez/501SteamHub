@@ -1,12 +1,15 @@
 package main
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -18,79 +21,78 @@ import (
 // create an envelope type
 type envelope map[string]any
 
-
 func (a *app) writeJSON(w http.ResponseWriter, status int, data envelope, headers http.Header) error {
 	jsResponse, err := json.MarshalIndent(data, "", "\t")
-    if err != nil {
-        return err
-    }
+	if err != nil {
+		return err
+	}
 
 	jsResponse = append(jsResponse, '\n')
-    // additional headers to be set
-    for key, value := range headers {
-        w.Header()[key] = value
-    }
-    // set content type header
-    w.Header().Set("Content-Type", "application/json")
-    // explicitly set the response status code
-    w.WriteHeader(status) 
-    _, err = w.Write(jsResponse)
-    if err != nil {
-        return err
-    }
+	// additional headers to be set
+	for key, value := range headers {
+		w.Header()[key] = value
+	}
+	// set content type header
+	w.Header().Set("Content-Type", "application/json")
+	// explicitly set the response status code
+	w.WriteHeader(status)
+	_, err = w.Write(jsResponse)
+	if err != nil {
+		return err
+	}
 
-    return nil
+	return nil
 }
 
 func (a *app) readJSON(w http.ResponseWriter, r *http.Request, destination any) error {
 	// what is the max size of the request body (250KB seems reasonable)
-    maxBytes := 256_000
-    r.Body = http.MaxBytesReader(w, r.Body, int64(maxBytes))
-    // our decoder will check for unknown fields
-    dec := json.NewDecoder(r.Body)
-    dec.DisallowUnknownFields()
-    // let start the decoding
-    err := dec.Decode(destination)
+	maxBytes := 256_000
+	r.Body = http.MaxBytesReader(w, r.Body, int64(maxBytes))
+	// our decoder will check for unknown fields
+	dec := json.NewDecoder(r.Body)
+	dec.DisallowUnknownFields()
+	// let start the decoding
+	err := dec.Decode(destination)
 
 	if err != nil {
-		// check for different syntax errors 
+		// check for different syntax errors
 		var syntaxError *json.SyntaxError
 		var unmarshalTypeError *json.UnmarshalTypeError
 		var invalidUnmarshalError *json.InvalidUnmarshalError
 		var maxBytesError *http.MaxBytesError
 
 		switch {
-			case errors.As(err, &syntaxError):
-                return fmt.Errorf("the body contains badly-formed JSON(at character %d)", syntaxError.Offset)
-				// Decode can also send back an io error message
-			case errors.Is(err, io.ErrUnexpectedEOF):
-				return errors.New("the body contains badly-formed JSON")
+		case errors.As(err, &syntaxError):
+			return fmt.Errorf("the body contains badly-formed JSON(at character %d)", syntaxError.Offset)
+			// Decode can also send back an io error message
+		case errors.Is(err, io.ErrUnexpectedEOF):
+			return errors.New("the body contains badly-formed JSON")
 
-			case errors.As(err, &unmarshalTypeError):
-				if unmarshalTypeError.Field != "" {
-					return fmt.Errorf("the body contains the incorrect JSON type for field %q", unmarshalTypeError.Field)
-				}
-				return fmt.Errorf("the body contains the incorrect JSON type (at character %d)", unmarshalTypeError.Offset)
+		case errors.As(err, &unmarshalTypeError):
+			if unmarshalTypeError.Field != "" {
+				return fmt.Errorf("the body contains the incorrect JSON type for field %q", unmarshalTypeError.Field)
+			}
+			return fmt.Errorf("the body contains the incorrect JSON type (at character %d)", unmarshalTypeError.Offset)
 
-			case errors.Is(err, io.EOF):
-				return errors.New("the body must not be empty")
+		case errors.Is(err, io.EOF):
+			return errors.New("the body must not be empty")
 
-			// check for unknown field error
-			case strings.HasPrefix(err.Error(), "json: unknown field "):
-				fieldName := strings.TrimPrefix(err.Error(), 
-												"json: unknown field ")
-				return fmt.Errorf("body contains unknown key %s", fieldName)
+		// check for unknown field error
+		case strings.HasPrefix(err.Error(), "json: unknown field "):
+			fieldName := strings.TrimPrefix(err.Error(),
+				"json: unknown field ")
+			return fmt.Errorf("body contains unknown key %s", fieldName)
 
-			// does the body exceed our limit of 250KB?
-			case errors.As(err, &maxBytesError):
-				return fmt.Errorf("the body must not be larger than %d bytes", maxBytesError.Limit)
+		// does the body exceed our limit of 250KB?
+		case errors.As(err, &maxBytesError):
+			return fmt.Errorf("the body must not be larger than %d bytes", maxBytesError.Limit)
 
-			// the programmer messed up
-			case errors.As(err, &invalidUnmarshalError):
-				panic(err)
-			// some other type of error
-			default:
-				return err
+		// the programmer messed up
+		case errors.As(err, &invalidUnmarshalError):
+			panic(err)
+		// some other type of error
+		default:
+			return err
 		}
 	}
 	err = dec.Decode(&struct{}{})
@@ -100,78 +102,78 @@ func (a *app) readJSON(w http.ResponseWriter, r *http.Request, destination any) 
 	return nil
 }
 
-func (a *app)readIDParam(r *http.Request) (int64, error) {
+func (a *app) readIDParam(r *http.Request) (int64, error) {
 	// Get the URL parameters
-		params := httprouter.ParamsFromContext(r.Context())
+	params := httprouter.ParamsFromContext(r.Context())
 	// Convert the id from string to int
-		id, err := strconv.ParseInt(params.ByName("id"), 10, 64)
-		if err != nil || id < 1 {
-			return 0, errors.New("invalid id parameter")
-		}
+	id, err := strconv.ParseInt(params.ByName("id"), 10, 64)
+	if err != nil || id < 1 {
+		return 0, errors.New("invalid id parameter")
+	}
 
-		return id, nil
+	return id, nil
 }
 
-func (a *app)getSingleQueryParameter( 
-                                 queryParameters url.Values,
-                                 key string,
-                                 defaultValue string) string {
-// url.Values is a key:value hash map of the query parameters
-    result := queryParameters.Get(key)
-    if result == "" {
-        return defaultValue
-    }
-    return result                                                                      
+func (a *app) getSingleQueryParameter(
+	queryParameters url.Values,
+	key string,
+	defaultValue string) string {
+	// url.Values is a key:value hash map of the query parameters
+	result := queryParameters.Get(key)
+	if result == "" {
+		return defaultValue
+	}
+	return result
 }
 
 // call when we have multiple comma-separated values
-func (a *app)getMultipleQueryParameters( 
-                                 queryParameters url.Values,
-                                 key string,
-                                 defaultValue []string) []string {
+func (a *app) getMultipleQueryParameters(
+	queryParameters url.Values,
+	key string,
+	defaultValue []string) []string {
 
-// url.Values is a key:value hash map of the query parameters
-    result := queryParameters.Get(key)
-    if result == "" {
-        return defaultValue
-    }
-    return strings.Split(result, ",")
+	// url.Values is a key:value hash map of the query parameters
+	result := queryParameters.Get(key)
+	if result == "" {
+		return defaultValue
+	}
+	return strings.Split(result, ",")
 }
 
 // this method can cause a validation error when trying to convert the
 // string to a valid integer value
-func (a *app)getSingleIntegerParameter( 
-                                 queryParameters url.Values,
-                                 key string,
-                                 defaultValue int,
-                                 v *validator.Validator) int {
-    result := queryParameters.Get(key)
-    if result == "" {
-        return defaultValue
-    }
-   // try to convert to an integer
-   intValue, err := strconv.Atoi(result)
-   if err != nil {
-       v.AddError(key, "must be an integer value")
-       return defaultValue
-   }
+func (a *app) getSingleIntegerParameter(
+	queryParameters url.Values,
+	key string,
+	defaultValue int,
+	v *validator.Validator) int {
+	result := queryParameters.Get(key)
+	if result == "" {
+		return defaultValue
+	}
+	// try to convert to an integer
+	intValue, err := strconv.Atoi(result)
+	if err != nil {
+		v.AddError(key, "must be an integer value")
+		return defaultValue
+	}
 
-   return intValue
+	return intValue
 }
 
 // Accept a function and run it in the background also recover from any panic
 func (a *app) background(fn func()) {
-    a.wg.Add(1) // Use a wait group to ensure all goroutines finish before we exit
-    go func() {
-        defer a.wg.Done()     // signal goroutine is done
-        defer func() {
-           err := recover() 
-           if err != nil {
-                a.logger.Error(fmt.Sprintf("%v", err))
-            }
-        }()
-       fn()     // Run the actual function
-   }()
+	a.wg.Add(1) // Use a wait group to ensure all goroutines finish before we exit
+	go func() {
+		defer a.wg.Done() // signal goroutine is done
+		defer func() {
+			err := recover()
+			if err != nil {
+				a.logger.Error(fmt.Sprintf("%v", err))
+			}
+		}()
+		fn() // Run the actual function
+	}()
 }
 
 // Check if the current user can access a specific user's data
@@ -183,17 +185,76 @@ func (a *app) canAccessUserData(currentUser *data.User, targetUserID int64) (boo
 	if err != nil {
 		return false, err
 	}
-	
+
 	// Administrators and Content Contributors can access any user
 	if role.RoleName == "admin" || role.RoleName == "CEO" || role.RoleName == "DEC" || role.RoleName == "TSC" {
 		return true, nil
 	}
-	
+
 	// System Users can only access their own data
 	if role.RoleName == "Teacher" {
 		return currentUser.ID == targetUserID, nil
 	}
-	
+
 	// Default: deny access
 	return false, nil
+}
+
+// slugify converts a string to a URL-friendly slug
+func slugify(s string) string {
+	// Convert to lowercase
+	s = strings.ToLower(s)
+
+	// Replace spaces and underscores with hyphens
+	s = strings.ReplaceAll(s, " ", "-")
+	s = strings.ReplaceAll(s, "_", "-")
+
+	// Remove all characters except alphanumeric and hyphens
+	reg := regexp.MustCompile("[^a-z0-9-]+")
+	s = reg.ReplaceAllString(s, "")
+
+	// Remove duplicate hyphens
+	reg = regexp.MustCompile("-+")
+	s = reg.ReplaceAllString(s, "-")
+
+	// Trim hyphens from start and end
+	s = strings.Trim(s, "-")
+
+	// Limit length to 100 characters
+	if len(s) > 100 {
+		s = s[:100]
+		// Ensure we don't end with a hyphen after truncation
+		s = strings.TrimRight(s, "-")
+	}
+
+	return s
+}
+
+// generateShortID generates a short random ID (8 characters)
+func generateShortID() (string, error) {
+	bytes := make([]byte, 4) // 4 bytes = 8 hex characters
+	_, err := rand.Read(bytes)
+	if err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(bytes), nil
+}
+
+// generateSlug creates a unique slug from a title
+func generateSlug(title string) (string, error) {
+	baseSlug := slugify(title)
+	shortID, err := generateShortID()
+	if err != nil {
+		return "", err
+	}
+	return baseSlug + "-" + shortID, nil
+}
+
+func (a *app) readSlugParam(r *http.Request) (string, error) {
+	params := httprouter.ParamsFromContext(r.Context())
+	slug := params.ByName("slug")
+	if slug == "" {
+		return "", errors.New("invalid slug parameter")
+	}
+	return slug, nil
 }

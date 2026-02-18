@@ -1,0 +1,184 @@
+<script>
+  import ObjectivesViewer from './lesson-blocks/ObjectivesViewer.svelte';
+  import MaterialsViewer from './lesson-blocks/MaterialsViewer.svelte';
+  import WarmupViewer from './lesson-blocks/WarmupViewer.svelte';
+  import ActivityViewer from './lesson-blocks/ActivityViewer.svelte';
+  import AssessmentViewer from './lesson-blocks/AssessmentViewer.svelte';
+  import ExtensionViewer from './lesson-blocks/ExtensionViewer.svelte';
+  import TeacherNotesViewer from './lesson-blocks/TeacherNotesViewer.svelte';
+
+  export let lessonContent = { version: 1, blocks: [] };
+  export let userRole = null;
+
+  const blockTypeLabels = {
+    objectives: '🎯 Learning Objectives',
+    materials: '📦 Materials',
+    warmup: '🔥 Warm-up',
+    activity: '⚡ Activity',
+    assessment: '✅ Assessment',
+    extension: '🚀 Extension',
+    teacher_notes: '📝 Teacher Notes',
+  };
+
+  const blockTypeIcons = {
+    objectives: 'emoji_objects',
+    materials: 'inventory_2',
+    warmup: 'local_fire_department',
+    activity: 'bolt',
+    assessment: 'task_alt',
+    extension: 'rocket_launch',
+    teacher_notes: 'note',
+  };
+
+  // Filter blocks based on user role
+  $: visibleBlocks = lessonContent.blocks?.filter(block => {
+    if (block.visibility === 'teacher') {
+      // Only show teacher-only blocks to certain roles
+      return userRole && ['admin', 'CEO', 'DEC', 'TSC', 'Teacher'].includes(userRole);
+    }
+    return true;
+  }) || [];
+</script>
+
+<div class="lesson-viewer">
+  {#if visibleBlocks.length === 0}
+    <div class="empty-state">
+      <span class="material-symbols-outlined">description</span>
+      <p>No lesson content available</p>
+    </div>
+  {:else}
+    <div class="blocks-container">
+      {#each visibleBlocks as block}
+        <div class="block-viewer" class:teacher-only={block.visibility === 'teacher'}>
+          <div class="block-header">
+            <div class="block-type">
+              <span class="material-symbols-outlined">{blockTypeIcons[block.type]}</span>
+              <span class="type-label">{blockTypeLabels[block.type]}</span>
+            </div>
+            {#if block.visibility === 'teacher'}
+              <span class="teacher-badge">Teacher Only</span>
+            {/if}
+          </div>
+
+          {#if block.title}
+            <h3 class="block-title">{block.title}</h3>
+          {/if}
+
+          <div class="block-content">
+            {#if block.type === 'objectives'}
+              <ObjectivesViewer content={block.content} />
+            {:else if block.type === 'materials'}
+              <MaterialsViewer content={block.content} />
+            {:else if block.type === 'warmup'}
+              <WarmupViewer content={block.content} />
+            {:else if block.type === 'activity'}
+              <ActivityViewer content={block.content} />
+            {:else if block.type === 'assessment'}
+              <AssessmentViewer content={block.content} />
+            {:else if block.type === 'extension'}
+              <ExtensionViewer content={block.content} />
+            {:else if block.type === 'teacher_notes'}
+              <TeacherNotesViewer content={block.content} />
+            {/if}
+          </div>
+        </div>
+      {/each}
+    </div>
+  {/if}
+</div>
+
+<style>
+  .lesson-viewer {
+    width: 100%;
+  }
+
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2rem;
+    color: var(--md-sys-color-on-surface-variant);
+    text-align: center;
+    gap: 1rem;
+  }
+
+  .empty-state .material-symbols-outlined {
+    font-size: 3rem;
+    opacity: 0.5;
+  }
+
+  .blocks-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .block-viewer {
+    background-color: var(--md-sys-color-surface-container-low);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: var(--md-sys-shape-corner-md);
+    padding: 1.5rem;
+  }
+
+  .block-viewer.teacher-only {
+    background-color: var(--md-sys-color-tertiary-container);
+    border-left: 4px solid var(--md-sys-color-tertiary);
+  }
+
+  .block-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .block-type {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--md-sys-color-primary);
+    font-weight: 500;
+  }
+
+  .block-type .material-symbols-outlined {
+    font-size: 1.5rem;
+  }
+
+  .type-label {
+    font-size: 1rem;
+  }
+
+  .teacher-badge {
+    padding: 0.25rem 0.75rem;
+    background-color: var(--md-sys-color-tertiary);
+    color: var(--md-sys-color-on-tertiary);
+    border-radius: var(--md-sys-shape-corner-full);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .block-title {
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: var(--md-sys-color-on-surface);
+    margin: 0 0 1rem 0;
+  }
+
+  .block-content {
+    color: var(--md-sys-color-on-surface);
+  }
+
+  @media (max-width: 768px) {
+    .block-viewer {
+      padding: 1rem;
+    }
+
+    .block-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+  }
+</style>

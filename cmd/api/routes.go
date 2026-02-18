@@ -58,10 +58,15 @@ func (a *app) routes() http.Handler {
 	router.Handler(http.MethodDelete, apiV1Route+"/teachers/:id",
 		a.requireAnyRole([]string{"admin", "CEO", "TSC"}, http.HandlerFunc(a.deleteTeacherHandler)))
 
+	// Resource slug route (separate path to avoid httprouter wildcard conflicts)
+	router.HandlerFunc(http.MethodGet, apiV1Route+"/resource-by-slug/:slug", a.getResourceBySlugHandler)
+
 	// Resource routes - Public can view, authenticated users can create/modify
 	router.HandlerFunc(http.MethodGet, apiV1Route+"/resources", a.getAllResourcesHandler)
 	router.Handler(http.MethodPost, apiV1Route+"/resources",
 		a.requireActivatedUser(http.HandlerFunc(a.createResourceHandler)))
+	router.HandlerFunc(http.MethodGet, apiV1Route+"/resources/:id/lessons", a.getResourceLessonsHandler)
+	router.HandlerFunc(http.MethodGet, apiV1Route+"/resources/:id/comments", a.getResourceCommentsHandler)
 	router.HandlerFunc(http.MethodGet, apiV1Route+"/resources/:id", a.getResourceHandler)
 	router.Handler(http.MethodPatch, apiV1Route+"/resources/:id",
 		a.requireActivatedUser(http.HandlerFunc(a.updateResourceHandler)))
@@ -69,7 +74,6 @@ func (a *app) routes() http.Handler {
 		a.requireAnyRole([]string{"admin", "CEO", "DEC"}, http.HandlerFunc(a.deleteResourceHandler)))
 
 	// Lesson routes - Public can view, authenticated users can create/modify
-	router.HandlerFunc(http.MethodGet, apiV1Route+"/resources/:id/lessons", a.getResourceLessonsHandler)
 	router.Handler(http.MethodPost, apiV1Route+"/lessons",
 		a.requireActivatedUser(http.HandlerFunc(a.createLessonHandler)))
 	router.HandlerFunc(http.MethodGet, apiV1Route+"/lessons/:id", a.getLessonHandler)
@@ -79,7 +83,6 @@ func (a *app) routes() http.Handler {
 		a.requireAnyRole([]string{"admin", "CEO", "DEC"}, http.HandlerFunc(a.deleteLessonHandler)))
 
 	// Comment routes - Public can view, authenticated users can create/modify
-	router.HandlerFunc(http.MethodGet, apiV1Route+"/resources/:id/comments", a.getResourceCommentsHandler)
 	router.Handler(http.MethodPost, apiV1Route+"/comments",
 		a.requireActivatedUser(http.HandlerFunc(a.createCommentHandler)))
 	router.HandlerFunc(http.MethodGet, apiV1Route+"/comments/:id", a.getCommentHandler)

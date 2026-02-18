@@ -16,6 +16,7 @@ type RoleModelInterface interface {
 type ResourceModelInterface interface {
 	Insert(*Resource) error
 	Get(int64) (*Resource, error)
+	GetBySlug(string) (*Resource, error)
 	GetAll(status, subject, gradeLevel string, filters Filters) ([]*Resource, Metadata, error)
 	Update(*Resource) error
 	Delete(int64) error

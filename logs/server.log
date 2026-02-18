@@ -96,3 +96,40 @@ time=2026-02-17T11:21:37.098-06:00 level=INFO msg="Receiving resource creation r
 time=2026-02-17T11:21:37.098-06:00 level=INFO msg="Parsed resource data" title="Intro Computers" category=LessonPlan subjects="[Computer Science]" grade_levels="[Standard 4]" contributor_id=1
 time=2026-02-17T11:21:37.098-06:00 level=INFO msg="Attempting to insert resource into database"
 time=2026-02-17T11:21:37.108-06:00 level=INFO msg="Resource created successfully" resource_id=8
+time=2026-02-18T08:55:20.125-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-18T09:19:55.026-06:00 level=ERROR msg="pq: operator does not exist: subject = text at position 7:31 (42883)" method=GET uri="/v1/resources?subject=Physical+Education"
+time=2026-02-18T09:19:57.040-06:00 level=ERROR msg="pq: operator does not exist: subject = text at position 7:31 (42883)" method=GET uri="/v1/resources?subject=Arts"
+time=2026-02-18T09:19:58.793-06:00 level=ERROR msg="pq: operator does not exist: subject = text at position 7:31 (42883)" method=GET uri="/v1/resources?grade_level=Standard+3"
+time=2026-02-18T11:43:21.160-06:00 level=INFO msg="Receiving resource creation request" method=POST path=/v1/resources
+time=2026-02-18T11:43:21.160-06:00 level=INFO msg="Parsed resource data" title="Basics of HTML" category=LessonPlan subjects="[Computer Science]" grade_levels="[Infant 1]" contributor_id=3
+time=2026-02-18T11:43:21.160-06:00 level=INFO msg="Attempting to insert resource into database"
+time=2026-02-18T11:43:21.175-06:00 level=INFO msg="Resource created successfully" resource_id=3
+time=2026-02-18T11:47:24.056-06:00 level=ERROR msg="pq: operator does not exist: subject = text at position 7:31 (42883)" method=GET uri="/v1/resources?subject=English+Language+Arts"
+time=2026-02-18T11:54:40.654-06:00 level=INFO msg="Receiving resource creation request" method=POST path=/v1/resources
+time=2026-02-18T11:54:40.713-06:00 level=INFO msg="Parsed resource data" title=Algorithms category=LessonPlan subjects="[Computer Science]" grade_levels="[Standard 2]" contributor_id=3
+time=2026-02-18T11:54:40.714-06:00 level=INFO msg="Attempting to insert resource into database"
+time=2026-02-18T11:54:40.719-06:00 level=INFO msg="Resource created successfully" resource_id=4
+time=2026-02-18T11:55:35.112-06:00 level=ERROR msg="pq: operator does not exist: subject = text at position 7:31 (42883)" method=GET uri="/v1/resources?subject=Science"
+time=2026-02-18T12:00:35.518-06:00 level=INFO msg="Receiving resource creation request" method=POST path=/v1/resources
+time=2026-02-18T12:00:35.518-06:00 level=ERROR msg="Failed to read JSON" error="body contains unknown key \"lesson_content\""
+time=2026-02-18T12:03:39.595-06:00 level=INFO msg="Receiving resource creation request" method=POST path=/v1/resources
+time=2026-02-18T12:03:39.596-06:00 level=ERROR msg="Failed to read JSON" error="body contains unknown key \"lesson_content\""
+time=2026-02-18T12:03:55.301-06:00 level=INFO msg="Shutting down server" signal=interrupt
+time=2026-02-18T12:03:55.302-06:00 level=INFO msg="Completing background tasks" address=:4000
+time=2026-02-18T12:03:55.302-06:00 level=INFO msg="Server stopped" addr=:4000
+time=2026-02-18T12:15:07.350-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-18T12:16:07.642-06:00 level=INFO msg="Receiving resource creation request" method=POST path=/v1/resources
+time=2026-02-18T12:16:07.642-06:00 level=INFO msg="Parsed resource data" title=Fractions category=LessonPlan subjects=[Mathematics] grade_levels="[Standard 6]" contributor_id=3
+time=2026-02-18T12:16:07.643-06:00 level=INFO msg="Generated slug for resource" slug=fractions-55b8df08 title=Fractions
+time=2026-02-18T12:16:07.643-06:00 level=INFO msg="Attempting to insert resource into database"
+time=2026-02-18T12:16:07.706-06:00 level=INFO msg="Resource inserted successfully" resource_id=5 slug=0x306912d1c320 hasSlug=true
+time=2026-02-18T12:16:07.710-06:00 level=INFO msg="Creating lesson for resource" resource_id=5
+time=2026-02-18T12:16:07.715-06:00 level=INFO msg="Lesson created successfully" lesson_id=1
+time=2026-02-18T12:16:07.717-06:00 level=INFO msg="Resource created successfully" resource_id=5 slug=0x306912d86230 title=Fractions
+time=2026-02-18T13:22:16.304-06:00 level=ERROR msg="pq: operator does not exist: subject = text at position 7:31 (42883)" method=GET uri="/v1/resources?subject=Computer+Science"
+time=2026-02-18T13:22:18.220-06:00 level=ERROR msg="pq: operator does not exist: subject = text at position 7:31 (42883)" method=GET uri="/v1/resources?subject=Information+Technology"
+time=2026-02-18T13:22:20.638-06:00 level=ERROR msg="pq: operator does not exist: subject = text at position 7:31 (42883)" method=GET uri="/v1/resources?subject=Computer+Science"
+time=2026-02-18T13:22:27.550-06:00 level=ERROR msg="pq: operator does not exist: subject = text at position 7:31 (42883)" method=GET uri="/v1/resources?subject=Science"
+time=2026-02-18T13:22:48.191-06:00 level=ERROR msg="pq: operator does not exist: subject = text at position 7:31 (42883)" method=GET uri="/v1/resources?grade_level=Infant+2"
+time=2026-02-18T13:22:50.204-06:00 level=ERROR msg="pq: operator does not exist: subject = text at position 7:31 (42883)" method=GET uri="/v1/resources?grade_level=Standard+6"
+time=2026-02-18T13:22:52.988-06:00 level=ERROR msg="pq: operator does not exist: subject = text at position 7:31 (42883)" method=GET uri="/v1/resources?grade_level=Standard+5"

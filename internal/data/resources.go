@@ -105,6 +105,59 @@ func (m ResourceModel) Get(id int64) (*Resource, error) {
 	return &resource, nil
 }
 
+// GetBySlug retrieves a resource by its slug
+func (m ResourceModel) GetBySlug(slug string) (*Resource, error) {
+	if slug == "" {
+		return nil, ErrRecordNotFound
+	}
+
+	query := `
+		SELECT resource_id, title, category, slug, summary, drive_link, status, published_url, contributor_id, created_at, updated_at
+		FROM resources
+		WHERE slug = $1`
+
+	var resource Resource
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	err := m.DB.QueryRowContext(ctx, query, slug).Scan(
+		&resource.ID,
+		&resource.Title,
+		&resource.Category,
+		&resource.Slug,
+		&resource.Summary,
+		&resource.DriveLink,
+		&resource.Status,
+		&resource.PublishedURL,
+		&resource.ContributorID,
+		&resource.CreatedAt,
+		&resource.UpdatedAt,
+	)
+
+	if err != nil {
+		switch {
+		case err == sql.ErrNoRows:
+			return nil, ErrRecordNotFound
+		default:
+			return nil, err
+		}
+	}
+
+	// Load subjects and grade levels
+	resource.Subjects, err = m.GetSubjects(resource.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	resource.GradeLevels, err = m.GetGradeLevels(resource.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &resource, nil
+}
+
 // Get all resources with optional filters
 func (m ResourceModel) GetAll(status string, subject string, gradeLevel string, filters Filters) ([]*Resource, Metadata, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)

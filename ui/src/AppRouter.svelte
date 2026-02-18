@@ -2,8 +2,10 @@
   import SignUp from './pages/SignUp.svelte';
   import Activate from './pages/Activate.svelte';
   import Home from './pages/Home.svelte';
+  import ResourcePage from './pages/ResourcePage.svelte';
   
-  let currentPage = 'home'; // home, signup, activate, signin
+  let currentPage = 'home'; // home, signup, activate, signin, resource
+  let resourceSlug = '';
   
   function navigate(event) {
     currentPage = event.detail.page;
@@ -14,7 +16,15 @@
   function handleHashChange() {
     const hash = window.location.hash.slice(1);
     if (hash) {
-      currentPage = hash;
+      // Check if it's a resource route (#resources/:slug)
+      if (hash.startsWith('resources/')) {
+        currentPage = 'resource';
+        resourceSlug = hash.substring('resources/'.length);
+      } else {
+        currentPage = hash;
+      }
+    } else {
+      currentPage = 'home';
     }
   }
   
@@ -29,6 +39,8 @@
     <SignUp on:navigate={navigate} />
   {:else if currentPage === 'activate'}
     <Activate on:navigate={navigate} />
+  {:else if currentPage === 'resource'}
+    <ResourcePage slug={resourceSlug} />
   {:else}
     <Home on:navigate={navigate} />
   {/if}

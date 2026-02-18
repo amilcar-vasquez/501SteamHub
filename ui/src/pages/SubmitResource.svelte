@@ -126,14 +126,10 @@
     console.log('Current User:', $currentUser);
     console.log('Auth Token:', $authToken);
     console.log('Form Data:', formData);
+    console.log('Lesson Content:', lessonContent);
     
     if (!validateForm()) {
       console.log('Validation failed:', errors);
-
-      // Include lesson_content if this is a lesson plan
-      if (formData.category === 'LessonPlan') {
-        resourceData.lesson_content = lessonContent;
-      }
       return;
     }
     
@@ -148,15 +144,27 @@
         contributor_id: $currentUser.user_id,
       };
       
+      // Include lesson_content if this is a lesson plan
+      if (formData.category === 'LessonPlan' && lessonContent.blocks.length > 0) {
+        resourceData.lesson_content = lessonContent;
+      }
+      
       console.log('Submitting resource data:', resourceData);
       console.log('Using auth token:', $authToken);
       
       const response = await resourceAPI.create(resourceData, $authToken);
       
       console.log('Response received:', response);
+      console.log('Created resource:', response.resource);
+      console.log('Resource slug:', response.resource?.slug);
       
       // Success!
       successMessage = 'Resource submitted successfully! 🎉';
+      
+      // If resource has a slug, offer to view it
+      if (response.resource?.slug) {
+        successMessage += ` <a href="#resources/${response.resource.slug}" style="color: var(--md-sys-color-primary); text-decoration: underline;">View Resource</a>`;
+      }
       
       // Reset form
       formData = {
@@ -222,7 +230,7 @@
       <span class="material-symbols-outlined">check_circle</span>
       <div>
         <strong>Success!</strong>
-        <p>{successMessage}</p>
+        <p>{@html successMessage}</p>
       </div>
     </div>
   {/if}
@@ -346,7 +354,7 @@
 
 <style>
   .submit-resource {
-    max-width: 800px;
+    max-width: 1024px;
     margin: 0 auto;
     padding: var(--md-sys-spacing-xl);
   }

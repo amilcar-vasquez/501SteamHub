@@ -92,6 +92,7 @@
         viewCount: 0, // TODO: implement view tracking
         contributionScore: 0, // TODO: implement scoring system
         status: resource.status,
+        slug: resource.slug, // Include slug for navigation
       }));
       
       metadata = response.metadata || {};
@@ -222,13 +223,16 @@
               title={resource.title}
               description={resource.description}
               subject={resource.subject}
+              subjects={resource.subjects}
               grade={resource.grade}
+              grades={resource.grades}
               iloCount={resource.iloCount}
               contributor={resource.contributor}
               viewCount={resource.viewCount}
               contributionScore={resource.contributionScore}
               status={resource.status}
               showStatus={showRoleBasedStatus}
+              slug={resource.slug}
             />
           {/each}
         </div>

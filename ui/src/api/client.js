@@ -116,6 +116,10 @@ export const resourceAPI = {
     return request(`/resources/${id}`);
   },
 
+  getBySlug: async (slug) => {
+    return request(`/resource-by-slug/${slug}`);
+  },
+
   update: async (id, resourceData, authToken) => {
     return request(`/resources/${id}`, {
       method: 'PATCH',
