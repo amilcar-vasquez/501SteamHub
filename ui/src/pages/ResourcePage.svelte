@@ -45,12 +45,14 @@
     }
   }
   
+  import { navigateTo } from '../router.js';
+  
   function handleNavigate(event) {
-    window.location.hash = event.detail.hash || '#home';
+    navigateTo(event.detail.page || '/home');
   }
   
   function goBack() {
-    window.location.hash = '#home';
+    navigateTo('/home');
   }
   
   // Parse lesson content from JSON string

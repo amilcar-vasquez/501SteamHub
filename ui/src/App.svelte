@@ -5,36 +5,20 @@
   import Home from './pages/Home.svelte';
   import SubmitResource from './pages/SubmitResource.svelte';
   import ResourcePage from './pages/ResourcePage.svelte';
-  
-  let currentPage = 'home'; // home, signup, signin, activate, submit, resource
-  let resourceSlug = '';
+  import { currentRoute, navigateTo, handleRouteChange } from './router.js';
   
   function navigate(event) {
-    currentPage = event.detail.page;
-    window.location.hash = event.detail.page;
+    navigateTo(event.detail.page);
     window.scrollTo(0, 0);
   }
   
-  // Simple hash-based routing
-  function handleHashChange() {
-    const hash = window.location.hash.slice(1);
-    if (hash) {
-      // Check if it's a resource route (#resources/:slug)
-      if (hash.startsWith('resources/')) {
-        currentPage = 'resource';
-        resourceSlug = hash.substring('resources/'.length);
-      } else {
-        currentPage = hash;
-      }
-    } else {
-      currentPage = 'home';
-    }
+  // Initialize route on first load
+  if (typeof window !== 'undefined') {
+    handleRouteChange();
   }
   
-  if (typeof window !== 'undefined') {
-    window.addEventListener('hashchange', handleHashChange);
-    handleHashChange();
-  }
+  $: currentPage = $currentRoute.page;
+  $: resourceSlug = $currentRoute.params.slug || '';
 </script>
 
 <div class="app-root">

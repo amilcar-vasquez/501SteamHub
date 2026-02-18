@@ -8,6 +8,7 @@
   import Button from '../components/Button.svelte';
   import { createEventDispatcher } from 'svelte';
   import { currentUser } from '../stores/auth.js';
+  import { navigateTo } from '../router.js';
   import { resourceAPI } from '../api/client.js';
   
   const dispatch = createEventDispatcher();
@@ -242,7 +243,7 @@
   
   <!-- Floating Action Button for submitting resources -->
   {#if $currentUser}
-    <button class="fab" on:click={() => window.location.hash = 'submit'}>
+    <button class="fab" on:click={() => navigateTo('/submit')}>
       <span class="material-symbols-outlined">add</span>
     </button>
   {/if}

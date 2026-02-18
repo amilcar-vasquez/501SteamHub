@@ -26,18 +26,20 @@
     showUserMenu = !showUserMenu;
   }
   
+  import { navigateTo } from '../router.js';
+  
   function handleSignOut() {
     signOut();
     showUserMenu = false;
-    window.location.hash = 'home';
+    navigateTo('/home');
   }
   
   function handleSignIn() {
-    window.location.hash = 'signin';
+    navigateTo('/signin');
   }
   
   function handleSubmitResource() {
-    window.location.hash = 'submit';
+    navigateTo('/submit');
   }
   
   // Close menu when clicking outside

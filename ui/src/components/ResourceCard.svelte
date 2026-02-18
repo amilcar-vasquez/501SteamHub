@@ -21,6 +21,8 @@
   $: subjectDisplay = subjects.length > 1 ? `${subject} +${subjects.length - 1}` : subject;
   $: gradeDisplay = grades.length > 1 ? `${grade} +${grades.length - 1}` : grade;
   
+  import { navigateTo } from '../router.js';
+  
   function handleClick(event) {
     // Prevent default and stop propagation to ensure the click is handled
     event?.preventDefault();
@@ -30,11 +32,10 @@
     
     // Navigate to resource detail page using slug if available, otherwise use ID
     if (slug) {
-      console.log('Navigating to:', `#resources/${slug}`);
-      window.location.hash = `resources/${slug}`;
+      console.log('Navigating to:', `/resources/${slug}`);
+      navigateTo(`/resources/${slug}`);
     } else {
       console.warn('No slug available for resource', id, '- This resource was likely created before slug generation was implemented');
-      // Fallback: Could navigate to ID-based route if implemented, or show error
       alert(`This resource doesn't have a URL yet. Please contact an administrator.`);
     }
   }

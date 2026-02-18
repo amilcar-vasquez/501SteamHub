@@ -8,6 +8,7 @@
   import MultiSelect from '../components/MultiSelect.svelte';
   import Button from '../components/Button.svelte';
   import LessonBuilder from '../components/LessonBuilder.svelte';
+  import { navigateTo } from '../router.js';
 
   let formData = {
     title: '',
@@ -65,7 +66,7 @@
   onMount(() => {
     // Redirect if not authenticated
     if (!$currentUser) {
-      window.location.hash = '#signin';
+      navigateTo('/signin');
     }
   });
 
@@ -163,7 +164,7 @@
       
       // If resource has a slug, offer to view it
       if (response.resource?.slug) {
-        successMessage += ` <a href="#resources/${response.resource.slug}" style="color: var(--md-sys-color-primary); text-decoration: underline;">View Resource</a>`;
+        successMessage += ` <a href="/resources/${response.resource.slug}" style="color: var(--md-sys-color-primary); text-decoration: underline;">View Resource</a>`;
       }
       
       // Reset form
@@ -186,7 +187,7 @@
       
       // Redirect to home after 2 seconds
       setTimeout(() => {
-        window.location.hash = '#home';
+        navigateTo('/home');
       }, 2000);
       
     } catch (error) {
@@ -209,7 +210,7 @@
 
   function handleCancel() {
     if (confirm('Are you sure you want to cancel? All unsaved changes will be lost.')) {
-      window.location.hash = '#home';
+      navigateTo('/home');
     }
   }
 </script>
