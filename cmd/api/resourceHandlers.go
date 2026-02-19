@@ -260,6 +260,9 @@ func (a *app) updateResourceHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Capture old status before applying any input changes (used for transition rules and history)
+	oldStatus := resource.Status
+
 	var input struct {
 		Title        *string  `json:"title"`
 		Category     *string  `json:"category"`
@@ -300,6 +303,15 @@ func (a *app) updateResourceHandler(w http.ResponseWriter, r *http.Request) {
 		resource.PublishedURL = input.PublishedURL
 	}
 
+	// Status transition rules:
+	// When a contributor saves edits on a NeedsRevision resource (without explicitly
+	// setting a new status), auto-advance it back to UnderReview so reviewers know
+	// the content has been updated.
+	// All other status changes are explicit (set via input.Status).
+	if input.Status == nil && oldStatus == "NeedsRevision" {
+		resource.Status = "UnderReview"
+	}
+
 	v := validator.New()
 	// TODO: Add resource validation
 	v.Check(resource.Title != "", "title", "must be provided")
@@ -319,6 +331,12 @@ func (a *app) updateResourceHandler(w http.ResponseWriter, r *http.Request) {
 			a.serverErrorResponse(w, r, err)
 		}
 		return
+	}
+
+	// Record status transition in history when status actually changed
+	if oldStatus != resource.Status {
+		user := a.contextGetUser(r)
+		a.logResourceStatusChange(resource.ID, oldStatus, resource.Status, user.ID)
 	}
 
 	// Update subjects if provided

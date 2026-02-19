@@ -51,6 +51,35 @@ func (a *app) createResourceReviewHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
+	// Apply resource status transition based on the reviewer's decision.
+	// "Rejected" moves the resource to NeedsRevision so the contributor can revise.
+	// "Approved" moves the resource to the Approved stage.
+	// We do this as a best-effort update; a failure is logged but does not abort the response.
+	if review.ResourceID > 0 {
+		resource, getErr := a.models.Resources.Get(review.ResourceID)
+		if getErr == nil {
+			oldStatus := resource.Status
+			switch review.Decision {
+			case "Rejected":
+				resource.Status = "NeedsRevision"
+			case "Approved":
+				resource.Status = "Approved"
+			}
+			if oldStatus != resource.Status {
+				if updateErr := a.models.Resources.Update(resource); updateErr == nil {
+					user := a.contextGetUser(r)
+					a.logResourceStatusChange(resource.ID, oldStatus, resource.Status, user.ID)
+				} else {
+					a.logger.Error("failed to update resource status after review decision",
+						"resource_id", review.ResourceID,
+						"decision", review.Decision,
+						"error", updateErr,
+					)
+				}
+			}
+		}
+	}
+
 	response := envelope{
 		"review": review,
 	}

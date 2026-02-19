@@ -140,4 +140,17 @@ export const resourceAPI = {
   },
 };
 
+// Resource Review API methods
+export const reviewAPI = {
+  createReview: async ({ resource_id, reviewer_id, reviewer_role_id, decision, comment_summary = '' }, authToken) => {
+    return request('/resource-reviews', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${authToken}`,
+      },
+      body: JSON.stringify({ resource_id, reviewer_id, reviewer_role_id, decision, comment_summary }),
+    });
+  },
+};
+
 export { APIError };

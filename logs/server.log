@@ -141,3 +141,42 @@ time=2026-02-18T13:32:49.312-06:00 level=ERROR msg="pq: operator does not exist:
 time=2026-02-18T14:05:50.231-06:00 level=ERROR msg="pq: operator does not exist: subject = text at position 7:31 (42883)" method=GET uri="/v1/resources?subject=Information+Technology"
 time=2026-02-18T14:07:53.943-06:00 level=ERROR msg="pq: operator does not exist: subject = text at position 7:31 (42883)" method=GET uri="/v1/resources?subject=Belizean+History"
 time=2026-02-18T14:07:55.519-06:00 level=ERROR msg="pq: operator does not exist: subject = text at position 7:31 (42883)" method=GET uri="/v1/resources?subject=Belizean+History"
+time=2026-02-18T14:46:24.727-06:00 level=ERROR msg="pq: operator does not exist: subject = text at position 7:31 (42883)" method=GET uri="/v1/resources?subject=Social+Studies"
+time=2026-02-18T16:09:39.692-06:00 level=ERROR msg="pq: operator does not exist: subject = text at position 7:31 (42883)" method=GET uri="/v1/resources?subject=Belizean+History"
+time=2026-02-19T09:31:21.140-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-19T09:42:27.567-06:00 level=INFO msg="Receiving resource creation request" method=POST path=/v1/resources
+time=2026-02-19T09:42:27.567-06:00 level=INFO msg="Parsed resource data" title="If Statement" category=LessonPlan subjects="[Computer Science]" grade_levels="[Standard 4]" contributor_id=3
+time=2026-02-19T09:42:27.567-06:00 level=INFO msg="Generated slug for resource" slug=if-statement-416b4dff title="If Statement"
+time=2026-02-19T09:42:27.567-06:00 level=INFO msg="Attempting to insert resource into database"
+time=2026-02-19T09:42:27.572-06:00 level=INFO msg="Resource inserted successfully" resource_id=6 slug=0x1cc708ef3560 hasSlug=true
+time=2026-02-19T09:42:27.576-06:00 level=INFO msg="Creating lesson for resource" resource_id=6
+time=2026-02-19T09:42:27.578-06:00 level=INFO msg="Lesson created successfully" lesson_id=2
+time=2026-02-19T09:42:27.579-06:00 level=INFO msg="Resource created successfully" resource_id=6 slug=0x1cc708ef36d0 title="If Statement"
+time=2026-02-19T09:47:24.518-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-19T09:47:24.519-06:00 level=ERROR msg="listen tcp :4000: bind: address already in use"
+time=2026-02-19T09:47:41.480-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-19T09:49:40.041-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-19T09:50:23.279-06:00 level=ERROR msg="pq: relation \"review_comments\" does not exist at position 4:8 (42P01)" method=GET uri=/v1/resources/6/review-comments
+time=2026-02-19T09:50:31.529-06:00 level=ERROR msg="pq: relation \"review_comments\" does not exist at position 4:8 (42P01)" method=GET uri=/v1/resources/6/review-comments
+time=2026-02-19T09:50:37.640-06:00 level=ERROR msg="pq: relation \"review_comments\" does not exist at position 4:8 (42P01)" method=GET uri=/v1/resources/6/review-comments
+time=2026-02-19T09:58:04.708-06:00 level=INFO msg="Receiving resource creation request" method=POST path=/v1/resources
+time=2026-02-19T09:58:04.709-06:00 level=INFO msg="Parsed resource data" title="Binary Numbers" category=LessonPlan subjects="[Computer Science Mathematics]" grade_levels="[Standard 6]" contributor_id=3
+time=2026-02-19T09:58:04.709-06:00 level=INFO msg="Generated slug for resource" slug=binary-numbers-c7056832 title="Binary Numbers"
+time=2026-02-19T09:58:04.709-06:00 level=INFO msg="Attempting to insert resource into database"
+time=2026-02-19T09:58:04.714-06:00 level=INFO msg="Resource inserted successfully" resource_id=7 slug=0x89b92486550 hasSlug=true
+time=2026-02-19T09:58:04.719-06:00 level=INFO msg="Creating lesson for resource" resource_id=7
+time=2026-02-19T09:58:04.721-06:00 level=INFO msg="Lesson created successfully" lesson_id=3
+time=2026-02-19T09:58:04.722-06:00 level=INFO msg="Resource created successfully" resource_id=7 slug=0x89b9240cdc0 title="Binary Numbers"
+time=2026-02-19T09:58:11.188-06:00 level=ERROR msg="pq: relation \"review_comments\" does not exist at position 4:8 (42P01)" method=GET uri=/v1/resources/7/review-comments
+time=2026-02-19T10:18:39.034-06:00 level=INFO msg="Shutting down server" signal=interrupt
+time=2026-02-19T10:18:39.034-06:00 level=INFO msg="Completing background tasks" address=:4000
+time=2026-02-19T10:18:39.034-06:00 level=INFO msg="Server stopped" addr=:4000
+time=2026-02-19T10:19:46.793-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-19T10:30:12.064-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-19T10:30:12.064-06:00 level=ERROR msg="listen tcp :4000: bind: address already in use"
+time=2026-02-19T10:30:36.676-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-19T10:30:36.676-06:00 level=ERROR msg="listen tcp :4000: bind: address already in use"
+time=2026-02-19T10:30:59.706-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-19T10:34:04.526-06:00 level=ERROR msg="pq: operator does not exist: subject = text at position 7:31 (42883)" method=GET uri="/v1/resources?status=Approved&subject=Engineering"
+time=2026-02-19T13:33:36.770-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-19T13:40:29.087-06:00 level=ERROR msg="pq: insert or update on table \"resource_reviews\" violates foreign key constraint \"fk_rr_reviewer_role\" (23503)" method=POST uri=/v1/resource-reviews

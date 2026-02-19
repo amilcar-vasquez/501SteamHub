@@ -1,7 +1,7 @@
 <script>
   import { onMount } from 'svelte';
-  import { resourceAPI } from '../api/client.js';
-  import { currentUser } from '../stores/auth.js';
+  import { resourceAPI, reviewAPI } from '../api/client.js';
+  import { currentUser, authToken } from '../stores/auth.js';
   import TopAppBar from '../components/TopAppBar.svelte';
   import LoadingSkeleton from '../components/LoadingSkeleton.svelte';
   import LessonViewer from '../components/LessonViewer.svelte';
@@ -67,6 +67,46 @@
       return null;
     }
   }
+
+  // ── Review mode ────────────────────────────────────────────────────────────
+  const REVIEWER_ROLES = ['SubjectExpert', 'TeamLead', 'DSC', 'admin'];
+  let reviewMode = false;
+  $: canReview = $currentUser && REVIEWER_ROLES.includes($currentUser.role_name);
+
+  function toggleReviewMode() {
+    reviewMode = !reviewMode;
+  }
+
+  // ── Approve resource ────────────────────────────────────────────────────────
+  let isApproving = false;
+  let approveError = '';
+  let approveSuccess = false;
+
+  $: canApprove = canReview && resource && resource.status !== 'Approved';
+
+  async function approveResource() {
+    if (!$currentUser || !$authToken || !resource) return;
+    isApproving = true;
+    approveError = '';
+    approveSuccess = false;
+    try {
+      await reviewAPI.createReview(
+        {
+          resource_id: resource.resource_id,
+          reviewer_id: $currentUser.user_id,
+          reviewer_role_id: $currentUser.role_id,
+          decision: 'Approved',
+        },
+        $authToken
+      );
+      resource = { ...resource, status: 'Approved' };
+      approveSuccess = true;
+    } catch (err) {
+      approveError = err.message || 'Failed to approve resource.';
+    } finally {
+      isApproving = false;
+    }
+  }
 </script>
 
 <div class="page">
@@ -99,7 +139,13 @@
         
         <!-- Resource header -->
         <div class="resource-header">
-          <div class="category-chip">{resource.category}</div>
+          <div class="header-top-row">
+            <div class="category-chip">{resource.category}</div>
+            <span class="status-badge status-{resource.status?.toLowerCase().replace(/\s+/g, '-')}">
+              <span class="material-symbols-outlined status-icon">contract_edit</span>
+              {resource.status}
+            </span>
+          </div>
           <h1 class="resource-title">{resource.title}</h1>
           
           {#if resource.summary}
@@ -130,6 +176,36 @@
               </div>
             {/if}
           </div>
+
+          <!-- Reviewer actions -->
+          {#if canApprove}
+            <div class="reviewer-actions">
+              {#if approveSuccess}
+                <span class="approve-success">
+                  <span class="material-symbols-outlined">check_circle</span>
+                  Resource approved!
+                </span>
+              {:else}
+                <button
+                  class="approve-btn"
+                  type="button"
+                  on:click={approveResource}
+                  disabled={isApproving}
+                >
+                  {#if isApproving}
+                    <span class="material-symbols-outlined spin">progress_activity</span>
+                    Approving…
+                  {:else}
+                    <span class="material-symbols-outlined">verified</span>
+                    Approve Resource
+                  {/if}
+                </button>
+                {#if approveError}
+                  <span class="approve-error">{approveError}</span>
+                {/if}
+              {/if}
+            </div>
+          {/if}
         </div>
         
         <!-- Lesson content -->
@@ -138,23 +214,42 @@
             {#each lessons as lesson}
               {@const lessonContent = parseLessonContent(lesson)}
               <div class="lesson-section">
-                <div class="lesson-header">
+              <div class="lesson-header">
                   <h2 class="lesson-title">
                     <span class="lesson-number">Lesson {lesson.lesson_number}</span>
                     {lesson.title}
                   </h2>
-                  {#if lesson.duration_minutes}
-                    <div class="lesson-duration">
-                      <span class="material-symbols-outlined">schedule</span>
-                      {lesson.duration_minutes} minutes
-                    </div>
-                  {/if}
+                  <div class="lesson-header-actions">
+                    {#if lesson.duration_minutes}
+                      <div class="lesson-duration">
+                        <span class="material-symbols-outlined">schedule</span>
+                        {lesson.duration_minutes} minutes
+                      </div>
+                    {/if}
+                    {#if canReview}
+                      <button
+                        class="review-toggle"
+                        class:active={reviewMode}
+                        type="button"
+                        on:click={toggleReviewMode}
+                        title={reviewMode ? 'Hide review comments' : 'Show review comments'}
+                      >
+                        <span class="material-symbols-outlined">
+                          {reviewMode ? 'rate_review' : 'reviews'}
+                        </span>
+                        {reviewMode ? 'Exit Review Mode' : 'Review Mode'}
+                      </button>
+                    {/if}
+                  </div>
                 </div>
                 
                 {#if lessonContent}
                   <LessonViewer 
                     lessonContent={lessonContent} 
                     userRole={$currentUser?.role}
+                    {reviewMode}
+                    resourceId={resource.resource_id}
+                    currentUser={$currentUser}
                   />
                 {:else}
                   <p class="no-content">No lesson content available</p>
@@ -271,6 +366,70 @@
     flex-direction: column;
     gap: 1rem;
   }
+
+  .header-top-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  /* Status badge */
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border: 1.5px solid currentColor;
+  }
+
+  .status-icon {
+    font-size: 15px;
+  }
+
+  /* Per-status colours using MD3 tokens */
+  .status-badge.status-draft {
+    color: var(--md-sys-color-on-surface-variant);
+    background: var(--md-sys-color-surface-variant);
+    border-color: var(--md-sys-color-outline-variant);
+  }
+  .status-badge.status-submitted {
+    color: var(--md-sys-color-on-tertiary-container);
+    background: var(--md-sys-color-tertiary-container);
+    border-color: var(--md-sys-color-tertiary);
+  }
+  .status-badge.status-underreview {
+    color: var(--md-sys-color-on-secondary-container);
+    background: var(--md-sys-color-secondary-container);
+    border-color: var(--md-sys-color-secondary);
+  }
+  .status-badge.status-needsrevision {
+    color: var(--md-sys-color-on-error-container);
+    background: var(--md-sys-color-error-container);
+    border-color: var(--md-sys-color-error);
+  }
+  .status-badge.status-approved {
+    color: var(--md-sys-color-on-primary-container);
+    background: var(--md-sys-color-primary-container);
+    border-color: var(--md-sys-color-primary);
+  }
+  .status-badge.status-published,
+  .status-badge.status-indexed {
+    color: var(--md-sys-color-on-primary);
+    background: var(--md-sys-color-primary);
+    border-color: var(--md-sys-color-primary);
+  }
+  .status-badge.status-archived {
+    color: var(--md-sys-color-on-surface-variant);
+    background: var(--md-sys-color-surface-variant);
+    border-color: var(--md-sys-color-outline);
+    opacity: 0.7;
+  }
   
   .category-chip {
     display: inline-flex;
@@ -353,7 +512,107 @@
     padding-bottom: 1rem;
     border-bottom: 1px solid var(--md-sys-color-outline-variant);
   }
-  
+
+  .lesson-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .review-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.875rem;
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: 999px;
+    background: none;
+    color: var(--md-sys-color-on-surface-variant);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+    white-space: nowrap;
+  }
+
+  .review-toggle:hover {
+    background: var(--md-sys-color-surface-variant);
+  }
+
+  .review-toggle.active {
+    background: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+    border-color: var(--md-sys-color-primary);
+  }
+
+  .review-toggle .material-symbols-outlined {
+    font-size: 18px;
+  }
+
+  /* ── Reviewer actions (approve) ──────────────────────────────────────────── */
+  .reviewer-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .approve-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 1.25rem;
+    background: var(--md-sys-color-tertiary, #386a20);
+    color: var(--md-sys-color-on-tertiary, #fff);
+    border: none;
+    border-radius: 999px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s, background 0.2s;
+  }
+
+  .approve-btn:hover:not(:disabled) {
+    opacity: 0.88;
+  }
+
+  .approve-btn:disabled {
+    opacity: 0.38;
+    cursor: not-allowed;
+  }
+
+  .approve-btn .material-symbols-outlined {
+    font-size: 18px;
+  }
+
+  .approve-success {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    color: var(--md-sys-color-tertiary, #386a20);
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .approve-success .material-symbols-outlined {
+    font-size: 18px;
+  }
+
+  .approve-error {
+    color: var(--md-sys-color-error);
+    font-size: 0.8125rem;
+  }
+
+  @keyframes spin {
+    to { rotate: 360deg; }
+  }
+
+  .spin {
+    animation: spin 0.8s linear infinite;
+  }
+
   .lesson-title {
     font-size: 1.75rem;
     font-weight: 400;

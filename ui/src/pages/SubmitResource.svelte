@@ -255,7 +255,7 @@
         bind:value={formData.title}
         error={errors.title}
         required
-        placeholder="e.g., Introduction to Fractions for 3rd Grade"
+        placeholder="e.g., Introduction to Fractions for Standard 1"
         helperText="Give your resource a clear, descriptive title"
       />
 

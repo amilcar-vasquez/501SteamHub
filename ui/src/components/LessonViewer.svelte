@@ -6,9 +6,16 @@
   import AssessmentViewer from './lesson-blocks/AssessmentViewer.svelte';
   import ExtensionViewer from './lesson-blocks/ExtensionViewer.svelte';
   import TeacherNotesViewer from './lesson-blocks/TeacherNotesViewer.svelte';
+  import ReviewPanel from './review/ReviewPanel.svelte';
 
   export let lessonContent = { version: 1, blocks: [] };
   export let userRole = null;
+  /** Enable block-level review annotation layer */
+  export let reviewMode = false;
+  /** Resource DB id — required when reviewMode is true */
+  export let resourceId = null;
+  /** currentUser object from auth store — required when reviewMode is true */
+  export let currentUser = null;
 
   const blockTypeLabels = {
     objectives: '🎯 Learning Objectives',
@@ -30,14 +37,17 @@
     teacher_notes: 'note',
   };
 
-  // Filter blocks based on user role
-  $: visibleBlocks = lessonContent.blocks?.filter(block => {
-    if (block.visibility === 'teacher') {
-      // Only show teacher-only blocks to certain roles
-      return userRole && ['admin', 'CEO', 'DEC', 'TSC', 'Teacher'].includes(userRole);
-    }
-    return true;
-  }) || [];
+  // Pair each block with its original index before filtering so block_index values
+  // always refer to the correct position in lesson_content.blocks.
+  $: visibleBlocks = (lessonContent.blocks || [])
+    .map((block, originalIndex) => ({ block, originalIndex }))
+    .filter(({ block }) => {
+      if (block.visibility === 'teacher') {
+        // Only show teacher-only blocks to certain roles
+        return userRole && ['admin', 'CEO', 'DEC', 'TSC', 'Teacher'].includes(userRole);
+      }
+      return true;
+    });
 </script>
 
 <div class="lesson-viewer">
@@ -48,7 +58,7 @@
     </div>
   {:else}
     <div class="blocks-container">
-      {#each visibleBlocks as block}
+      {#each visibleBlocks as { block, originalIndex }}
         <div class="block-viewer" class:teacher-only={block.visibility === 'teacher'}>
           <div class="block-header">
             <div class="block-type">
@@ -81,6 +91,15 @@
               <TeacherNotesViewer content={block.content} />
             {/if}
           </div>
+
+          {#if reviewMode && resourceId}
+            <ReviewPanel
+              {resourceId}
+              section={block.type}
+              blockIndex={originalIndex}
+              {currentUser}
+            />
+          {/if}
         </div>
       {/each}
     </div>

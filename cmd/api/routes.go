@@ -67,6 +67,9 @@ func (a *app) routes() http.Handler {
 		a.requireActivatedUser(http.HandlerFunc(a.createResourceHandler)))
 	router.HandlerFunc(http.MethodGet, apiV1Route+"/resources/:id/lessons", a.getResourceLessonsHandler)
 	router.HandlerFunc(http.MethodGet, apiV1Route+"/resources/:id/comments", a.getResourceCommentsHandler)
+	// Review comments per resource (anyone authenticated can view; reviewers can create/resolve)
+	router.Handler(http.MethodGet, apiV1Route+"/resources/:id/review-comments",
+		a.requireActivatedUser(http.HandlerFunc(a.getReviewCommentsByResourceHandler)))
 	router.HandlerFunc(http.MethodGet, apiV1Route+"/resources/:id", a.getResourceHandler)
 	router.Handler(http.MethodPatch, apiV1Route+"/resources/:id",
 		a.requireActivatedUser(http.HandlerFunc(a.updateResourceHandler)))
@@ -102,6 +105,13 @@ func (a *app) routes() http.Handler {
 		a.requireAnyRole([]string{"admin", "CEO", "TSC", "DEC"}, http.HandlerFunc(a.updateResourceReviewHandler)))
 	router.Handler(http.MethodDelete, apiV1Route+"/resource-reviews/:id",
 		a.requireRole("admin", http.HandlerFunc(a.deleteResourceReviewHandler)))
+
+	// Review comment routes
+	// Reviewers add iterative comments; contributors/reviewers resolve them
+	router.Handler(http.MethodPost, apiV1Route+"/review-comments",
+		a.requireAnyRole([]string{"admin", "CEO", "TSC", "DEC"}, http.HandlerFunc(a.createReviewCommentHandler)))
+	router.Handler(http.MethodPatch, apiV1Route+"/review-comments/:id/resolve",
+		a.requireActivatedUser(http.HandlerFunc(a.resolveReviewCommentHandler)))
 
 	// Resource Access routes - track resource access (must be activated)
 	router.Handler(http.MethodGet, apiV1Route+"/resource-access",

@@ -7,10 +7,19 @@
   import AssessmentBlock from './lesson-blocks/AssessmentBlock.svelte';
   import ExtensionBlock from './lesson-blocks/ExtensionBlock.svelte';
   import TeacherNotesBlock from './lesson-blocks/TeacherNotesBlock.svelte';
+  import ReviewPanel from './review/ReviewPanel.svelte';
 
   export let block;
   export let onUpdate;
   export let onRemove;
+  /** Enable block-level review annotation layer */
+  export let reviewMode = false;
+  /** Resource DB id — required when reviewMode is true */
+  export let resourceId = null;
+  /** Position of this block inside lesson_content.blocks */
+  export let blockIndex = 0;
+  /** currentUser object from auth store — required when reviewMode is true */
+  export let currentUser = null;
 
   let collapsed = false;
 
@@ -140,6 +149,15 @@
           <TeacherNotesBlock content={block.content} onUpdate={handleContentUpdate} />
         {/if}
       </div>
+
+      {#if reviewMode && resourceId}
+        <ReviewPanel
+          {resourceId}
+          section={block.type}
+          {blockIndex}
+          {currentUser}
+        />
+      {/if}
     </div>
   {/if}
 </div>

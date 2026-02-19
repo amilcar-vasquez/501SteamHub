@@ -5,7 +5,7 @@ package data
 import (
 	"context"
 	"crypto/sha256"
-	"database/sql"	
+	"database/sql"
 	"errors"
 	"fmt"
 	"strings"
@@ -164,9 +164,12 @@ func (u *UserModel) Insert(user *User) error {
 // Get a user from the database based on their email provided
 func (u *UserModel) GetByEmail(email string) (*User, error) {
 	query := `
-		SELECT user_id, username, email, password_hash, role_id, is_active, last_login, created_at, created_by, updated_at, updated_by
-		FROM users
-		WHERE email = $1
+		SELECT u.user_id, u.username, u.email, u.password_hash, u.role_id,
+		       r.name AS role_name,
+		       u.is_active, u.last_login, u.created_at, u.created_by, u.updated_at, u.updated_by
+		FROM users u
+		LEFT JOIN roles r ON u.role_id = r.role_id
+		WHERE u.email = $1
 	`
 
 	var user User
@@ -177,6 +180,7 @@ func (u *UserModel) GetByEmail(email string) (*User, error) {
 	var lastLogin sql.NullTime
 	var createdBy sql.NullInt64
 	var updatedBy sql.NullInt64
+	var roleName sql.NullString
 
 	err := u.DB.QueryRowContext(ctx, query, email).Scan(
 		&user.ID,
@@ -184,6 +188,7 @@ func (u *UserModel) GetByEmail(email string) (*User, error) {
 		&user.Email,
 		&user.Password.hash,
 		&user.RoleID,
+		&roleName,
 		&user.IsActive,
 		&lastLogin,
 		&user.CreatedAt,
@@ -200,6 +205,9 @@ func (u *UserModel) GetByEmail(email string) (*User, error) {
 	}
 	if updatedBy.Valid {
 		user.UpdatedBy = int(updatedBy.Int64)
+	}
+	if roleName.Valid {
+		user.RoleName = roleName.String
 	}
 
 	if err != nil {
@@ -299,9 +307,12 @@ func (u *UserModel) Get(id int) (*User, error) {
 	}
 
 	query := `
-		SELECT user_id, username, email, password_hash, role_id, is_active, last_login, created_at, created_by, updated_at, updated_by
-		FROM users
-		WHERE user_id = $1`
+		SELECT u.user_id, u.username, u.email, u.password_hash, u.role_id,
+		       r.name AS role_name,
+		       u.is_active, u.last_login, u.created_at, u.created_by, u.updated_at, u.updated_by
+		FROM users u
+		LEFT JOIN roles r ON u.role_id = r.role_id
+		WHERE u.user_id = $1`
 
 	var user User
 
@@ -311,12 +322,14 @@ func (u *UserModel) Get(id int) (*User, error) {
 	var lastLogin sql.NullTime
 	var createdBy sql.NullInt64
 	var updatedBy sql.NullInt64
+	var roleName sql.NullString
 	err := u.DB.QueryRowContext(ctx, query, id).Scan(
 		&user.ID,
 		&user.Username,
 		&user.Email,
 		&user.Password.hash,
 		&user.RoleID,
+		&roleName,
 		&user.IsActive,
 		&lastLogin,
 		&user.CreatedAt,
@@ -333,6 +346,9 @@ func (u *UserModel) Get(id int) (*User, error) {
 	}
 	if updatedBy.Valid {
 		user.UpdatedBy = int(updatedBy.Int64)
+	}
+	if roleName.Valid {
+		user.RoleName = roleName.String
 	}
 
 	if err != nil {
