@@ -15,6 +15,7 @@ type RoleModelInterface interface {
 // ResourceModelInterface defines the interface for resource operations
 type ResourceModelInterface interface {
 	Insert(*Resource) error
+	InsertWithVideoMetadata(*Resource, *VideoMetadata) error
 	Get(int64) (*Resource, error)
 	GetBySlug(string) (*Resource, error)
 	GetAll(status, subject, gradeLevel string, filters Filters) ([]*Resource, Metadata, error)

@@ -180,3 +180,74 @@ time=2026-02-19T10:30:59.706-06:00 level=INFO msg="Starting server" address=:400
 time=2026-02-19T10:34:04.526-06:00 level=ERROR msg="pq: operator does not exist: subject = text at position 7:31 (42883)" method=GET uri="/v1/resources?status=Approved&subject=Engineering"
 time=2026-02-19T13:33:36.770-06:00 level=INFO msg="Starting server" address=:4000 env=development
 time=2026-02-19T13:40:29.087-06:00 level=ERROR msg="pq: insert or update on table \"resource_reviews\" violates foreign key constraint \"fk_rr_reviewer_role\" (23503)" method=POST uri=/v1/resource-reviews
+time=2026-02-19T14:48:42.783-06:00 level=INFO msg="Shutting down server" signal=interrupt
+time=2026-02-19T14:48:42.797-06:00 level=INFO msg="Completing background tasks" address=:4000
+time=2026-02-19T14:48:42.797-06:00 level=INFO msg="Server stopped" addr=:4000
+time=2026-02-19T14:55:52.302-06:00 level=WARN msg="YouTube uploader not configured — set YOUTUBE_CLIENT_ID, YOUTUBE_CLIENT_SECRET, YOUTUBE_REFRESH_TOKEN to enable auto-upload"
+time=2026-02-19T14:55:52.302-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-19T15:18:15.574-06:00 level=INFO msg="Shutting down server" signal=interrupt
+time=2026-02-19T15:18:15.577-06:00 level=INFO msg="Completing background tasks" address=:4000
+time=2026-02-19T15:18:15.577-06:00 level=INFO msg="Server stopped" addr=:4000
+time=2026-02-19T15:18:49.182-06:00 level=WARN msg="YouTube uploader not configured — set YOUTUBE_CLIENT_ID, YOUTUBE_CLIENT_SECRET, YOUTUBE_REFRESH_TOKEN to enable auto-upload"
+time=2026-02-19T15:18:49.183-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-19T15:31:32.775-06:00 level=INFO msg="Receiving resource creation request" method=POST path=/v1/resources
+time=2026-02-19T15:31:32.778-06:00 level=INFO msg="Parsed resource data" title="Testing a video" category=Video subjects="[Information Technology Computer Science]" grade_levels="[Infant 1]" contributor_id=3
+time=2026-02-19T15:31:32.778-06:00 level=INFO msg="Generated slug for resource" slug=testing-a-video-4fd2206e title="Testing a video"
+time=2026-02-19T15:31:32.778-06:00 level=INFO msg="Attempting to insert resource into database"
+time=2026-02-19T15:31:32.783-06:00 level=INFO msg="Resource inserted successfully" resource_id=8 slug=0x9aefd7186e0 hasSlug=true
+time=2026-02-19T15:31:32.791-06:00 level=INFO msg="Resource created successfully" resource_id=8 slug=0x9aefd89cd00 title="Testing a video"
+time=2026-02-19T15:33:02.141-06:00 level=INFO msg="Receiving resource creation request" method=POST path=/v1/resources
+time=2026-02-19T15:33:02.141-06:00 level=INFO msg="Parsed resource data" title="Testing a video" category=Video subjects="[Information Technology Computer Science]" grade_levels="[Infant 1]" contributor_id=3
+time=2026-02-19T15:33:02.141-06:00 level=INFO msg="Generated slug for resource" slug=testing-a-video-897348ae title="Testing a video"
+time=2026-02-19T15:33:02.141-06:00 level=INFO msg="Attempting to insert resource into database"
+time=2026-02-19T15:33:02.146-06:00 level=INFO msg="Resource inserted successfully" resource_id=9 slug=0x9aefd89d050 hasSlug=true
+time=2026-02-19T15:33:02.152-06:00 level=INFO msg="Resource created successfully" resource_id=9 slug=0x9aefd83a4d0 title="Testing a video"
+time=2026-02-19T15:33:10.245-06:00 level=INFO msg="Receiving resource creation request" method=POST path=/v1/resources
+time=2026-02-19T15:33:10.245-06:00 level=INFO msg="Parsed resource data" title="Testing a video" category=Video subjects="[Information Technology Computer Science]" grade_levels="[Infant 1]" contributor_id=3
+time=2026-02-19T15:33:10.245-06:00 level=INFO msg="Generated slug for resource" slug=testing-a-video-f68178de title="Testing a video"
+time=2026-02-19T15:33:10.246-06:00 level=INFO msg="Attempting to insert resource into database"
+time=2026-02-19T15:33:10.252-06:00 level=INFO msg="Resource inserted successfully" resource_id=10 slug=0x9aefd982740 hasSlug=true
+time=2026-02-19T15:33:10.263-06:00 level=INFO msg="Resource created successfully" resource_id=10 slug=0x9aefd718a50 title="Testing a video"
+time=2026-02-19T15:39:23.106-06:00 level=INFO msg="Shutting down server" signal=interrupt
+time=2026-02-19T15:39:23.106-06:00 level=INFO msg="Completing background tasks" address=:4000
+time=2026-02-19T15:39:23.106-06:00 level=INFO msg="Server stopped" addr=:4000
+time=2026-02-19T15:40:18.002-06:00 level=WARN msg="YouTube uploader not configured — set YOUTUBE_CLIENT_ID, YOUTUBE_CLIENT_SECRET, YOUTUBE_REFRESH_TOKEN to enable auto-upload"
+time=2026-02-19T15:40:18.003-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-19T15:59:44.996-06:00 level=INFO msg="Shutting down server" signal=terminated
+time=2026-02-19T15:59:44.997-06:00 level=INFO msg="Completing background tasks" address=:4000
+time=2026-02-19T15:59:44.997-06:00 level=INFO msg="Server stopped" addr=:4000
+time=2026-02-19T15:59:47.675-06:00 level=ERROR msg="pq: password authentication failed for user \"amilcar\" (28P01)"
+time=2026-02-19T16:01:58.554-06:00 level=WARN msg="YouTube uploader not configured — set YOUTUBE_CLIENT_ID, YOUTUBE_CLIENT_SECRET, YOUTUBE_REFRESH_TOKEN to enable auto-upload"
+time=2026-02-19T16:01:58.555-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-19T16:04:12.423-06:00 level=WARN msg="YouTube uploader not configured — set YOUTUBE_CLIENT_ID, YOUTUBE_CLIENT_SECRET, YOUTUBE_REFRESH_TOKEN to enable auto-upload"
+time=2026-02-19T16:04:12.423-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-19T16:04:12.423-06:00 level=ERROR msg="listen tcp :4000: bind: address already in use"
+time=2026-02-19T16:04:43.875-06:00 level=WARN msg="YouTube uploader not configured — set YOUTUBE_CLIENT_ID, YOUTUBE_CLIENT_SECRET, YOUTUBE_REFRESH_TOKEN to enable auto-upload"
+time=2026-02-19T16:04:43.875-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-19T16:04:43.875-06:00 level=ERROR msg="listen tcp :4000: bind: address already in use"
+time=2026-02-19T16:06:08.840-06:00 level=WARN msg="YouTube uploader not configured — set YOUTUBE_CLIENT_ID, YOUTUBE_CLIENT_SECRET, YOUTUBE_REFRESH_TOKEN to enable auto-upload"
+time=2026-02-19T16:06:08.842-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-19T16:14:23.710-06:00 level=WARN msg="YouTube uploader not configured — set YOUTUBE_CLIENT_ID, YOUTUBE_CLIENT_SECRET, YOUTUBE_REFRESH_TOKEN to enable auto-upload"
+time=2026-02-19T16:14:23.710-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-19T16:14:23.711-06:00 level=ERROR msg="listen tcp :4000: bind: address already in use"
+time=2026-02-19T16:14:38.952-06:00 level=INFO msg="Shutting down server" signal=interrupt
+time=2026-02-19T16:14:38.953-06:00 level=INFO msg="Completing background tasks" address=:4000
+time=2026-02-19T16:14:38.953-06:00 level=INFO msg="Server stopped" addr=:4000
+time=2026-02-19T16:16:19.365-06:00 level=WARN msg="YouTube uploader not configured — set YOUTUBE_CLIENT_ID, YOUTUBE_CLIENT_SECRET, YOUTUBE_REFRESH_TOKEN to enable auto-upload"
+time=2026-02-19T16:16:19.365-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-19T16:17:42.970-06:00 level=WARN msg="YouTube uploader not configured — set YOUTUBE_CLIENT_ID, YOUTUBE_CLIENT_SECRET, YOUTUBE_REFRESH_TOKEN to enable auto-upload"
+time=2026-02-19T16:17:42.970-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-19T16:17:42.971-06:00 level=ERROR msg="listen tcp :4000: bind: address already in use"
+time=2026-02-23T08:58:50.096-06:00 level=WARN msg="YouTube uploader not configured — set YOUTUBE_CLIENT_ID, YOUTUBE_CLIENT_SECRET, YOUTUBE_REFRESH_TOKEN to enable auto-upload"
+time=2026-02-23T08:58:50.097-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-23T09:08:11.170-06:00 level=INFO msg="Shutting down server" signal=interrupt
+time=2026-02-23T09:08:11.171-06:00 level=INFO msg="Completing background tasks" address=:4000
+time=2026-02-23T09:08:11.171-06:00 level=INFO msg="Server stopped" addr=:4000
+time=2026-02-23T09:08:17.547-06:00 level=WARN msg="YouTube uploader not configured — set YOUTUBE_CLIENT_ID, YOUTUBE_CLIENT_SECRET, YOUTUBE_REFRESH_TOKEN to enable auto-upload"
+time=2026-02-23T09:08:17.547-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-23T09:12:23.760-06:00 level=INFO msg="Shutting down server" signal=interrupt
+time=2026-02-23T09:12:23.760-06:00 level=INFO msg="Completing background tasks" address=:4000
+time=2026-02-23T09:12:23.760-06:00 level=INFO msg="Server stopped" addr=:4000
+time=2026-02-23T09:12:36.729-06:00 level=WARN msg="YouTube uploader not configured — set YOUTUBE_CLIENT_ID, YOUTUBE_CLIENT_SECRET, YOUTUBE_REFRESH_TOKEN to enable auto-upload"
+time=2026-02-23T09:12:36.730-06:00 level=INFO msg="Starting server" address=:4000 env=development
+time=2026-02-23T09:14:06.603-06:00 level=WARN msg="video approved but YouTube uploader is not configured — skipping upload" resource_id=10

@@ -28,6 +28,30 @@
   let loading = false;
   let successMessage = '';
 
+  // ── Video-specific metadata ────────────────────────────────────────────────
+  let videoDetails = {
+    youtube_title: '',
+    youtube_description: '',
+    tags: '',              // comma-separated input; split on submit
+    privacy_status: 'unlisted',
+    made_for_kids: true,
+  };
+
+  $: isVideo = formData.category === 'Video';
+
+  // Autopopulate YouTube fields from resource details
+  $: if (isVideo) {
+    videoDetails.youtube_title = formData.title || '';
+    videoDetails.youtube_description = formData.summary || '';
+    videoDetails.tags = [...formData.subjects, ...formData.grade_levels].join(', ');
+  }
+
+  const privacyOptions = [
+    { value: 'unlisted', label: '🔗 Unlisted' },
+    { value: 'public',   label: '🌐 Public' },
+    { value: 'private',  label: '🔒 Private' },
+  ];
+
   const categoryOptions = [
     { value: 'LessonPlan', label: '📚 Lesson Plan' },
     { value: 'Video', label: '🎥 Video' },
@@ -97,8 +121,19 @@
       errors.summary = 'Summary should be at least 10 characters if provided';
     }
     
-    // Drive link is optional, but if provided, should be a valid URL
-    if (formData.drive_link.trim()) {
+    // Drive link is required for non-LessonPlan resource types; optional for LessonPlan.
+    if (formData.category && formData.category !== 'LessonPlan') {
+      if (!formData.drive_link.trim()) {
+        errors.drive_link = 'Google Drive link is required for this resource type';
+      } else {
+        try {
+          new URL(formData.drive_link);
+        } catch {
+          errors.drive_link = 'Please enter a valid URL';
+        }
+      }
+    } else if (formData.drive_link.trim()) {
+      // For LessonPlan, the link is optional but must be valid if supplied.
       try {
         new URL(formData.drive_link);
       } catch {
@@ -116,6 +151,13 @@
         if (!hasObjectives) {
           errors.lesson_content = 'Lesson plan must include at least one Learning Objectives block';
         }
+      }
+    }
+
+    // Video-specific validation
+    if (formData.category === 'Video') {
+      if (!videoDetails.privacy_status) {
+        errors.privacy_status = 'Privacy status is required';
       }
     }
     
@@ -149,6 +191,18 @@
       if (formData.category === 'LessonPlan' && lessonContent.blocks.length > 0) {
         resourceData.lesson_content = lessonContent;
       }
+
+      // Include video_metadata if this is a video
+      if (formData.category === 'Video') {
+        resourceData.video_metadata = {
+          youtube_title:       videoDetails.youtube_title.trim()       || formData.title,
+          youtube_description: videoDetails.youtube_description.trim() || formData.summary || '',
+          tags:                videoDetails.tags.split(',').map(t => t.trim()).filter(Boolean),
+          privacy_status:      videoDetails.privacy_status,
+          made_for_kids:       videoDetails.made_for_kids,
+          category_id:         27,
+        };
+      }
       
       console.log('Submitting resource data:', resourceData);
       console.log('Using auth token:', $authToken);
@@ -180,6 +234,14 @@
       lessonContent = {
         version: 1,
         blocks: []
+      };
+
+      videoDetails = {
+        youtube_title: '',
+        youtube_description: '',
+        tags: '',
+        privacy_status: 'unlisted',
+        made_for_kids: true,
       };
       
       // Scroll to top to see success message
@@ -313,8 +375,80 @@
       </div>
     {/if}
 
+    {#if isVideo}
+      <div class="form-section video-details-section">
+        <h2>🎬 YouTube Details</h2>
+        <p class="section-hint">These fields control how your video appears on YouTube after it is approved and uploaded. Leaving a field blank will use the resource title / summary as the default.</p>
+
+        <TextField
+          label="YouTube Title"
+          bind:value={videoDetails.youtube_title}
+          placeholder={formData.title || 'Video title for YouTube…'}
+          helperText="Max 100 characters. Defaults to the resource title if left blank."
+          maxLength={100}
+        />
+
+        <TextArea
+          label="YouTube Description"
+          bind:value={videoDetails.youtube_description}
+          placeholder={formData.summary || 'Describe the video for YouTube viewers…'}
+          rows={4}
+          helperText="Defaults to the resource summary if left blank."
+        />
+
+        <TextField
+          label="Tags (comma-separated)"
+          bind:value={videoDetails.tags}
+          placeholder="science, grade 3, fractions…"
+          helperText="Separate tags with commas. These help YouTube viewers discover your video."
+        />
+
+        <Select
+          label="Privacy Status"
+          bind:value={videoDetails.privacy_status}
+          options={privacyOptions}
+          error={errors.privacy_status}
+          required
+          helperText="Unlisted means only people with the link can view it. You can change this on YouTube later."
+        />
+
+        <!-- Made for Kids — explicitly required by YouTube / COPPA -->
+        <div class="made-for-kids-field">
+          <p class="mfk-label">
+            <span class="material-symbols-outlined mfk-icon">child_care</span>
+            Is this video made for kids?
+            <span class="mfk-required">*</span>
+          </p>
+          <p class="mfk-hint">YouTube requires this declaration. Choosing &ldquo;Yes&rdquo; restricts comments and certain features.</p>
+          <div class="mfk-options">
+            <button
+              type="button"
+              class="mfk-btn"
+              class:selected={videoDetails.made_for_kids === false}
+              on:click={() => (videoDetails.made_for_kids = false)}
+            >
+              <span class="material-symbols-outlined">close</span>
+              No — not for kids
+            </button>
+            <button
+              type="button"
+              class="mfk-btn"
+              class:selected={videoDetails.made_for_kids === true}
+              on:click={() => (videoDetails.made_for_kids = true)}
+            >
+              <span class="material-symbols-outlined">child_care</span>
+              Yes — made for kids
+            </button>
+          </div>
+          {#if errors.made_for_kids}
+            <p class="error-text">{errors.made_for_kids}</p>
+          {/if}
+        </div>
+      </div>
+    {/if}
+
     <div class="form-section">
-      <h2>Resource Link (Optional)</h2>
+      <h2>Resource Link{formData.category && formData.category !== 'LessonPlan' ? ' (Required)' : ' (Optional)'}</h2>
       
       <TextField
         type="url"
@@ -322,7 +456,9 @@
         bind:value={formData.drive_link}
         error={errors.drive_link}
         placeholder="https://drive.google.com/..."
-        helperText="Share a link to your resource on Google Drive or other cloud storage"
+        helperText={formData.category && formData.category !== 'LessonPlan'
+          ? 'Required — share a Google Drive link to the resource file so it can be reviewed and uploaded to YouTube when approved'
+          : 'Optional — share a link to your resource on Google Drive or other cloud storage'}
       />
     </div>
 
@@ -458,6 +594,90 @@
   .lesson-plan-section {
     background: linear-gradient(135deg, rgba(6, 158, 201, 0.05) 0%, rgba(252, 180, 21, 0.05) 100%);
     border: 2px solid var(--md-sys-color-primary);
+  }
+
+  .video-details-section {
+    background: linear-gradient(135deg, rgba(200, 30, 30, 0.04) 0%, rgba(252, 100, 50, 0.04) 100%);
+    border: 2px solid var(--md-sys-color-error, #b52213);
+  }
+
+  .section-hint {
+    margin: -0.5rem 0 1rem;
+    font-size: 0.875rem;
+    color: var(--md-sys-color-on-surface-variant);
+    line-height: 1.5;
+  }
+
+  /* Made-for-kids toggle */
+  .made-for-kids-field {
+    margin-top: 1rem;
+    padding: 1rem;
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: var(--md-sys-shape-corner-md, 8px);
+    background: var(--md-sys-color-surface);
+  }
+
+  .mfk-label {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    color: var(--md-sys-color-on-surface);
+    margin: 0 0 0.25rem;
+  }
+
+  .mfk-icon {
+    font-size: 20px;
+    color: var(--md-sys-color-primary);
+  }
+
+  .mfk-required {
+    color: var(--md-sys-color-error);
+    font-weight: 700;
+  }
+
+  .mfk-hint {
+    font-size: 0.8125rem;
+    color: var(--md-sys-color-on-surface-variant);
+    margin: 0 0 0.875rem;
+  }
+
+  .mfk-options {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .mfk-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 1.25rem;
+    border: 2px solid var(--md-sys-color-outline-variant);
+    border-radius: 999px;
+    background: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--md-sys-color-on-surface-variant);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .mfk-btn:hover {
+    border-color: var(--md-sys-color-primary);
+    color: var(--md-sys-color-primary);
+    background: var(--md-sys-color-primary-container, rgba(6,158,201,0.1));
+  }
+
+  .mfk-btn.selected {
+    border-color: var(--md-sys-color-primary);
+    background: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary, #fff);
+  }
+
+  .mfk-btn .material-symbols-outlined {
+    font-size: 18px;
   }
 
   .error-text {

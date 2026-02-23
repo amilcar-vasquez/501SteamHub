@@ -25,6 +25,14 @@ func (a *app) createResourceHandler(w http.ResponseWriter, r *http.Request) {
 		PublishedURL  *string                `json:"published_url"`
 		ContributorID int64                  `json:"contributor_id"`
 		LessonContent map[string]interface{} `json:"lesson_content,omitempty"`
+		VideoMetadata *struct {
+			YouTubeTitle       string   `json:"youtube_title"`
+			YouTubeDescription string   `json:"youtube_description"`
+			Tags               []string `json:"tags"`
+			PrivacyStatus      string   `json:"privacy_status"`
+			MadeForKids        *bool    `json:"made_for_kids"`
+			CategoryID         int      `json:"category_id"`
+		} `json:"video_metadata,omitempty"`
 	}
 
 	// Log the incoming request
@@ -79,6 +87,26 @@ func (a *app) createResourceHandler(w http.ResponseWriter, r *http.Request) {
 	v.Check(len(input.GradeLevels) > 0, "grade_levels", "at least one grade level must be provided")
 	v.Check(resource.Status != "", "status", "must be provided")
 	v.Check(resource.ContributorID > 0, "contributor_id", "must be provided")
+	// Drive link is required for every resource type except LessonPlan; other
+	// types (Video, Slideshow, Assessment, Other) must link to a Google Drive file.
+	if resource.Category != "LessonPlan" {
+		v.Check(resource.DriveLink != nil && *resource.DriveLink != "", "drive_link", "must be provided for non-lesson-plan resources")
+	}
+	// Video resources must include fully-populated video_metadata.
+	if resource.Category == "Video" {
+		if input.VideoMetadata == nil {
+			v.AddError("video_metadata", "must be provided for Video resources")
+		} else {
+			v.Check(input.VideoMetadata.YouTubeTitle != "", "video_metadata.youtube_title", "must be provided")
+			v.Check(len(input.VideoMetadata.YouTubeTitle) <= 100, "video_metadata.youtube_title", "must not exceed 100 characters")
+			v.Check(
+				input.VideoMetadata.PrivacyStatus == "public" ||
+					input.VideoMetadata.PrivacyStatus == "private" ||
+					input.VideoMetadata.PrivacyStatus == "unlisted",
+				"video_metadata.privacy_status", "must be public, private, or unlisted")
+			v.Check(input.VideoMetadata.MadeForKids != nil, "video_metadata.made_for_kids", "must be explicitly provided (required by YouTube/COPPA)")
+		}
+	}
 
 	if !v.IsEmpty() {
 		a.logger.Error("Validation failed", "errors", v.Errors)
@@ -87,11 +115,35 @@ func (a *app) createResourceHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	a.logger.Info("Attempting to insert resource into database")
-	err = a.models.Resources.Insert(resource)
-	if err != nil {
-		a.logger.Error("Failed to insert resource", "error", err.Error())
-		a.serverErrorResponse(w, r, err)
-		return
+
+	// For Video resources, insert the resource and video_metadata atomically.
+	// For all other types, a plain insert is sufficient.
+	if resource.Category == "Video" && input.VideoMetadata != nil {
+		categoryID := input.VideoMetadata.CategoryID
+		if categoryID == 0 {
+			categoryID = 27 // Education
+		}
+		vm := &data.VideoMetadata{
+			YouTubeTitle:       input.VideoMetadata.YouTubeTitle,
+			YouTubeDescription: input.VideoMetadata.YouTubeDescription,
+			Tags:               input.VideoMetadata.Tags,
+			PrivacyStatus:      input.VideoMetadata.PrivacyStatus,
+			MadeForKids:        *input.VideoMetadata.MadeForKids,
+			CategoryID:         categoryID,
+		}
+		err = a.models.Resources.InsertWithVideoMetadata(resource, vm)
+		if err != nil {
+			a.logger.Error("Failed to insert Video resource with metadata", "error", err.Error())
+			a.serverErrorResponse(w, r, err)
+			return
+		}
+	} else {
+		err = a.models.Resources.Insert(resource)
+		if err != nil {
+			a.logger.Error("Failed to insert resource", "error", err.Error())
+			a.serverErrorResponse(w, r, err)
+			return
+		}
 	}
 
 	a.logger.Info("Resource inserted successfully",
@@ -163,6 +215,15 @@ func (a *app) createResourceHandler(w http.ResponseWriter, r *http.Request) {
 	response := envelope{
 		"resource": resource,
 	}
+
+	// Include video_metadata in response when it was just created.
+	if resource.Category == "Video" {
+		vm, vmErr := a.models.VideoMetadata.GetByResource(resource.ID)
+		if vmErr == nil {
+			response["video_metadata"] = vm
+		}
+	}
+
 	err = a.writeJSON(w, http.StatusCreated, response, nil)
 	if err != nil {
 		a.logger.Error("Failed to write JSON response", "error", err.Error())
@@ -364,6 +425,17 @@ func (a *app) updateResourceHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Trigger YouTube upload when a Video resource transitions to Approved.
+	// This runs in a background goroutine so the HTTP response is not blocked.
+	if oldStatus != resource.Status && resource.Status == "Approved" && resource.Category == "Video" {
+		if a.youtubeUploader != nil {
+			a.youtubeUploader.UploadResourceToYouTube(resource)
+		} else {
+			a.logger.Warn("video approved but YouTube uploader is not configured — skipping upload",
+				"resource_id", resource.ID)
+		}
+	}
+
 	response := envelope{
 		"resource": resource,
 	}
@@ -431,6 +503,15 @@ func (a *app) getResourceBySlugHandler(w http.ResponseWriter, r *http.Request) {
 		"resource": resource,
 		"lessons":  lessons,
 	}
+
+	// Include video_metadata for Video resources.
+	if resource.Category == "Video" {
+		vm, vmErr := a.models.VideoMetadata.GetByResource(resource.ID)
+		if vmErr == nil {
+			response["video_metadata"] = vm
+		}
+	}
+
 	err = a.writeJSON(w, http.StatusOK, response, nil)
 	if err != nil {
 		a.serverErrorResponse(w, r, err)

@@ -52,6 +52,52 @@ func (m ResourceModel) Insert(resource *Resource) error {
 	return m.DB.QueryRowContext(ctx, query, args...).Scan(&resource.ID, &resource.CreatedAt, &resource.UpdatedAt)
 }
 
+// InsertWithVideoMetadata inserts a resource and its VideoMetadata atomically
+// in a single transaction.  Use this whenever Category == "Video".
+func (m ResourceModel) InsertWithVideoMetadata(resource *Resource, vm *VideoMetadata) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	tx, err := m.DB.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	// Insert the resource row first to obtain the resource_id.
+	resourceQuery := `
+		INSERT INTO resources (title, category, slug, summary, drive_link, status, published_url, contributor_id)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+		RETURNING resource_id, created_at, updated_at`
+
+	resourceArgs := []any{
+		resource.Title,
+		resource.Category,
+		resource.Slug,
+		resource.Summary,
+		resource.DriveLink,
+		resource.Status,
+		resource.PublishedURL,
+		resource.ContributorID,
+	}
+
+	err = tx.QueryRowContext(ctx, resourceQuery, resourceArgs...).Scan(
+		&resource.ID, &resource.CreatedAt, &resource.UpdatedAt,
+	)
+	if err != nil {
+		return err
+	}
+
+	// Bind the new resource_id to the video metadata and insert it.
+	vm.ResourceID = resource.ID
+	vmModel := VideoModel{DB: m.DB}
+	if err = vmModel.InsertTx(ctx, tx, vm); err != nil {
+		return err
+	}
+
+	return tx.Commit()
+}
+
 // Get a resource by ID
 func (m ResourceModel) Get(id int64) (*Resource, error) {
 	if id < 1 {
@@ -176,8 +222,8 @@ func (m ResourceModel) GetAll(status string, subject string, gradeLevel string, 
 			LEFT JOIN resource_subjects rs ON r.resource_id = rs.resource_id
 			LEFT JOIN resource_grade_levels rgl ON r.resource_id = rgl.resource_id
 			WHERE ($1 = '' OR r.status = $1::resource_status)
-			AND ($2 = '' OR rs.subject = $2)
-			AND ($3 = '' OR rgl.grade_level = $3)`
+			AND ($2 = '' OR rs.subject::text = $2)
+			AND ($3 = '' OR rgl.grade_level::text = $3)`
 
 		// Main query with joins
 		query = `
@@ -186,8 +232,8 @@ func (m ResourceModel) GetAll(status string, subject string, gradeLevel string, 
 			LEFT JOIN resource_subjects rs ON r.resource_id = rs.resource_id
 			LEFT JOIN resource_grade_levels rgl ON r.resource_id = rgl.resource_id
 			WHERE ($1 = '' OR r.status = $1::resource_status)
-			AND ($2 = '' OR rs.subject = $2)
-			AND ($3 = '' OR rgl.grade_level = $3)
+			AND ($2 = '' OR rs.subject::text = $2)
+			AND ($3 = '' OR rgl.grade_level::text = $3)
 			ORDER BY r.created_at DESC
 			LIMIT $4 OFFSET $5`
 

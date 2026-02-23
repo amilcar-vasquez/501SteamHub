@@ -34,18 +34,20 @@ func (a *app) enableCORS(next http.Handler) http.Handler {
 		origin := r.Header.Get("Origin")
 
 		if origin != "" {
-			// Check if origin matches any trusted origin (with wildcard support)
-			for i := range a.config.cors.trustedOrigins {
-				trusted := a.config.cors.trustedOrigins[i]
+			// Check if origin matches any trusted origin (with wildcard support).
+			// A trusted origin ending in "*" (e.g. "http://localhost:*") matches
+			// any port on that host by comparing the scheme+host prefix.
+			for _, trusted := range a.config.cors.trustedOrigins {
 				matched := false
 
-				// Exact match
 				if trusted == origin {
+					// Exact match
 					matched = true
-				} else if strings.Contains(trusted, "*") {
-					// Wildcard matching - replace :* with any port
-					pattern := strings.ReplaceAll(trusted, ":*", ":")
-					if strings.HasPrefix(origin, pattern) {
+				} else if strings.HasSuffix(trusted, ":*") {
+					// Wildcard port: strip the trailing "*" and check prefix.
+					// e.g. "http://localhost:*" → prefix "http://localhost:"
+					prefix := trusted[:len(trusted)-1] // keep the colon, drop the *
+					if strings.HasPrefix(origin, prefix) {
 						matched = true
 					}
 				}
@@ -56,7 +58,7 @@ func (a *app) enableCORS(next http.Handler) http.Handler {
 					w.Header().Set("Access-Control-Allow-Headers", "Authorization, Content-Type")
 					w.Header().Set("Access-Control-Max-Age", "86400")
 
-					if r.Method == "OPTIONS" {
+					if r.Method == http.MethodOptions {
 						w.WriteHeader(http.StatusOK)
 						return
 					}

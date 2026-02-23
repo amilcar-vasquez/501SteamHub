@@ -152,10 +152,15 @@ func (a *app) routes() http.Handler {
 	router.Handler(http.MethodDelete, apiV1Route+"/tokens/user/:user_id",
 		a.authenticate(a.requireActivatedUser(a.requireRole("admin", http.HandlerFunc(a.deleteAllTokensForUserHandler)))))
 	// Apply middleware
+	// Execution order (outermost runs first):
+	// enableCORS → rateLimit → authenticate → recoverPanic → router
+	// CORS must be outermost so preflight responses always include
+	// Access-Control-Allow-Origin, even when rateLimit or authenticate
+	// reject the request.
 	handler := a.recoverPanic(router)
-	handler = a.enableCORS(handler)
 	handler = a.authenticate(handler)
 	handler = a.rateLimit(handler)
+	handler = a.enableCORS(handler)
 
 	return handler
 }

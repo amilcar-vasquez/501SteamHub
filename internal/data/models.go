@@ -18,6 +18,7 @@ type Models struct {
 	Tokens                *TokenModel
 	Notifications         NotificationModelInterface
 	Lessons               *LessonModel
+	VideoMetadata         *VideoModel
 	ResourceComments      *ResourceCommentModel
 	ReviewComments        *ReviewCommentModel
 	ResourceStatusHistory *ResourceStatusHistoryModel
@@ -36,6 +37,7 @@ func NewModels(db *sql.DB) *Models {
 		Tokens:                &TokenModel{DB: db},
 		Notifications:         &NotificationModel{DB: db},
 		Lessons:               &LessonModel{DB: db},
+		VideoMetadata:         &VideoModel{DB: db},
 		ResourceComments:      &ResourceCommentModel{DB: db},
 		ReviewComments:        &ReviewCommentModel{DB: db},
 		ResourceStatusHistory: &ResourceStatusHistoryModel{DB: db},
@@ -57,6 +59,7 @@ func NewTestModels() *Models {
 		Tokens:                &TokenModel{DB: nil},
 		Notifications:         &NotificationModel{DB: nil},
 		Lessons:               &LessonModel{DB: nil},
+		VideoMetadata:         &VideoModel{DB: nil},
 		ResourceComments:      &ResourceCommentModel{DB: nil},
 		ReviewComments:        &ReviewCommentModel{DB: nil},
 		ResourceStatusHistory: &ResourceStatusHistoryModel{DB: nil},

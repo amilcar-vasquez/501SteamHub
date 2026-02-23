@@ -16,13 +16,21 @@ import (
 
 	"github.com/amilcar-vasquez/501SteamHub/internal/data"
 	"github.com/amilcar-vasquez/501SteamHub/internal/mailer"
+	"github.com/amilcar-vasquez/501SteamHub/internal/services"
 	_ "github.com/lib/pq" // PostgreSQL driver
+	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/google"
 )
 
 const version = "1.0.0"
 
 var dbDSN = os.Getenv("DB_DSN")
 var smtpHost = os.Getenv("SMTP_HOST")
+
+// YouTube / Google Drive OAuth2 credentials (required for video auto-upload).
+var ytClientID = os.Getenv("YOUTUBE_CLIENT_ID")
+var ytClientSecret = os.Getenv("YOUTUBE_CLIENT_SECRET")
+var ytRefreshToken = os.Getenv("YOUTUBE_REFRESH_TOKEN")
 var smtpPort = 587 // default SMTP port
 var smtpUsername = os.Getenv("SMTP_USERNAME")
 var smtpPassword = os.Getenv("SMTP_PASSWORD")
@@ -50,14 +58,21 @@ type configuration struct {
 		password string
 		sender   string
 	}
+	// youtube holds OAuth2 credentials used to upload approved Video resources.
+	youtube struct {
+		clientID     string
+		clientSecret string
+		refreshToken string
+	}
 }
 
 type app struct {
-	config configuration
-	logger *slog.Logger
-	models *data.Models
-	mailer mailer.Mailer
-	wg     sync.WaitGroup
+	config          configuration
+	logger          *slog.Logger
+	models          *data.Models
+	mailer          mailer.Mailer
+	wg              sync.WaitGroup
+	youtubeUploader *services.YouTubeUploader
 }
 
 // loads the application configuration from terminal flags or defaults in the env.
@@ -95,6 +110,11 @@ func loadConfig() configuration {
 	flag.StringVar(&cfg.smtp.username, "smtp-username", smtpUsername, "SMTP username")
 	flag.StringVar(&cfg.smtp.password, "smtp-password", smtpPassword, "SMTP password")
 	flag.StringVar(&cfg.smtp.sender, "smtp-sender", smtpSender, "SMTP sender email")
+
+	// YouTube / Google Drive OAuth2 settings
+	flag.StringVar(&cfg.youtube.clientID, "youtube-client-id", ytClientID, "YouTube OAuth2 client ID")
+	flag.StringVar(&cfg.youtube.clientSecret, "youtube-client-secret", ytClientSecret, "YouTube OAuth2 client secret")
+	flag.StringVar(&cfg.youtube.refreshToken, "youtube-refresh-token", ytRefreshToken, "YouTube OAuth2 refresh token")
 
 	flag.Parse()
 
@@ -163,12 +183,44 @@ func main() {
 	}
 	defer db.Close()
 
+	// Initialize models first so both the app and the YouTube uploader share the same instance.
+	models := data.NewModels(db)
+
+	// Build the YouTube uploader when credentials are available.
+	// The upload runs in a background goroutine so HTTP responses are never blocked.
+	var ytUploader *services.YouTubeUploader
+	if cfg.youtube.clientID != "" && cfg.youtube.clientSecret != "" && cfg.youtube.refreshToken != "" {
+		oauthCfg := &oauth2.Config{
+			ClientID:     cfg.youtube.clientID,
+			ClientSecret: cfg.youtube.clientSecret,
+			Scopes: []string{
+				"https://www.googleapis.com/auth/youtube.upload",
+				"https://www.googleapis.com/auth/drive.readonly",
+			},
+			Endpoint: google.Endpoint,
+		}
+		oauthToken := &oauth2.Token{
+			RefreshToken: cfg.youtube.refreshToken,
+			TokenType:    "Bearer",
+		}
+		ytClient := oauthCfg.Client(context.Background(), oauthToken)
+		ytUploader = &services.YouTubeUploader{
+			Client: ytClient,
+			Models: models,
+			Logger: logger,
+		}
+		logger.Info("YouTube uploader configured")
+	} else {
+		logger.Warn("YouTube uploader not configured — set YOUTUBE_CLIENT_ID, YOUTUBE_CLIENT_SECRET, YOUTUBE_REFRESH_TOKEN to enable auto-upload")
+	}
+
 	// initialize the app struct
 	app := &app{
-		config: cfg,
-		logger: logger,
-		models: data.NewModels(db),
-		mailer: mailer.New(cfg.smtp.host, cfg.smtp.port, cfg.smtp.username, cfg.smtp.password, cfg.smtp.sender),
+		config:          cfg,
+		logger:          logger,
+		models:          models,
+		mailer:          mailer.New(cfg.smtp.host, cfg.smtp.port, cfg.smtp.username, cfg.smtp.password, cfg.smtp.sender),
+		youtubeUploader: ytUploader,
 	}
 
 	// publish basic expvar metrics

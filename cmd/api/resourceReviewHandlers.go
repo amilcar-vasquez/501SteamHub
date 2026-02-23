@@ -69,6 +69,16 @@ func (a *app) createResourceReviewHandler(w http.ResponseWriter, r *http.Request
 				if updateErr := a.models.Resources.Update(resource); updateErr == nil {
 					user := a.contextGetUser(r)
 					a.logResourceStatusChange(resource.ID, oldStatus, resource.Status, user.ID)
+					// Trigger YouTube upload for approved Video resources.
+					// Runs in a background goroutine; the HTTP response is not blocked.
+					if review.Decision == "Approved" && resource.Category == "Video" {
+						if a.youtubeUploader != nil {
+							a.youtubeUploader.UploadResourceToYouTube(resource)
+						} else {
+							a.logger.Warn("video approved but YouTube uploader is not configured — skipping upload",
+								"resource_id", resource.ID)
+						}
+					}
 				} else {
 					a.logger.Error("failed to update resource status after review decision",
 						"resource_id", review.ResourceID,
