@@ -150,6 +150,27 @@ func (a *app) routes() http.Handler {
 		a.requireActivatedUser(http.HandlerFunc(a.updateNotificationHandler)))
 	router.Handler(http.MethodDelete, apiV1Route+"/notifications/:id",
 		a.requireActivatedUser(http.HandlerFunc(a.deleteNotificationHandler)))
+	// ── Admin routes (admin + DSC only) ────────────────────────────────────
+
+	// Resource status override — lets admins/DSC force-set any status value.
+	router.Handler(http.MethodPost, apiV1Route+"/resources/:id/status",
+		a.requireAnyRole([]string{"admin", "DSC"}, http.HandlerFunc(a.overrideResourceStatusHandler)))
+
+	// Admin-level metrics: user counts + full resource-status breakdown.
+	router.Handler(http.MethodGet, apiV1Route+"/admin/metrics",
+		a.requireAnyRole([]string{"admin", "DSC"}, http.HandlerFunc(a.adminMetricsHandler)))
+
+	// Admin user management — distinct from the general /users endpoints so
+	// that role and activation changes always require admin/DSC privilege.
+	router.Handler(http.MethodPost, apiV1Route+"/admin/users",
+		a.requireAnyRole([]string{"admin", "DSC"}, http.HandlerFunc(a.adminCreateUserHandler)))
+	router.Handler(http.MethodPut, apiV1Route+"/admin/users/:id",
+		a.requireAnyRole([]string{"admin", "DSC"}, http.HandlerFunc(a.adminUpdateUserHandler)))
+	router.Handler(http.MethodPatch, apiV1Route+"/admin/users/:id/role",
+		a.requireAnyRole([]string{"admin", "DSC"}, http.HandlerFunc(a.adminUpdateUserRoleHandler)))
+	router.Handler(http.MethodPatch, apiV1Route+"/admin/users/:id/active",
+		a.requireAnyRole([]string{"admin", "DSC"}, http.HandlerFunc(a.adminToggleUserActiveHandler)))
+
 	// Token routes
 	// TODO: Implement token handlers
 	router.HandlerFunc(http.MethodPost, apiV1Route+"/tokens/authentication", a.createAuthTokenHandler)

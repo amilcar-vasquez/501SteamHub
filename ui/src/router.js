@@ -30,6 +30,11 @@ export function handleRouteChange() {
     return;
   }
 
+  if (pathname === '/dashboard/admin' || pathname === '/dashboard/admin/') {
+    currentRoute.set({ page: 'admin-dashboard', params: {} });
+    return;
+  }
+
   // Simple page routes
   const page = pathname.replace(/^\//, '') || 'home';
 
