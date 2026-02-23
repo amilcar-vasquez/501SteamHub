@@ -231,6 +231,23 @@ func (a *app) createResourceHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// resourceMetricsHandler returns per-status resource counts for the reviewer
+// dashboard metrics row.
+//
+// GET /v1/resources/metrics  (requires reviewer role)
+func (a *app) resourceMetricsHandler(w http.ResponseWriter, r *http.Request) {
+	counts, err := a.models.Resources.GetStatusCounts()
+	if err != nil {
+		a.serverErrorResponse(w, r, err)
+		return
+	}
+
+	err = a.writeJSON(w, http.StatusOK, envelope{"metrics": counts}, nil)
+	if err != nil {
+		a.serverErrorResponse(w, r, err)
+	}
+}
+
 // getResourceHandler retrieves a specific resource by ID
 func (a *app) getResourceHandler(w http.ResponseWriter, r *http.Request) {
 	id, err := a.readIDParam(r)

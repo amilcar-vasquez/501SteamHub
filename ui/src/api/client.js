@@ -130,6 +130,14 @@ export const resourceAPI = {
     });
   },
 
+  getMetrics: async (authToken) => {
+    return request('/resource-metrics', {
+      headers: {
+        'Authorization': `Bearer ${authToken}`,
+      },
+    });
+  },
+
   delete: async (id, authToken) => {
     return request(`/resources/${id}`, {
       method: 'DELETE',

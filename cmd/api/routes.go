@@ -61,6 +61,11 @@ func (a *app) routes() http.Handler {
 	// Resource slug route (separate path to avoid httprouter wildcard conflicts)
 	router.HandlerFunc(http.MethodGet, apiV1Route+"/resource-by-slug/:slug", a.getResourceBySlugHandler)
 
+	// Resource metrics — lives outside /resources/:id to avoid httprouter
+	// wildcard-vs-children conflicts (same pattern as resource-by-slug).
+	router.Handler(http.MethodGet, apiV1Route+"/resource-metrics",
+		a.requireAnyRole([]string{"SubjectExpert", "TeamLead", "DSC", "admin"}, http.HandlerFunc(a.resourceMetricsHandler)))
+
 	// Resource routes - Public can view, authenticated users can create/modify
 	router.HandlerFunc(http.MethodGet, apiV1Route+"/resources", a.getAllResourcesHandler)
 	router.Handler(http.MethodPost, apiV1Route+"/resources",

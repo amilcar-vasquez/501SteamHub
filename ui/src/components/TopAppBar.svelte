@@ -6,6 +6,9 @@
   
   const dispatch = createEventDispatcher();
   
+  const REVIEWER_ROLES = ['SubjectExpert', 'TeamLead', 'DSC', 'admin'];
+  $: canAccessDashboard = $currentUser && REVIEWER_ROLES.includes($currentUser.role_name);
+
   let isMobile = false;
   let showUserMenu = false;
   
@@ -40,6 +43,11 @@
   
   function handleSubmitResource() {
     navigateTo('/submit');
+  }
+
+  function handleReviewerDashboard() {
+    showUserMenu = false;
+    navigateTo('/dashboard/reviewer');
   }
   
   // Close menu when clicking outside
@@ -113,6 +121,13 @@
                 </div>
               </div>
               <div class="menu-divider"></div>
+              {#if canAccessDashboard}
+                <button class="menu-item label-large" on:click={handleReviewerDashboard}>
+                  <span class="material-symbols-outlined">rate_review</span>
+                  Reviewer Dashboard
+                </button>
+                <div class="menu-divider"></div>
+              {/if}
               <button class="menu-item label-large" on:click={handleSignOut}>
                 <span class="material-symbols-outlined">logout</span>
                 Sign Out

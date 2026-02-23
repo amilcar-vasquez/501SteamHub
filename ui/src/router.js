@@ -24,10 +24,15 @@ export function handleRouteChange() {
       return;
     }
   }
-  
+
+  if (pathname === '/dashboard/reviewer' || pathname === '/dashboard/reviewer/') {
+    currentRoute.set({ page: 'reviewer-dashboard', params: {} });
+    return;
+  }
+
   // Simple page routes
   const page = pathname.replace(/^\//, '') || 'home';
-  
+
   switch (page) {
     case 'signup':
     case 'signin':

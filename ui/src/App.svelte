@@ -5,6 +5,7 @@
   import Home from './pages/Home.svelte';
   import SubmitResource from './pages/SubmitResource.svelte';
   import ResourcePage from './pages/ResourcePage.svelte';
+  import ReviewerDashboard from './pages/ReviewerDashboard.svelte';
   import { currentRoute, navigateTo, handleRouteChange } from './router.js';
   
   function navigate(event) {
@@ -32,6 +33,8 @@
     <SubmitResource on:navigate={navigate} />
   {:else if currentPage === 'resource'}
     <ResourcePage slug={resourceSlug} />
+  {:else if currentPage === 'reviewer-dashboard'}
+    <ReviewerDashboard />
   {:else}
     <Home on:navigate={navigate} />
   {/if}

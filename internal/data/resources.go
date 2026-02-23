@@ -377,6 +377,44 @@ func (m ResourceModel) Delete(id int64) error {
 }
 
 // GetSubjects returns all subjects for a resource
+// ResourceStatusCounts holds the count of resources per review-relevant status.
+type ResourceStatusCounts struct {
+	Submitted     int64 `json:"submitted"`
+	UnderReview   int64 `json:"under_review"`
+	NeedsRevision int64 `json:"needs_revision"`
+	Approved      int64 `json:"approved"`
+	Published     int64 `json:"published"`
+}
+
+// GetStatusCounts returns a single-row summary of resource counts grouped by
+// review-relevant status values.  The query runs in one round-trip.
+func (m ResourceModel) GetStatusCounts() (*ResourceStatusCounts, error) {
+	query := `
+		SELECT
+			COUNT(*) FILTER (WHERE status = 'Submitted')     AS submitted,
+			COUNT(*) FILTER (WHERE status = 'UnderReview')   AS under_review,
+			COUNT(*) FILTER (WHERE status = 'NeedsRevision') AS needs_revision,
+			COUNT(*) FILTER (WHERE status = 'Approved')      AS approved,
+			COUNT(*) FILTER (WHERE status = 'Published')     AS published
+		FROM resources`
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	var c ResourceStatusCounts
+	err := m.DB.QueryRowContext(ctx, query).Scan(
+		&c.Submitted,
+		&c.UnderReview,
+		&c.NeedsRevision,
+		&c.Approved,
+		&c.Published,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &c, nil
+}
+
 func (m ResourceModel) GetSubjects(resourceID int64) ([]string, error) {
 	query := `
 		SELECT subject FROM resource_subjects
