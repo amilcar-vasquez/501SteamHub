@@ -10,6 +10,7 @@ import (
 	"io"
 	"log/slog"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"net/http"
@@ -156,19 +157,52 @@ func (u *YouTubeUploader) UploadResourceToYouTube(resource *data.Resource) {
 		}()
 
 		// ── Build YouTube video metadata ───────────────────────────────────
+		// Defaults derived from the Resource row.
+		videoTitle := resourceTitle
 		description := summary
 		if len(subjects) > 0 {
 			description += "\n\nSubjects: " + strings.Join(subjects, ", ")
 		}
+		categoryID := "27" // Education (YouTube category)
+		privacyStatus := "unlisted"
+		var tags []string
+		var madeForKids bool
+
+		// Apply VideoMetadata overrides when available.
+		vm, vmErr := u.Models.VideoMetadata.GetByResource(resourceID)
+		if vmErr == nil {
+			if vm.YouTubeTitle != "" {
+				videoTitle = vm.YouTubeTitle
+			}
+			if vm.YouTubeDescription != "" {
+				description = vm.YouTubeDescription
+			}
+			if len(vm.Tags) > 0 {
+				tags = []string(vm.Tags)
+			}
+			if vm.PrivacyStatus != "" {
+				privacyStatus = vm.PrivacyStatus
+			}
+			madeForKids = vm.MadeForKids
+			if vm.CategoryID != 0 {
+				categoryID = strconv.Itoa(vm.CategoryID)
+			}
+		} else if vmErr != data.ErrRecordNotFound {
+			// A real DB error — log and continue with defaults.
+			u.Logger.Warn("youtube upload: could not load video_metadata, using resource defaults",
+				"resource_id", resourceID, "error", vmErr)
+		}
 
 		video := &youtube.Video{
 			Snippet: &youtube.VideoSnippet{
-				Title:       resourceTitle,
+				Title:       videoTitle,
 				Description: description,
-				CategoryId:  "27", // Education
+				CategoryId:  categoryID,
+				Tags:        tags,
 			},
 			Status: &youtube.VideoStatus{
-				PrivacyStatus: "unlisted",
+				PrivacyStatus: privacyStatus,
+				MadeForKids:   madeForKids,
 			},
 		}
 

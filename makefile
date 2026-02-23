@@ -7,6 +7,7 @@ export
 run/api:
 	@echo "Running API server..."
 	@go run ./cmd/api --port=4000 --env=development --db-dsn="${DB_DSN}" --smtp-host="${SMTP_HOST}" --smtp-port=${SMTP_PORT} --smtp-username="${SMTP_USERNAME}" --smtp-password="${SMTP_PASSWORD}" \
+	--youtube-client-id="${YOUTUBE_CLIENT_ID}" --youtube-client-secret="${YOUTUBE_CLIENT_SECRET}" --youtube-refresh-token="${YOUTUBE_REFRESH_TOKEN}" --youtube-redirect-url="${YOUTUBE_REDIRECT_URI}" \
 	-cors-trusted-origins="http://localhost:3000 http://localhost:5173 http://localhost:* http://127.0.0.1:*" --limiter-rps=10 --limiter-burst=20
 
 ## db/psql: connect to the database using psql (terminal)

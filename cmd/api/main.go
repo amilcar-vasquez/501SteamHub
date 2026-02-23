@@ -31,6 +31,7 @@ var smtpHost = os.Getenv("SMTP_HOST")
 var ytClientID = os.Getenv("YOUTUBE_CLIENT_ID")
 var ytClientSecret = os.Getenv("YOUTUBE_CLIENT_SECRET")
 var ytRefreshToken = os.Getenv("YOUTUBE_REFRESH_TOKEN")
+var ytRedirectURL = os.Getenv("YOUTUBE_REDIRECT_URI")
 var smtpPort = 587 // default SMTP port
 var smtpUsername = os.Getenv("SMTP_USERNAME")
 var smtpPassword = os.Getenv("SMTP_PASSWORD")
@@ -63,6 +64,9 @@ type configuration struct {
 		clientID     string
 		clientSecret string
 		refreshToken string
+		// redirectURL is the callback URL registered in Google Cloud Console.
+		// Used by the /v1/oauth/google/login → /v1/oauth/google/callback flow.
+		redirectURL string
 	}
 }
 
@@ -115,6 +119,7 @@ func loadConfig() configuration {
 	flag.StringVar(&cfg.youtube.clientID, "youtube-client-id", ytClientID, "YouTube OAuth2 client ID")
 	flag.StringVar(&cfg.youtube.clientSecret, "youtube-client-secret", ytClientSecret, "YouTube OAuth2 client secret")
 	flag.StringVar(&cfg.youtube.refreshToken, "youtube-refresh-token", ytRefreshToken, "YouTube OAuth2 refresh token")
+	flag.StringVar(&cfg.youtube.redirectURL, "youtube-redirect-url", ytRedirectURL, "Google OAuth2 redirect URL (GOOGLE_REDIRECT_URL)")
 
 	flag.Parse()
 

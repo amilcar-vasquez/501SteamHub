@@ -151,6 +151,12 @@ func (a *app) routes() http.Handler {
 	router.HandlerFunc(http.MethodPost, apiV1Route+"/tokens/activation", a.createActivationTokenHandler)
 	router.Handler(http.MethodDelete, apiV1Route+"/tokens/user/:user_id",
 		a.authenticate(a.requireActivatedUser(a.requireRole("admin", http.HandlerFunc(a.deleteAllTokensForUserHandler)))))
+
+	// Google OAuth2 routes — used once to obtain a refresh token for
+	// YOUTUBE_REFRESH_TOKEN.  Keep these behind your firewall or restrict them
+	// to admin use; they do not need JWT authentication.
+	router.HandlerFunc(http.MethodGet, apiV1Route+"/oauth/google/login", a.googleLoginHandler)
+	router.HandlerFunc(http.MethodGet, apiV1Route+"/oauth/google/callback", a.googleCallbackHandler)
 	// Apply middleware
 	// Execution order (outermost runs first):
 	// enableCORS → rateLimit → authenticate → recoverPanic → router
