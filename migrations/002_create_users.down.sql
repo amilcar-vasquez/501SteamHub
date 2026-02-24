@@ -1,3 +1,2 @@
--- Down: drop users table
+-- DOWN: Drop users table
 DROP TABLE IF EXISTS users;
-

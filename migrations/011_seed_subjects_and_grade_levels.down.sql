@@ -1,4 +1,0 @@
--- DOWN
-
-DROP TABLE IF EXISTS grade_levels;
-DROP TABLE IF EXISTS subjects;

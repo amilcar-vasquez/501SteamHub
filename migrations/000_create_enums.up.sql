@@ -1,9 +1,10 @@
--- UP
+-- UP: All application-wide ENUMs
 
 CREATE TYPE resource_status AS ENUM (
   'Draft',
   'Submitted',
   'UnderReview',
+  'NeedsRevision',
   'Rejected',
   'Approved',
   'DesignCurate',
