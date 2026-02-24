@@ -5,7 +5,7 @@
   import ActivityViewer from './lesson-blocks/ActivityViewer.svelte';
   import AssessmentViewer from './lesson-blocks/AssessmentViewer.svelte';
   import ExtensionViewer from './lesson-blocks/ExtensionViewer.svelte';
-  import TeacherNotesViewer from './lesson-blocks/TeacherNotesViewer.svelte';
+  import FellowNotesViewer from './lesson-blocks/FellowNotesViewer.svelte';
   import ReviewPanel from './review/ReviewPanel.svelte';
 
   export let lessonContent = { version: 1, blocks: [] };
@@ -24,7 +24,7 @@
     activity: '⚡ Activity',
     assessment: '✅ Assessment',
     extension: '🚀 Extension',
-    teacher_notes: '📝 Teacher Notes',
+    fellow_notes: '📝 Fellow Notes',
   };
 
   const blockTypeIcons = {
@@ -34,7 +34,7 @@
     activity: 'bolt',
     assessment: 'task_alt',
     extension: 'rocket_launch',
-    teacher_notes: 'note',
+    fellow_notes: 'note',
   };
 
   // Pair each block with its original index before filtering so block_index values
@@ -42,9 +42,9 @@
   $: visibleBlocks = (lessonContent.blocks || [])
     .map((block, originalIndex) => ({ block, originalIndex }))
     .filter(({ block }) => {
-      if (block.visibility === 'teacher') {
-        // Only show teacher-only blocks to certain roles
-        return userRole && ['admin', 'CEO', 'DEC', 'TSC', 'Teacher'].includes(userRole);
+      if (block.visibility === 'fellow') {
+        // Only show fellow-only blocks to certain roles
+        return userRole && ['admin', 'CEO', 'DEC', 'TSC', 'Fellow'].includes(userRole);
       }
       return true;
     });
@@ -59,14 +59,14 @@
   {:else}
     <div class="blocks-container">
       {#each visibleBlocks as { block, originalIndex }}
-        <div class="block-viewer" class:teacher-only={block.visibility === 'teacher'}>
+        <div class="block-viewer" class:fellow-only={block.visibility === 'fellow'}>
           <div class="block-header">
             <div class="block-type">
               <span class="material-symbols-outlined">{blockTypeIcons[block.type]}</span>
               <span class="type-label">{blockTypeLabels[block.type]}</span>
             </div>
-            {#if block.visibility === 'teacher'}
-              <span class="teacher-badge">Teacher Only</span>
+            {#if block.visibility === 'fellow'}
+              <span class="fellow-badge">Fellow Only</span>
             {/if}
           </div>
 
@@ -87,8 +87,8 @@
               <AssessmentViewer content={block.content} />
             {:else if block.type === 'extension'}
               <ExtensionViewer content={block.content} />
-            {:else if block.type === 'teacher_notes'}
-              <TeacherNotesViewer content={block.content} />
+            {:else if block.type === 'fellow_notes'}
+              <FellowNotesViewer content={block.content} />
             {/if}
           </div>
 
@@ -140,7 +140,7 @@
     padding: 1.5rem;
   }
 
-  .block-viewer.teacher-only {
+  .block-viewer.fellow-only {
     background-color: var(--md-sys-color-tertiary-container);
     border-left: 4px solid var(--md-sys-color-tertiary);
   }
@@ -168,7 +168,7 @@
     font-size: 1rem;
   }
 
-  .teacher-badge {
+  .fellow-badge {
     padding: 0.25rem 0.75rem;
     background-color: var(--md-sys-color-tertiary);
     color: var(--md-sys-color-on-tertiary);

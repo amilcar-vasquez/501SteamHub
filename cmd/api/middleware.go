@@ -225,6 +225,11 @@ func (a *app) requireRole(roleName string, next http.HandlerFunc) http.HandlerFu
 	return a.requireActivatedUser(fn)
 }
 
+// requireFellow allows Fellows, admin, and DSC to access the wrapped handler.
+func (a *app) requireFellow(next http.HandlerFunc) http.HandlerFunc {
+	return a.requireAnyRole([]string{"Fellow", "admin", "DSC"}, next)
+}
+
 // This middleware checks if the user has one of multiple allowed roles
 func (a *app) requireAnyRole(roleNames []string, next http.HandlerFunc) http.HandlerFunc {
 	fn := func(w http.ResponseWriter, r *http.Request) {

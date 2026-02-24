@@ -162,7 +162,7 @@
     />
     
     <main class="main-content">
-      <!-- Auth CTA Banner (only show when not authenticated) -->
+      <!-- Auth CTA Banner -->
       {#if !$currentUser}
         <div class="auth-banner">
           <div class="banner-content">
@@ -173,6 +173,18 @@
           </div>
           <Button variant="filled" color="secondary" on:click={handleSignUp}>
             Sign Up
+          </Button>
+        </div>
+      {:else if $currentUser.role_name === 'User'}
+        <div class="auth-banner fellow-cta">
+          <div class="banner-content">
+            <span class="material-symbols-outlined">school</span>
+            <p class="body-medium">
+              <strong>Are you an educator?</strong> Apply to become a Fellow and start contributing resources to the platform
+            </p>
+          </div>
+          <Button variant="filled" on:click={() => navigateTo('/dashboard/apply-fellow')}>
+            Apply to Become a Fellow
           </Button>
         </div>
       {/if}
@@ -266,8 +278,8 @@
     </main>
   </div>
   
-  <!-- Floating Action Button for submitting resources -->
-  {#if $currentUser}
+  <!-- Floating Action Button for submitting resources (Fellows and above only) -->
+  {#if $currentUser && $currentUser.role_name !== 'User'}
     <button class="fab" on:click={() => navigateTo('/submit')}>
       <span class="material-symbols-outlined">add</span>
     </button>
@@ -304,6 +316,11 @@
     padding: var(--md-sys-spacing-md) var(--md-sys-spacing-lg);
     border-radius: var(--md-sys-shape-corner-md);
     margin-bottom: var(--md-sys-spacing-lg);
+  }
+
+  .auth-banner.fellow-cta {
+    background-color: var(--md-sys-color-primary-container, #eaddff);
+    color: var(--md-sys-color-on-primary-container, #21005d);
   }
   
   .banner-content {

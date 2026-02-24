@@ -46,30 +46,54 @@ func (a *app) routes() http.Handler {
 	router.Handler(http.MethodDelete, apiV1Route+"/roles/:id",
 		a.requireRole("admin", http.HandlerFunc(a.deleteRoleHandler)))
 
-	// Teacher routes - All authenticated users can list/view
-	router.Handler(http.MethodGet, apiV1Route+"/teachers",
-		a.requireActivatedUser(http.HandlerFunc(a.getAllTeachersHandler)))
-	router.Handler(http.MethodPost, apiV1Route+"/teachers",
-		a.requireActivatedUser(http.HandlerFunc(a.createTeacherHandler)))
-	router.Handler(http.MethodGet, apiV1Route+"/teachers/:id",
-		a.requireActivatedUser(http.HandlerFunc(a.getTeacherHandler)))
-	router.Handler(http.MethodPatch, apiV1Route+"/teachers/:id",
-		a.requireActivatedUser(http.HandlerFunc(a.updateTeacherHandler)))
-	router.Handler(http.MethodDelete, apiV1Route+"/teachers/:id",
-		a.requireAnyRole([]string{"admin", "CEO", "TSC"}, http.HandlerFunc(a.deleteTeacherHandler)))
+	// ── Fellow application routes ────────────────────────────────────────────
+	// IMPORTANT – httprouter wildcard rule:
+	//   A wildcard segment (e.g. :id) CANNOT be registered at a path level
+	//   where any existing static sibling route has its OWN sub-paths
+	//   (children in the radix tree).  If it does, httprouter v1.3.0 panics:
+	//     "wildcard route ':id' conflicts with existing children in path ..."
+	//
+	//   This codebase has hit this three times already.  The fix is always
+	//   the same: give the static sub-routes their OWN top-level prefix so
+	//   they never share a path node with a :wildcard sibling.
+	//
+	//   Existing examples of this pattern:
+	//     /resource-by-slug/:slug   (NOT /resources/:slug)
+	//     /resource-metrics          (NOT /resources/metrics)
+	//     /fellow-applications       (NOT /fellows/apply)  ← this block
+	//     /fellow-applications/me    (NOT /fellows/apply/me)
+	//
+	//   Rule of thumb: if you need BOTH  /foo/:id  AND  /foo/bar/…
+	//   (where bar itself has sub-routes), use a new prefix like /foo-bar/…
+	router.Handler(http.MethodPost, apiV1Route+"/fellow-applications",
+		a.requireActivatedUser(http.HandlerFunc(a.applyForFellowHandler)))
+	router.Handler(http.MethodGet, apiV1Route+"/fellow-applications/me",
+		a.requireActivatedUser(http.HandlerFunc(a.getMyFellowApplicationHandler)))
 
-	// Resource slug route (separate path to avoid httprouter wildcard conflicts)
+	// Fellow routes - All authenticated users can list/view
+	router.Handler(http.MethodGet, apiV1Route+"/fellows",
+		a.requireActivatedUser(http.HandlerFunc(a.getAllFellowsHandler)))
+	router.Handler(http.MethodPost, apiV1Route+"/fellows",
+		a.requireActivatedUser(http.HandlerFunc(a.createFellowHandler)))
+	router.Handler(http.MethodGet, apiV1Route+"/fellows/:id",
+		a.requireActivatedUser(http.HandlerFunc(a.getFellowHandler)))
+	router.Handler(http.MethodPatch, apiV1Route+"/fellows/:id",
+		a.requireActivatedUser(http.HandlerFunc(a.updateFellowHandler)))
+	router.Handler(http.MethodDelete, apiV1Route+"/fellows/:id",
+		a.requireAnyRole([]string{"admin", "CEO", "TSC"}, http.HandlerFunc(a.deleteFellowHandler)))
+
+	// Resource slug route — outside /resources/:id to avoid httprouter wildcard
+	// conflict (see the fellow-applications comment above for the full rule).
 	router.HandlerFunc(http.MethodGet, apiV1Route+"/resource-by-slug/:slug", a.getResourceBySlugHandler)
 
-	// Resource metrics — lives outside /resources/:id to avoid httprouter
-	// wildcard-vs-children conflicts (same pattern as resource-by-slug).
+	// Resource metrics — same reason: avoids wildcard-vs-children conflict.
 	router.Handler(http.MethodGet, apiV1Route+"/resource-metrics",
 		a.requireAnyRole([]string{"SubjectExpert", "TeamLead", "DSC", "admin"}, http.HandlerFunc(a.resourceMetricsHandler)))
 
-	// Resource routes - Public can view, authenticated users can create/modify
+	// Resource routes - Fellows, admin, DSC can create; public can view
 	router.HandlerFunc(http.MethodGet, apiV1Route+"/resources", a.getAllResourcesHandler)
 	router.Handler(http.MethodPost, apiV1Route+"/resources",
-		a.requireActivatedUser(http.HandlerFunc(a.createResourceHandler)))
+		a.requireFellow(http.HandlerFunc(a.createResourceHandler)))
 	router.HandlerFunc(http.MethodGet, apiV1Route+"/resources/:id/lessons", a.getResourceLessonsHandler)
 	router.HandlerFunc(http.MethodGet, apiV1Route+"/resources/:id/comments", a.getResourceCommentsHandler)
 	// Review comments per resource (anyone authenticated can view; reviewers can create/resolve)
@@ -155,6 +179,14 @@ func (a *app) routes() http.Handler {
 	// Resource status override — lets admins/DSC force-set any status value.
 	router.Handler(http.MethodPost, apiV1Route+"/resources/:id/status",
 		a.requireAnyRole([]string{"admin", "DSC"}, http.HandlerFunc(a.overrideResourceStatusHandler)))
+
+	// Admin fellow application review endpoints
+	router.Handler(http.MethodGet, apiV1Route+"/admin/fellow-applications",
+		a.requireAnyRole([]string{"admin", "DSC"}, http.HandlerFunc(a.adminListFellowApplicationsHandler)))
+	router.Handler(http.MethodPatch, apiV1Route+"/admin/fellow-applications/:id/approve",
+		a.requireAnyRole([]string{"admin", "DSC"}, http.HandlerFunc(a.adminApproveFellowHandler)))
+	router.Handler(http.MethodPatch, apiV1Route+"/admin/fellow-applications/:id/reject",
+		a.requireAnyRole([]string{"admin", "DSC"}, http.HandlerFunc(a.adminRejectFellowHandler)))
 
 	// Admin-level metrics: user counts + full resource-status breakdown.
 	router.Handler(http.MethodGet, apiV1Route+"/admin/metrics",

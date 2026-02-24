@@ -7,6 +7,7 @@
   import TopAppBar from '../components/TopAppBar.svelte';
   import ResourceAdminTable from '../lib/components/admin/ResourceAdminTable.svelte';
   import UserAdminTable from '../lib/components/admin/UserAdminTable.svelte';
+  import FellowApplicationsTable from '../lib/components/admin/FellowApplicationsTable.svelte';
 
   const ADMIN_ROLES = ['admin', 'DSC'];
 
@@ -110,6 +111,9 @@
 
     <!-- ── User Management Panel ──────────────────────────────────────────── -->
     <UserAdminTable />
+
+    <!-- ── Fellow Applications Panel ─────────────────────────────────────── -->
+    <FellowApplicationsTable />
   </main>
 </div>
 

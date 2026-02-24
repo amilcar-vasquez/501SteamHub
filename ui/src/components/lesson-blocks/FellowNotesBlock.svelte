@@ -7,22 +7,22 @@
   }
 </script>
 
-<div class="teacher-notes-block">
+<div class="fellow-notes-block">
   <div class="visibility-badge">
     <span class="material-symbols-outlined">visibility_off</span>
-    Teacher Only
+    Fellow Only
   </div>
   
   <textarea
     bind:value={content}
     on:input={handleUpdate}
-    placeholder="Add notes visible only to teachers (tips, common pitfalls, timing suggestions, etc.)..."
+    placeholder="Add notes visible only to fellows (tips, common pitfalls, timing suggestions, etc.)..."
     rows="6"
   ></textarea>
 </div>
 
 <style>
-  .teacher-notes-block {
+  .fellow-notes-block {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;

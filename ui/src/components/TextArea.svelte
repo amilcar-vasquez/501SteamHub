@@ -57,7 +57,7 @@
 
   textarea {
     width: 100%;
-    min-height: 120px; /* Larger for teacher fellows */
+    min-height: 120px; /* Larger for fellows */
     padding: 28px 16px 12px;
     font-size: 18px; /* Bigger font */
     font-family: var(--md-sys-typescale-body-large-font);

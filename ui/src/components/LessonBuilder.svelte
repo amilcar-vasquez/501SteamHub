@@ -16,7 +16,7 @@
     { value: 'activity', label: '⚡ Activity', defaultContent: [] },
     { value: 'assessment', label: '✅ Assessment', defaultContent: { type: '', description: '' } },
     { value: 'extension', label: '🚀 Extension', defaultContent: [] },
-    { value: 'teacher_notes', label: '📝 Teacher Notes', defaultContent: '' },
+    { value: 'fellow_notes', label: '📝 Fellow Notes', defaultContent: '' },
   ];
 
   let selectedBlockType = '';
@@ -32,7 +32,7 @@
       id: generateUUID(),
       type: blockTypeValue,
       title: '',
-      visibility: blockTypeValue === 'teacher_notes' ? 'teacher' : 'public',
+      visibility: blockTypeValue === 'fellow_notes' ? 'fellow' : 'public',
       content: JSON.parse(JSON.stringify(blockType.defaultContent))
     };
   }

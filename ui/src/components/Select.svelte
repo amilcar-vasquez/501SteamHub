@@ -45,7 +45,7 @@
 
   select {
     width: 100%;
-    height: 64px; /* Larger for teacher fellows */
+    height: 64px; /* Larger for fellows */
     padding: 24px 16px 8px;
     font-size: 18px; /* Bigger font */
     font-family: var(--md-sys-typescale-body-large-font);

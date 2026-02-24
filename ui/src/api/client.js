@@ -224,4 +224,51 @@ export const adminAPI = {
   },
 };
 
+// Fellow Application API methods
+export const fellowApplicationAPI = {
+  // POST /v1/fellow-applications — submit a new application (role=User only)
+  // NOTE: /fellow-applications prefix avoids httprouter wildcard conflict with /fellows/:id
+  apply: async (applicationData, authToken) => {
+    return request('/fellow-applications', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${authToken}` },
+      body: JSON.stringify(applicationData),
+    });
+  },
+
+  // GET /v1/fellow-applications/me — get the current user's application status
+  getMyApplication: async (authToken) => {
+    return request('/fellow-applications/me', {
+      headers: { 'Authorization': `Bearer ${authToken}` },
+    });
+  },
+};
+
+// Admin fellow application endpoints
+Object.assign(adminAPI, {
+  // GET /v1/admin/fellow-applications
+  listFellowApplications: async (authToken, statusFilter = '') => {
+    const qs = statusFilter ? `?status=${statusFilter}` : '';
+    return request(`/admin/fellow-applications${qs}`, {
+      headers: { 'Authorization': `Bearer ${authToken}` },
+    });
+  },
+
+  // PATCH /v1/admin/fellow-applications/:id/approve
+  approveFellowApplication: async (id, authToken) => {
+    return request(`/admin/fellow-applications/${id}/approve`, {
+      method: 'PATCH',
+      headers: { 'Authorization': `Bearer ${authToken}` },
+    });
+  },
+
+  // PATCH /v1/admin/fellow-applications/:id/reject
+  rejectFellowApplication: async (id, authToken) => {
+    return request(`/admin/fellow-applications/${id}/reject`, {
+      method: 'PATCH',
+      headers: { 'Authorization': `Bearer ${authToken}` },
+    });
+  },
+});
+
 export { APIError };

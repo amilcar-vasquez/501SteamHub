@@ -6,7 +6,7 @@
   import ActivityBlock from './lesson-blocks/ActivityBlock.svelte';
   import AssessmentBlock from './lesson-blocks/AssessmentBlock.svelte';
   import ExtensionBlock from './lesson-blocks/ExtensionBlock.svelte';
-  import TeacherNotesBlock from './lesson-blocks/TeacherNotesBlock.svelte';
+  import FellowNotesBlock from './lesson-blocks/FellowNotesBlock.svelte';
   import ReviewPanel from './review/ReviewPanel.svelte';
 
   export let block;
@@ -30,7 +30,7 @@
     activity: '⚡ Activity',
     assessment: '✅ Assessment',
     extension: '🚀 Extension',
-    teacher_notes: '📝 Teacher Notes',
+    fellow_notes: '📝 Fellow Notes',
   };
 
   const blockTypeIcons = {
@@ -40,7 +40,7 @@
     activity: 'bolt',
     assessment: 'task_alt',
     extension: 'rocket_launch',
-    teacher_notes: 'note',
+    fellow_notes: 'note',
   };
 
   // Pure update functions - return new object
@@ -57,12 +57,12 @@
   }
 
   function toggleVisibility() {
-    const newVisibility = block.visibility === 'public' ? 'teacher' : 'public';
+    const newVisibility = block.visibility === 'public' ? 'fellow' : 'public';
     onUpdate({ ...block, visibility: newVisibility });
   }
 </script>
 
-<div class="block-container" class:teacher-only={block.visibility === 'teacher'} class:collapsed>
+<div class="block-container" class:fellow-only={block.visibility === 'fellow'} class:collapsed>
   <div class="block-header">
     <div class="header-left">
       <div
@@ -85,8 +85,8 @@
         type="button"
         class="icon-btn visibility-toggle"
         on:click={toggleVisibility}
-        title={block.visibility === 'public' ? 'Visible to all' : 'Teacher only'}
-        aria-label={block.visibility === 'public' ? 'Make teacher only' : 'Make visible to all'}
+        title={block.visibility === 'public' ? 'Visible to all' : 'Fellow only'}
+        aria-label={block.visibility === 'public' ? 'Make fellow only' : 'Make visible to all'}
       >
         <span class="material-symbols-outlined">
           {block.visibility === 'public' ? 'visibility' : 'visibility_off'}
@@ -145,8 +145,8 @@
           <AssessmentBlock content={block.content} onUpdate={handleContentUpdate} />
         {:else if block.type === 'extension'}
           <ExtensionBlock content={block.content} onUpdate={handleContentUpdate} />
-        {:else if block.type === 'teacher_notes'}
-          <TeacherNotesBlock content={block.content} onUpdate={handleContentUpdate} />
+        {:else if block.type === 'fellow_notes'}
+          <FellowNotesBlock content={block.content} onUpdate={handleContentUpdate} />
         {/if}
       </div>
 
@@ -178,13 +178,13 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
-  .block-container.teacher-only {
+  .block-container.fellow-only {
     background: var(--md-sys-color-tertiary-container);
     border-left: 4px solid var(--md-sys-color-tertiary);
   }
 
-  .block-container.teacher-only::before {
-    content: 'Teacher Only';
+  .block-container.fellow-only::before {
+    content: 'Fellow Only';
     position: absolute;
     top: 0.5rem;
     right: 0.5rem;

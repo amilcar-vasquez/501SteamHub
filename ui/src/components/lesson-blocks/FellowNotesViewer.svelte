@@ -2,18 +2,18 @@
   export let content = '';
 </script>
 
-<div class="teacher-notes-viewer">
+<div class="fellow-notes-viewer">
   {#if content}
     <div class="notes-content">
       <p>{content}</p>
     </div>
   {:else}
-    <p class="empty-message">No teacher notes provided</p>
+    <p class="empty-message">No fellow notes provided</p>
   {/if}
 </div>
 
 <style>
-  .teacher-notes-viewer {
+  .fellow-notes-viewer {
     width: 100%;
   }
 

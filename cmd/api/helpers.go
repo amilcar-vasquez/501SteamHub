@@ -192,7 +192,7 @@ func (a *app) canAccessUserData(currentUser *data.User, targetUserID int64) (boo
 	}
 
 	// System Users can only access their own data
-	if role.RoleName == "Teacher" {
+	if role.RoleName == "Fellow" {
 		return currentUser.ID == targetUserID, nil
 	}
 

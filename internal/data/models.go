@@ -10,7 +10,8 @@ import (
 type Models struct {
 	Users                 *UserModel
 	Roles                 RoleModelInterface
-	Teachers              TeacherModelInterface
+	Fellows               FellowModelInterface
+	FellowApplications    FellowApplicationModelInterface
 	Resources             ResourceModelInterface
 	ResourceReviews       *ResourceReviewModel
 	ResourceAccess        *ResourceAccessModel
@@ -30,7 +31,8 @@ func NewModels(db *sql.DB) *Models {
 	return &Models{
 		Users:                 &UserModel{DB: db},
 		Roles:                 &RoleModel{DB: db},
-		Teachers:              &TeacherModel{DB: db},
+		Fellows:               &FellowModel{DB: db},
+		FellowApplications:    &FellowApplicationModel{DB: db},
 		Resources:             &ResourceModel{DB: db},
 		ResourceReviews:       &ResourceReviewModel{DB: db},
 		ResourceAccess:        &ResourceAccessModel{DB: db},
@@ -53,7 +55,8 @@ func NewTestModels() *Models {
 	return &Models{
 		Users:                 &UserModel{DB: nil},
 		Roles:                 &RoleModel{DB: nil},
-		Teachers:              &TeacherModel{DB: nil},
+		Fellows:               &FellowModel{DB: nil},
+		FellowApplications:    &FellowApplicationModel{DB: nil},
 		Resources:             &ResourceModel{DB: nil},
 		ResourceReviews:       &ResourceReviewModel{DB: nil},
 		ResourceAccess:        &ResourceAccessModel{DB: nil},

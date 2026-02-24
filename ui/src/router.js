@@ -35,6 +35,11 @@ export function handleRouteChange() {
     return;
   }
 
+  if (pathname === '/dashboard/apply-fellow' || pathname === '/dashboard/apply-fellow/') {
+    currentRoute.set({ page: 'apply-fellow', params: {} });
+    return;
+  }
+
   // Simple page routes
   const page = pathname.replace(/^\//, '') || 'home';
 

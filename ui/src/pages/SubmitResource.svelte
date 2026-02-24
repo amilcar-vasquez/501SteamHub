@@ -91,6 +91,12 @@
     // Redirect if not authenticated
     if (!$currentUser) {
       navigateTo('/signin');
+      return;
+    }
+    // Redirect Users (non-Fellows) to the application page
+    const ALLOWED_ROLES = ['Fellow', 'admin', 'DSC', 'SubjectExpert', 'TeamLead', 'Secretary'];
+    if (!ALLOWED_ROLES.includes($currentUser.role_name)) {
+      navigateTo('/dashboard/apply-fellow');
     }
   });
 

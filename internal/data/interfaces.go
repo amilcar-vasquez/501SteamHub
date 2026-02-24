@@ -28,12 +28,23 @@ type ResourceModelInterface interface {
 	SetGradeLevels(int64, []string) error
 }
 
-// TeacherModelInterface defines the interface for teacher operations
-type TeacherModelInterface interface {
-	Insert(*Teacher) error
-	Get(int64) (*Teacher, error)
-	GetByUserID(int64) (*Teacher, error)
-	Update(*Teacher) error
+// FellowApplicationModelInterface defines the interface for fellow application operations
+type FellowApplicationModelInterface interface {
+	Insert(*FellowApplication) error
+	Get(int64) (*FellowApplication, error)
+	GetByUserID(int64) (*FellowApplication, error)
+	HasPendingApplication(int64) (bool, error)
+	Approve(id, reviewerID int64) error
+	Reject(id, reviewerID int64) error
+	GetAll(statusFilter string) ([]*FellowApplication, error)
+}
+
+// FellowModelInterface defines the interface for fellow operations
+type FellowModelInterface interface {
+	Insert(*Fellow) error
+	Get(int64) (*Fellow, error)
+	GetByUserID(int64) (*Fellow, error)
+	Update(*Fellow) error
 	Delete(int64) error
 }
 

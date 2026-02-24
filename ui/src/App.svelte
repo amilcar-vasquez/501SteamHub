@@ -7,6 +7,7 @@
   import ResourcePage from './pages/ResourcePage.svelte';
   import ReviewerDashboard from './pages/ReviewerDashboard.svelte';
   import AdminDashboard from './pages/AdminDashboard.svelte';
+  import ApplyFellow from './pages/ApplyFellow.svelte';
   import { currentRoute, navigateTo, handleRouteChange } from './router.js';
   
   function navigate(event) {
@@ -38,6 +39,8 @@
     <ReviewerDashboard />
   {:else if currentPage === 'admin-dashboard'}
     <AdminDashboard />
+  {:else if currentPage === 'apply-fellow'}
+    <ApplyFellow />
   {:else}
     <Home on:navigate={navigate} />
   {/if}
