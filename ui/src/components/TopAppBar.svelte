@@ -71,7 +71,9 @@
           <span class="material-symbols-outlined">menu</span>
         </button>
       {/if}
-      <h1 class="app-title title-large">501 STEAM Hub</h1>
+      <button class="app-title-button" on:click={() => navigateTo('/home')}>
+        <h1 class="app-title title-large">501 STEAM Hub</h1>
+      </button>
     </div>
     
     <!-- Center: Search -->
@@ -96,12 +98,14 @@
     <!-- Right: User avatar -->
     <div class="app-bar-right">
       {#if $currentUser}
-        <button class="submit-resource-button" on:click={handleSubmitResource}>
-          <span class="material-symbols-outlined">add_circle</span>
-          {#if !isMobile}
-            <span>Submit Resource</span>
-          {/if}
-        </button>
+        {#if $currentUser.role_name !== 'User'}
+          <button class="submit-resource-button" on:click={handleSubmitResource}>
+            <span class="material-symbols-outlined">add_circle</span>
+            {#if !isMobile}
+              <span>Submit Resource</span>
+            {/if}
+          </button>
+        {/if}
         <button class="icon-button">
           <span class="material-symbols-outlined">notifications</span>
         </button>
@@ -171,10 +175,19 @@
     min-width: 200px;
   }
   
+  .app-title-button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    line-height: 0;
+  }
+
   .app-title {
     color: var(--md-sys-color-on-primary);
     white-space: nowrap;
     user-select: none;
+    margin: 0;
   }
   
   .app-bar-center {
