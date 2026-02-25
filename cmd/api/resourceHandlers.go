@@ -509,6 +509,18 @@ func (a *app) getResourceBySlugHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Record a view for authenticated (non-anonymous) users
+	user := a.contextGetUser(r)
+	if !user.IsAnonymous() {
+		_ = a.models.ResourceAccess.Insert(&data.ResourceAccess{
+			ResourceID: resource.ID,
+			UserID:     user.ID,
+		})
+		// Increment view count in the already-fetched resource so the
+		// response reflects the access we just recorded.
+		resource.ViewCount++
+	}
+
 	// Fetch lessons for this resource
 	lessons, err := a.models.Lessons.GetByResource(resource.ID)
 	if err != nil {

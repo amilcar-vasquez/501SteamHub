@@ -9,19 +9,21 @@ import (
 )
 
 type Resource struct {
-	ID            int64     `json:"resource_id"`
-	Title         string    `json:"title"`
-	Category      string    `json:"category"`
-	Slug          *string   `json:"slug,omitempty"`
-	Summary       *string   `json:"summary,omitempty"`
-	DriveLink     *string   `json:"drive_link,omitempty"`
-	Status        string    `json:"status"`
-	PublishedURL  *string   `json:"published_url,omitempty"`
-	ContributorID int64     `json:"contributor_id"`
-	CreatedAt     time.Time `json:"created_at"`
-	UpdatedAt     time.Time `json:"updated_at"`
-	Subjects      []string  `json:"subjects,omitempty"`
-	GradeLevels   []string  `json:"grade_levels,omitempty"`
+	ID              int64     `json:"resource_id"`
+	Title           string    `json:"title"`
+	Category        string    `json:"category"`
+	Slug            *string   `json:"slug,omitempty"`
+	Summary         *string   `json:"summary,omitempty"`
+	DriveLink       *string   `json:"drive_link,omitempty"`
+	Status          string    `json:"status"`
+	PublishedURL    *string   `json:"published_url,omitempty"`
+	ContributorID   int64     `json:"contributor_id"`
+	CreatedAt       time.Time `json:"created_at"`
+	UpdatedAt       time.Time `json:"updated_at"`
+	Subjects        []string  `json:"subjects,omitempty"`
+	GradeLevels     []string  `json:"grade_levels,omitempty"`
+	ContributorName string    `json:"contributor_name,omitempty"`
+	ViewCount       int64     `json:"view_count"`
 }
 
 type ResourceModel struct {
@@ -105,9 +107,13 @@ func (m ResourceModel) Get(id int64) (*Resource, error) {
 	}
 
 	query := `
-		SELECT resource_id, title, category, slug, summary, drive_link, status, published_url, contributor_id, created_at, updated_at
-		FROM resources
-		WHERE resource_id = $1`
+		SELECT r.resource_id, r.title, r.category, r.slug, r.summary, r.drive_link, r.status, r.published_url, r.contributor_id, r.created_at, r.updated_at,
+			COALESCE(f.first_name || ' ' || f.last_name, u.username, 'Unknown') AS contributor_name,
+			(SELECT COUNT(*) FROM resource_access ra WHERE ra.resource_id = r.resource_id) AS view_count
+		FROM resources r
+		LEFT JOIN fellows f ON f.user_id = r.contributor_id
+		LEFT JOIN users u ON u.user_id = r.contributor_id
+		WHERE r.resource_id = $1`
 
 	var resource Resource
 
@@ -126,6 +132,8 @@ func (m ResourceModel) Get(id int64) (*Resource, error) {
 		&resource.ContributorID,
 		&resource.CreatedAt,
 		&resource.UpdatedAt,
+		&resource.ContributorName,
+		&resource.ViewCount,
 	)
 
 	if err != nil {
@@ -158,9 +166,13 @@ func (m ResourceModel) GetBySlug(slug string) (*Resource, error) {
 	}
 
 	query := `
-		SELECT resource_id, title, category, slug, summary, drive_link, status, published_url, contributor_id, created_at, updated_at
-		FROM resources
-		WHERE slug = $1`
+		SELECT r.resource_id, r.title, r.category, r.slug, r.summary, r.drive_link, r.status, r.published_url, r.contributor_id, r.created_at, r.updated_at,
+			COALESCE(f.first_name || ' ' || f.last_name, u.username, 'Unknown') AS contributor_name,
+			(SELECT COUNT(*) FROM resource_access ra WHERE ra.resource_id = r.resource_id) AS view_count
+		FROM resources r
+		LEFT JOIN fellows f ON f.user_id = r.contributor_id
+		LEFT JOIN users u ON u.user_id = r.contributor_id
+		WHERE r.slug = $1`
 
 	var resource Resource
 
@@ -179,6 +191,8 @@ func (m ResourceModel) GetBySlug(slug string) (*Resource, error) {
 		&resource.ContributorID,
 		&resource.CreatedAt,
 		&resource.UpdatedAt,
+		&resource.ContributorName,
+		&resource.ViewCount,
 	)
 
 	if err != nil {
@@ -227,8 +241,12 @@ func (m ResourceModel) GetAll(status string, subject string, gradeLevel string, 
 
 		// Main query with joins
 		query = `
-			SELECT DISTINCT r.resource_id, r.title, r.category, r.slug, r.summary, r.drive_link, r.status, r.published_url, r.contributor_id, r.created_at, r.updated_at
+			SELECT DISTINCT r.resource_id, r.title, r.category, r.slug, r.summary, r.drive_link, r.status, r.published_url, r.contributor_id, r.created_at, r.updated_at,
+				COALESCE(f.first_name || ' ' || f.last_name, u.username, 'Unknown') AS contributor_name,
+				(SELECT COUNT(*) FROM resource_access ra WHERE ra.resource_id = r.resource_id) AS view_count
 			FROM resources r
+			LEFT JOIN fellows f ON f.user_id = r.contributor_id
+			LEFT JOIN users u ON u.user_id = r.contributor_id
 			LEFT JOIN resource_subjects rs ON r.resource_id = rs.resource_id
 			LEFT JOIN resource_grade_levels rgl ON r.resource_id = rgl.resource_id
 			WHERE ($1 = '' OR r.status = $1::resource_status)
@@ -253,10 +271,14 @@ func (m ResourceModel) GetAll(status string, subject string, gradeLevel string, 
 
 		// Simple main query
 		query = `
-			SELECT resource_id, title, category, slug, summary, drive_link, status, published_url, contributor_id, created_at, updated_at
-			FROM resources
-			WHERE ($1 = '' OR status = $1::resource_status)
-			ORDER BY created_at DESC
+			SELECT r.resource_id, r.title, r.category, r.slug, r.summary, r.drive_link, r.status, r.published_url, r.contributor_id, r.created_at, r.updated_at,
+				COALESCE(f.first_name || ' ' || f.last_name, u.username, 'Unknown') AS contributor_name,
+				(SELECT COUNT(*) FROM resource_access ra WHERE ra.resource_id = r.resource_id) AS view_count
+			FROM resources r
+			LEFT JOIN fellows f ON f.user_id = r.contributor_id
+			LEFT JOIN users u ON u.user_id = r.contributor_id
+			WHERE ($1 = '' OR r.status = $1::resource_status)
+			ORDER BY r.created_at DESC
 			LIMIT $2 OFFSET $3`
 
 		args = []any{status, filters.limit(), filters.offset()}
@@ -290,6 +312,8 @@ func (m ResourceModel) GetAll(status string, subject string, gradeLevel string, 
 			&resource.ContributorID,
 			&resource.CreatedAt,
 			&resource.UpdatedAt,
+			&resource.ContributorName,
+			&resource.ViewCount,
 		)
 		if err != nil {
 			return nil, Metadata{}, err

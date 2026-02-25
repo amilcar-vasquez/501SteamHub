@@ -109,8 +109,8 @@
         grade: resource.grade_levels && resource.grade_levels.length > 0 ? resource.grade_levels[0] : 'Mixed',
         grades: resource.grade_levels || [],
         iloCount: 0, // No longer tracking ILO in new schema
-        contributor: `Contributor #${resource.contributor_id}`, // TODO: fetch user name
-        viewCount: 0, // TODO: implement view tracking
+        contributor: resource.contributor_name || `Contributor #${resource.contributor_id}`, // Fellow's full name
+        viewCount: resource.view_count || 0, // actual view count from DB
         contributionScore: 0, // TODO: implement scoring system
         status: resource.status,
         slug: resource.slug, // Include slug for navigation
