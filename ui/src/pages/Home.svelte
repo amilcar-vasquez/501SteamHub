@@ -37,15 +37,25 @@
   $: activeFilters = [
     ...filters.subjects.map(s => ({ type: 'subject', value: s, label: s })),
     ...filters.gradeLevels.map(g => ({ type: 'gradeLevel', value: g, label: g })),
-    ...filters.resourceTypes.map(r => ({ type: 'resourceType', value: r, label: r })),
+    ...filters.resourceTypes.map(r => ({ type: 'resourceType', value: r, label: formatCategoryLabel(r) })),
     ...(filters.contributor ? [{ type: 'contributor', value: filters.contributor, label: filters.contributor }] : []),
     ...(filters.school ? [{ type: 'school', value: filters.school, label: filters.school }] : [])
   ];
   
-  // Resources from API
-  let resources = [];
+  // Resources from API — allResources holds the full page from the API;
+  // resources is the client-side-filtered view (by category)
+  let allResources = [];
   let metadata = {};
-  
+
+  function formatCategoryLabel(val) {
+    const labels = { LessonPlan: 'Lesson Plan', Video: 'Video', Slideshow: 'Slideshow', Assessment: 'Assessment', Other: 'Other' };
+    return labels[val] ?? val;
+  }
+
+  $: resources = filters.resourceTypes.length > 0
+    ? allResources.filter(r => filters.resourceTypes.includes(r.category))
+    : allResources;
+
   $: resultCount = resources.length;
   
   // Load resources on mount and when filters change
@@ -89,7 +99,7 @@
       
       // Map API response to match ResourceCard props
       const apiResources = response.resources || [];
-      resources = apiResources.map(resource => ({
+      allResources = apiResources.map(resource => ({
         id: resource.resource_id,
         category: resource.category,
         title: resource.title,
@@ -111,7 +121,7 @@
     } catch (error) {
       console.error('Failed to load resources:', error);
       loadError = 'Failed to load resources. Please try again.';
-      resources = [];
+      allResources = [];
     } finally {
       isLoading = false;
     }
@@ -162,6 +172,12 @@
     />
     
     <main class="main-content">
+      <!-- Hero Banner -->
+      <div class="hero-banner" role="img" aria-label="501 STEAM Hub banner">
+        <!-- Replace the inner div below with an <img> tag once the banner PNG is ready -->
+        <img src="/banner.png" alt="501 STEAM Hub banner" class="hero-placeholder" />
+      </div>
+
       <!-- Auth CTA Banner -->
       {#if !$currentUser}
         <div class="auth-banner">
@@ -305,7 +321,39 @@
     overflow-y: auto;
     background-color: var(--md-sys-color-surface);
   }
-  
+
+  /* --- Hero Banner --- */
+  .hero-banner {
+    width: 100%;
+    border-radius: var(--md-sys-shape-corner-xl, 28px);
+    overflow: hidden;
+    margin-bottom: var(--md-sys-spacing-lg);
+    background-color: var(--md-sys-color-surface-variant);
+    /* When the PNG is ready, set it here:
+       background-image: url('/banner.png');
+       background-size: cover;
+       background-position: center;
+    */
+    box-shadow: var(--md-sys-elevation-1);
+    aspect-ratio: 16 / 8;
+    min-height: 120px;
+    max-height: 360px;
+  }
+
+  .hero-placeholder {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  @media (max-width: 600px) {
+    .hero-banner {
+      aspect-ratio: 16 / 9;
+      border-radius: var(--md-sys-shape-corner-md, 12px);
+    }
+  }
   .auth-banner {
     display: flex;
     align-items: center;

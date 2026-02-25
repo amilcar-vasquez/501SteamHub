@@ -42,10 +42,23 @@
   
   function getCategoryColor(cat) {
     switch(cat) {
-      case 'Lesson Plan': return 'category-lesson';
-      case 'Video': return 'category-video';
+      case 'LessonPlan': return 'category-lesson';
+      case 'Video':      return 'category-video';
+      case 'Slideshow':  return 'category-slideshow';
       case 'Assessment': return 'category-assessment';
-      default: return 'category-default';
+      case 'Other':      return 'category-other';
+      default:           return 'category-default';
+    }
+  }
+
+  function getCategoryLabel(cat) {
+    switch(cat) {
+      case 'LessonPlan': return 'Lesson Plan';
+      case 'Video':      return 'Video';
+      case 'Slideshow':  return 'Slideshow';
+      case 'Assessment': return 'Assessment';
+      case 'Other':      return 'Other';
+      default:           return cat || 'Unknown';
     }
   }
   
@@ -87,7 +100,7 @@
   <article class="card-content">
     <!-- Category chip -->
     <div class="category-chip label-medium {getCategoryColor(category)}">
-      {category}
+      {getCategoryLabel(category)}
     </div>
     
     <!-- Title -->
@@ -206,6 +219,16 @@
   .category-assessment {
     background-color: #fff3e0;
     color: #e65100;
+  }
+
+  .category-slideshow {
+    background-color: #f3e5f5;
+    color: #6a1b9a;
+  }
+
+  .category-other {
+    background-color: #fce4ec;
+    color: #880e4f;
   }
   
   .category-default {

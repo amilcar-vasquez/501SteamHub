@@ -45,9 +45,15 @@
     'Mixed'
   ];
   
+  // These values match the resource_category DB enum exactly
   const resourceTypes = [
-    'Lesson Plan', 'Video', 'Assessment', 'Activity', 'Presentation', 'Worksheet'
+    'LessonPlan', 'Video', 'Slideshow', 'Assessment', 'Other'
   ];
+
+  function formatCategoryLabel(val) {
+    const labels = { LessonPlan: 'Lesson Plan', Video: 'Video', Slideshow: 'Slideshow', Assessment: 'Assessment', Other: 'Other' };
+    return labels[val] ?? val;
+  }
   
   const contributors = [
     'Dr. Sarah Mitchell', 'Prof. James Chen', 'Maria Rodriguez', 
@@ -152,7 +158,7 @@
       <div class="chip-list">
         {#each resourceTypes as type}
           <FilterChip 
-            label={type} 
+            label={formatCategoryLabel(type)} 
             selected={filters.resourceTypes.includes(type)}
             on:click={() => toggleResourceType(type)}
           />
