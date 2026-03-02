@@ -10,13 +10,13 @@
   };
 
   const blockTypes = [
-    { value: 'objectives', label: '🎯 Learning Objectives', defaultContent: [] },
-    { value: 'materials', label: '📦 Materials', defaultContent: [] },
-    { value: 'warmup', label: '🔥 Warm-up', defaultContent: { description: '', duration_minutes: 5 } },
-    { value: 'activity', label: '⚡ Activity', defaultContent: [] },
-    { value: 'assessment', label: '✅ Assessment', defaultContent: { type: '', description: '' } },
-    { value: 'extension', label: '🚀 Extension', defaultContent: [] },
-    { value: 'fellow_notes', label: '📝 Fellow Notes', defaultContent: '' },
+    { value: 'objectives', label: 'Learning Objectives', defaultContent: [] },
+    { value: 'materials', label: 'Materials', defaultContent: [] },
+    { value: 'warmup', label: 'Warm-up', defaultContent: { description: '', duration_minutes: 5 } },
+    { value: 'activity', label: 'Activity', defaultContent: [] },
+    { value: 'assessment', label: 'Assessment', defaultContent: { type: '', description: '' } },
+    { value: 'extension', label: 'Extension', defaultContent: [] },
+    { value: 'fellow_notes', label: 'Fellow Notes', defaultContent: '' },
   ];
 
   let selectedBlockType = '';

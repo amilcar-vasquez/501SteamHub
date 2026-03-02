@@ -18,12 +18,12 @@
   export let currentUser = null;
 
   const blockTypeLabels = {
-    objectives: '🎯 Learning Objectives',
-    materials: '📦 Materials',
-    warmup: '🔥 Warm-up',
-    activity: '⚡ Activity',
-    assessment: '✅ Assessment',
-    extension: '🚀 Extension',
+    objectives: 'Learning Objectives',
+    materials: 'Materials',
+    warmup: 'Warm-up',
+    activity: 'Activity',
+    assessment: 'Assessment',
+    extension: 'Extension',
     fellow_notes: '📝 Fellow Notes',
   };
 
@@ -109,6 +109,7 @@
 <style>
   .lesson-viewer {
     width: 100%;
+    font-family: 'Poppins', sans-serif;
   }
 
   .empty-state {

@@ -7,8 +7,8 @@
     <div class="steps-container">
       {#each content as step}
         <div class="step-item">
-          <div class="step-number">Step {step.step}</div>
-          <div class="step-text">{step.text}</div>
+          
+          <div class="step-text"><span class="step-number"> {step.step}. </span>{step.text}</div>
         </div>
       {/each}
     </div>
@@ -47,7 +47,7 @@
 
   .step-text {
     color: var(--md-sys-color-on-surface);
-    line-height: 1.6;
+    line-height: 1.1;
     white-space: pre-wrap;
   }
 

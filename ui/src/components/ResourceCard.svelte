@@ -237,7 +237,7 @@
   }
   
   .card-title {
-    color: var(--md-sys-color-on-surface);
+    color: var(--md-sys-color-secondary);
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;
