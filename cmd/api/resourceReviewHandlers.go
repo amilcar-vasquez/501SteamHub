@@ -54,44 +54,53 @@ func (a *app) createResourceReviewHandler(w http.ResponseWriter, r *http.Request
 	// Apply resource status transition based on the reviewer's decision.
 	// "Rejected" moves the resource to NeedsRevision so the contributor can revise.
 	// "Approved" moves the resource to the Approved stage.
-	// We do this as a best-effort update; a failure is logged but does not abort the response.
+	// Status update errors are returned to the caller so the frontend always
+	// receives the real DB state (no silent failures).
+	var updatedResource *data.Resource
 	if review.ResourceID > 0 {
 		resource, getErr := a.models.Resources.Get(review.ResourceID)
-		if getErr == nil {
-			oldStatus := resource.Status
-			switch review.Decision {
-			case "Rejected":
-				resource.Status = "NeedsRevision"
-			case "Approved":
-				resource.Status = "Approved"
+		if getErr != nil {
+			a.serverErrorResponse(w, r, getErr)
+			return
+		}
+
+		oldStatus := resource.Status
+		switch review.Decision {
+		case "Rejected":
+			resource.Status = "NeedsRevision"
+		case "Approved":
+			resource.Status = "Approved"
+		}
+
+		if oldStatus != resource.Status {
+			if updateErr := a.models.Resources.Update(resource); updateErr != nil {
+				a.serverErrorResponse(w, r, updateErr)
+				return
 			}
-			if oldStatus != resource.Status {
-				if updateErr := a.models.Resources.Update(resource); updateErr == nil {
-					user := a.contextGetUser(r)
-					a.logResourceStatusChange(resource.ID, oldStatus, resource.Status, user.ID)
-					// Trigger YouTube upload for approved Video resources.
-					// Runs in a background goroutine; the HTTP response is not blocked.
-					if review.Decision == "Approved" && resource.Category == "Video" {
-						if a.youtubeUploader != nil {
-							a.youtubeUploader.UploadResourceToYouTube(resource)
-						} else {
-							a.logger.Warn("video approved but YouTube uploader is not configured — skipping upload",
-								"resource_id", resource.ID)
-						}
-					}
+			user := a.contextGetUser(r)
+			a.logResourceStatusChange(resource.ID, oldStatus, resource.Status, user.ID)
+
+			// Trigger YouTube upload for approved Video resources only when
+			// no published_url exists yet — prevents re-uploading after an
+			// admin resets and re-approves an already-published video.
+			if review.Decision == "Approved" && resource.Category == "Video" &&
+				(resource.PublishedURL == nil || *resource.PublishedURL == "") {
+				if a.youtubeUploader != nil {
+					a.youtubeUploader.UploadResourceToYouTube(resource)
 				} else {
-					a.logger.Error("failed to update resource status after review decision",
-						"resource_id", review.ResourceID,
-						"decision", review.Decision,
-						"error", updateErr,
-					)
+					a.logger.Warn("video approved but YouTube uploader is not configured — skipping upload",
+						"resource_id", resource.ID)
 				}
 			}
 		}
+		updatedResource = resource
 	}
 
 	response := envelope{
 		"review": review,
+	}
+	if updatedResource != nil {
+		response["resource"] = updatedResource
 	}
 	err = a.writeJSON(w, http.StatusCreated, response, nil)
 	if err != nil {

@@ -22,11 +22,18 @@ type ResourceReviewModel struct {
 	DB *sql.DB
 }
 
-// Insert a new resource review into the database
+// Insert a new resource review into the database.
+// Uses UPSERT so that re-approvals (same resource + reviewer role) update the
+// existing record instead of violating the unique constraint.
 func (m ResourceReviewModel) Insert(review *ResourceReview) error {
 	query := `
 		INSERT INTO resource_reviews (resource_id, reviewer_id, reviewer_role_id, decision, comment_summary)
 		VALUES ($1, $2, $3, $4, $5)
+		ON CONFLICT (resource_id, reviewer_role_id) DO UPDATE SET
+			reviewer_id     = EXCLUDED.reviewer_id,
+			decision        = EXCLUDED.decision,
+			comment_summary = EXCLUDED.comment_summary,
+			reviewed_at     = NOW()
 		RETURNING review_id, reviewed_at`
 
 	args := []any{

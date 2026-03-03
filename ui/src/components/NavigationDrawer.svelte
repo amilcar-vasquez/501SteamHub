@@ -166,7 +166,8 @@
       </div>
     </div>
     
-    <!-- Contributor Filter -->
+   <!-- disable these filters for now
+
     <div class="filter-section">
       <h3 class="filter-title title-medium">Contributor</h3>
       <select class="dropdown body-medium" bind:value={filters.contributor}>
@@ -177,7 +178,7 @@
       </select>
     </div>
     
-    <!-- School Filter -->
+
     <div class="filter-section">
       <h3 class="filter-title title-medium">School</h3>
       <select class="dropdown body-medium" bind:value={filters.school}>
@@ -187,7 +188,7 @@
         {/each}
       </select>
     </div>
-    
+   -->  
     <!-- Sort By -->
     <div class="filter-section">
       <h3 class="filter-title title-medium">Sort By</h3>

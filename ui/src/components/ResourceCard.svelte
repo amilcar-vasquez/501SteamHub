@@ -16,12 +16,82 @@
   export let slug = null; // Add slug prop
   
   let isHovered = false;
-  
+
   // Display text for subjects/grades
   $: subjectDisplay = subjects.length > 1 ? `${subject} +${subjects.length - 1}` : subject;
   $: gradeDisplay = grades.length > 1 ? `${grade} +${grades.length - 1}` : grade;
-  
+
+  // ── Lesson content preview (lazy-fetched on first hover) ────────
+  export let lessons = []; // can be pre-loaded; otherwise fetched lazily
+
+  let previewLessons = lessons;
+  let previewFetched = lessons.length > 0;
+  let previewLoading = false;
+
   import { navigateTo } from '../router.js';
+  import { resourceAPI } from '../api/client.js';
+
+  // Trigger fetch on first hover
+  $: if (isHovered && !previewFetched && slug && !previewLoading) {
+    fetchPreview();
+  }
+
+  async function fetchPreview() {
+    previewLoading = true;
+    try {
+      const response = await resourceAPI.getBySlug(slug);
+      previewLessons = response.lessons || [];
+      // Capture video-specific data for Video resource cards
+      previewVideoMeta = response.video_metadata || null;
+      previewPublishedURL = response.resource?.published_url || null;
+      previewDriveLink = response.resource?.drive_link || null;
+    } catch (_) {
+      // silently ignore — placeholder stays
+    } finally {
+      previewFetched = true;
+      previewLoading = false;
+    }
+  }
+
+  // Pull objectives and activity steps out of the first lesson's blocks
+  function parseLessonContent(lesson) {
+    if (!lesson?.content) return null;
+    try { return typeof lesson.content === 'string' ? JSON.parse(lesson.content) : lesson.content; }
+    catch (_) { return null; }
+  }
+
+  $: _allBlocks = previewLessons.flatMap(l => parseLessonContent(l)?.blocks ?? []);
+  $: previewObjectives = (_allBlocks.find(b => b.type === 'objectives')?.content ?? []).slice(0, 4);
+  $: previewSteps      = (_allBlocks.find(b => b.type === 'activity')?.content ?? []).slice(0, 3);
+  $: previewWarmup     = _allBlocks.find(b => b.type === 'warmup')?.content ?? null;
+  $: extraBlockCount   = new Set(_allBlocks.map(b => b.type)).size
+                         - (previewObjectives.length > 0 ? 1 : 0)
+                         - (previewSteps.length > 0 ? 1 : 0)
+                         - (previewWarmup ? 1 : 0);
+
+  // ── Video preview data ─────────────────────────────────────────────────────
+  let previewVideoMeta = null;
+  let previewPublishedURL = null;
+  let previewDriveLink = null;
+
+  $: isVideo = category === 'Video';
+
+  function getYouTubeID(url) {
+    if (!url) return null;
+    const patterns = [
+      /(?:youtube\.com\/watch\?(?:.*&)?v=)([\w-]{11})/,
+      /(?:youtu\.be\/)([\w-]{11})/,
+      /(?:youtube\.com\/embed\/)([\w-]{11})/,
+    ];
+    for (const re of patterns) {
+      const m = url.match(re);
+      if (m) return m[1];
+    }
+    return null;
+  }
+
+  $: videoID = getYouTubeID(previewPublishedURL);
+  $: videoThumbnail = videoID ? `https://img.youtube.com/vi/${videoID}/hqdefault.jpg` : null;
   
   function handleClick(event) {
     // Prevent default and stop propagation to ensure the click is handled
@@ -91,6 +161,7 @@
   tabindex="0"
   aria-label="View resource: {title}"
 >
+ 
   {#if showStatus && status}
     <div class="status-badge label-medium {getStatusColor(status)}">
       {status}
@@ -109,6 +180,155 @@
     <!-- Description -->
     <p class="card-description body-medium">{description}</p>
     
+  <!-- ── Content preview ─────────────────────────────────────────── -->
+  <div class="page-preview-viewport" class:pp-video-viewport={isVideo}>
+
+    {#if isVideo}
+      <!-- ── VIDEO preview ─────────────────────────────────────────── -->
+      {#if previewLoading}
+        <div class="pp-skeleton pp-skeleton--video">
+          <div class="pp-skel-thumb"></div>
+        </div>
+
+      {:else if !previewFetched}
+        <div class="pp-placeholder">
+          <span class="material-symbols-outlined pp-placeholder-icon">smart_display</span>
+          <span class="pp-placeholder-text">Hover to preview video</span>
+        </div>
+
+      {:else if videoThumbnail}
+        <div class="pp-video-preview">
+          <img
+            class="pp-video-thumb"
+            src="{videoThumbnail}"
+            alt="{title} thumbnail"
+            loading="lazy"
+          />
+          <div class="pp-video-play-overlay">
+            <span class="material-symbols-outlined pp-play-icon">play_circle</span>
+          </div>
+          {#if previewVideoMeta}
+            <div class="pp-video-info">
+              {#if previewVideoMeta.youtube_title}
+                <span class="pp-video-yt-title">{previewVideoMeta.youtube_title}</span>
+              {/if}
+              <div class="pp-video-badges">
+                <span class="pp-video-badge">
+                  <span class="material-symbols-outlined">privacy_tip</span>
+                  {previewVideoMeta.privacy_status}
+                </span>
+                {#if previewVideoMeta.made_for_kids}
+                  <span class="pp-video-badge">
+                    <span class="material-symbols-outlined">child_care</span>
+                    Kids
+                  </span>
+                {/if}
+              </div>
+            </div>
+          {/if}
+        </div>
+
+      {:else}
+        <!-- No published_url yet -->
+        <div class="pp-placeholder">
+          <span class="material-symbols-outlined pp-placeholder-icon">cloud_upload</span>
+          <span class="pp-placeholder-text">Video pending upload</span>
+        </div>
+      {/if}
+
+    {:else}
+      <!-- ── LESSON preview (existing) ─────────────────────────────── -->
+      <div class="page-preview-content">
+
+      {#if previewLoading}
+        <!-- Loading skeleton -->
+        <div class="pp-skeleton">
+          <div class="pp-skel-bar pp-skel-bar--wide"></div>
+          <div class="pp-skel-bar"></div>
+          <div class="pp-skel-bar"></div>
+          <div class="pp-skel-bar pp-skel-bar--short"></div>
+        </div>
+
+      {:else if !previewFetched}
+        <!-- Not yet hovered — subtle placeholder -->
+        <div class="pp-placeholder">
+          <span class="material-symbols-outlined pp-placeholder-icon">preview</span>
+          <span class="pp-placeholder-text">Hover to preview content</span>
+        </div>
+
+      {:else if _allBlocks.length === 0}
+        <!-- Fetched but empty -->
+        <div class="pp-placeholder">
+          <span class="material-symbols-outlined pp-placeholder-icon">description</span>
+          <span class="pp-placeholder-text">No lesson content yet</span>
+        </div>
+
+      {:else}
+        <div class="pp-body">
+
+          <!-- Objectives section -->
+          {#if previewObjectives.length > 0}
+            <div class="pp-section">
+              <div class="pp-section-header">
+                <span class="material-symbols-outlined pp-section-icon">emoji_objects</span>
+                <span class="pp-section-title">Learning Objectives</span>
+              </div>
+              <ul class="pp-objectives-list">
+                {#each previewObjectives as obj}
+                  <li class="pp-objective-item">
+                    <span class="material-symbols-outlined pp-check">check_circle</span>
+                    <span class="pp-objective-text">{obj}</span>
+                  </li>
+                {/each}
+              </ul>
+            </div>
+          {/if}
+
+          <!-- Warmup snippet -->
+          {#if previewWarmup && typeof previewWarmup === 'string' && previewWarmup.trim()}
+            <div class="pp-section">
+              <div class="pp-section-header">
+                <span class="material-symbols-outlined pp-section-icon">local_fire_department</span>
+                <span class="pp-section-title">Warm-up</span>
+              </div>
+              <p class="pp-warmup-text">{previewWarmup}</p>
+            </div>
+          {/if}
+
+          <!-- Activity steps -->
+          {#if previewSteps.length > 0}
+            <div class="pp-section">
+              <div class="pp-section-header">
+                <span class="material-symbols-outlined pp-section-icon">bolt</span>
+                <span class="pp-section-title">Activity</span>
+              </div>
+              <ol class="pp-steps-list">
+                {#each previewSteps as step}
+                  <li class="pp-step-item">
+                    <span class="pp-step-num">{step.step}.</span>
+                    <span class="pp-step-text">{step.text}</span>
+                  </li>
+                {/each}
+              </ol>
+            </div>
+          {/if}
+
+          <!-- Overflow hint -->
+          {#if extraBlockCount > 0}
+            <div class="pp-more-hint">
+              <span class="material-symbols-outlined">more_horiz</span>
+              {extraBlockCount} more section{extraBlockCount === 1 ? '' : 's'} inside
+            </div>
+          {/if}
+
+        </div>
+      {/if}
+
+      </div>
+    {/if}
+  </div>
+
+
     <!-- Metadata chips -->
     <div class="metadata-chips">
       <div class="assist-chip label-medium">
@@ -139,6 +359,314 @@
 </div>
 
 <style>
+  /* ── Lesson content preview thumbnail ─────────────────────────── */
+  .page-preview-viewport {
+    width: 100%;
+    height: 190px;
+    overflow: hidden;
+    border-radius: var(--md-sys-shape-corner-sm);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    background: #fafafa;
+    margin-bottom: var(--md-sys-spacing-md);
+    flex-shrink: 0;
+    display: flex;
+    align-items: stretch;
+  }
+
+  /* Scaled inner page — 210% wide so 0.476× makes it fill the viewport */
+  .page-preview-content {
+    width: 210%;
+    transform: scale(0.476);
+    transform-origin: top left;
+    /* keep the scaled height filling the viewport */
+    height: calc(190px / 0.476);
+    pointer-events: none;
+    user-select: none;
+    font-family: inherit;
+    overflow: hidden;
+  }
+
+  /* ── Placeholder / loading states ──────────────────────────────── */
+  .pp-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    height: 100%;
+    padding: 40px 24px;
+  }
+
+  .pp-placeholder-icon {
+    font-size: 52px;
+    color: rgba(0,0,0,0.18);
+  }
+
+  .pp-placeholder-text {
+    font-size: 20px;
+    color: rgba(0,0,0,0.35);
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  .pp-skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 28px 24px;
+    height: 100%;
+  }
+
+  .pp-skel-bar {
+    height: 22px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #e8e8e8 25%, #f0f0f0 50%, #e8e8e8 75%);
+    background-size: 200% 100%;
+    animation: pp-shimmer 1.4s infinite;
+    width: 90%;
+  }
+
+  .pp-skel-bar--wide  { width: 60%; }
+  .pp-skel-bar--short { width: 45%; }
+
+  @keyframes pp-shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* ── Content body ───────────────────────────────────────────────── */
+  .pp-body {
+    padding: 22px 24px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .pp-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .pp-section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .pp-section-icon {
+    font-size: 22px;
+    color: rgba(0,0,0,0.45);
+  }
+
+  .pp-section-title {
+    font-size: 19px;
+    font-weight: 600;
+    color: rgba(0,0,0,0.65);
+    letter-spacing: 0.2px;
+    text-transform: uppercase;
+  }
+
+  /* Objectives */
+  .pp-objectives-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .pp-objective-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 14px;
+    background: rgba(0,0,0,0.03);
+    border-radius: 8px;
+  }
+
+  .pp-check {
+    font-size: 20px;
+    color: #388e3c;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .pp-objective-text {
+    font-size: 17px;
+    color: rgba(0,0,0,0.72);
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Warmup */
+  .pp-warmup-text {
+    font-size: 17px;
+    color: rgba(0,0,0,0.6);
+    margin: 0;
+    padding: 10px 14px;
+    background: rgba(0,0,0,0.03);
+    border-radius: 8px;
+    border-left: 4px solid #ef6c00;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.4;
+  }
+
+  /* Activity steps */
+  .pp-steps-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .pp-step-item {
+    display: flex;
+    gap: 12px;
+    padding: 10px 14px;
+    background: rgba(0,0,0,0.03);
+    border-radius: 8px;
+    border-left: 4px solid var(--md-sys-color-primary, #1565c0);
+  }
+
+  .pp-step-num {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--md-sys-color-primary, #1565c0);
+    flex-shrink: 0;
+  }
+
+  .pp-step-text {
+    font-size: 17px;
+    color: rgba(0,0,0,0.72);
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* More hint */
+  .pp-more-hint {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 17px;
+    color: rgba(0,0,0,0.38);
+    padding: 4px 0;
+  }
+
+  .pp-more-hint .material-symbols-outlined {
+    font-size: 22px;
+  }
+
+  /* ── Video preview ────────────────────────────────────────────── */
+  .pp-video-viewport {
+    height: 190px;    /* same height as lesson preview */
+  }
+
+  .pp-skeleton--video {
+    height: 100%;
+    padding: 0;
+    display: flex;
+    align-items: stretch;
+  }
+
+  .pp-skel-thumb {
+    width: 100%;
+    height: 100%;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #e8e8e8 25%, #f0f0f0 50%, #e8e8e8 75%);
+    background-size: 200% 100%;
+    animation: pp-shimmer 1.4s infinite;
+  }
+
+  .pp-video-preview {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .pp-video-thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .pp-video-play-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.15);
+    transition: background 0.2s;
+  }
+
+  .resource-card:hover .pp-video-play-overlay {
+    background: rgba(0,0,0,0.3);
+  }
+
+  .pp-play-icon {
+    font-size: 52px;
+    color: rgba(255,255,255,0.92);
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.35));
+  }
+
+  .pp-video-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 24px 10px 8px;
+    background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, transparent 100%);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .pp-video-yt-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .pp-video-badges {
+    display: flex;
+    gap: 6px;
+  }
+
+  .pp-video-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 10px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.85);
+    background: rgba(255,255,255,0.15);
+    border-radius: 10px;
+    padding: 1px 7px;
+  }
+
+  .pp-video-badge .material-symbols-outlined {
+    font-size: 12px;
+  }
+
+  /* ── Card shell ───────────────────────────────────────────────── */
   .resource-card {
     background-color: var(--md-sys-color-surface);
     border: 1px solid var(--md-sys-color-outline-variant);

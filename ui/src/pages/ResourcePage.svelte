@@ -10,6 +10,7 @@
   
   let resource = null;
   let lessons = [];
+  let videoMetadata = null;
   let isLoading = true;
   let error = '';
   
@@ -31,8 +32,10 @@
       const response = await resourceAPI.getBySlug(slug);
       resource = response.resource;
       lessons = response.lessons || [];
+      videoMetadata = response.video_metadata || null;
       console.log('Resource loaded:', resource);
       console.log('Lessons loaded:', lessons);
+      console.log('Video metadata:', videoMetadata);
     } catch (err) {
       console.error('Failed to load resource:', err);
       if (err.status === 404) {
@@ -68,7 +71,25 @@
     }
   }
 
-  // ── Review mode ────────────────────────────────────────────────────────────
+  // ── Video helpers ───────────────────────────────────────────────────────────
+  function getYouTubeEmbedURL(url) {
+    if (!url) return null;
+    // https://www.youtube.com/watch?v=ID  or  https://youtu.be/ID  or  already /embed/
+    const patterns = [
+      /(?:youtube\.com\/watch\?(?:.*&)?v=)([\w-]{11})/,
+      /(?:youtu\.be\/)([\w-]{11})/,
+      /(?:youtube\.com\/embed\/)([\w-]{11})/,
+    ];
+    for (const re of patterns) {
+      const m = url.match(re);
+      if (m) return `https://www.youtube.com/embed/${m[1]}`;
+    }
+    return null;
+  }
+
+  $: embedURL = getYouTubeEmbedURL(resource?.published_url);
+
+  // ── Review mode ─────────────────────────────────────────────────────────────
   const REVIEWER_ROLES = ['SubjectExpert', 'TeamLead', 'DSC', 'admin'];
   let reviewMode = false;
   $: canReview = $currentUser && REVIEWER_ROLES.includes($currentUser.role_name);
@@ -90,7 +111,7 @@
     approveError = '';
     approveSuccess = false;
     try {
-      await reviewAPI.createReview(
+      const reviewResponse = await reviewAPI.createReview(
         {
           resource_id: resource.resource_id,
           reviewer_id: $currentUser.user_id,
@@ -99,7 +120,14 @@
         },
         $authToken
       );
-      resource = { ...resource, status: 'Approved' };
+      // Use the status returned by the server (ground truth) so the UI
+      // always reflects what is actually in the DB.
+      if (reviewResponse.resource) {
+        resource = { ...resource, ...reviewResponse.resource };
+      } else {
+        // Fallback: reload the full resource from the API.
+        await loadResource();
+      }
       approveSuccess = true;
     } catch (err) {
       approveError = err.message || 'Failed to approve resource.';
@@ -208,8 +236,80 @@
           {/if}
         </div>
         
-        <!-- Lesson content -->
-        {#if lessons && lessons.length > 0}
+        <!-- Video content (Video category resources) -->
+        {#if resource.category === 'Video'}
+          <div class="video-section">
+
+            <!-- Embedded player -->
+            {#if embedURL}
+              <div class="video-embed-wrapper">
+                <iframe
+                  src="{embedURL}"
+                  title="{resource.title}"
+                  frameborder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen
+                ></iframe>
+              </div>
+            {:else}
+              <div class="video-not-uploaded">
+                <span class="material-symbols-outlined video-pending-icon">pending</span>
+                <p>This video hasn't been uploaded to YouTube yet. It will appear here once approved and processed.</p>
+              </div>
+            {/if}
+
+            <!-- Links row -->
+            <div class="video-links">
+              {#if resource.published_url}
+                <a class="video-link-btn video-link-btn--primary" href="{resource.published_url}" target="_blank" rel="noreferrer">
+                  <span class="material-symbols-outlined">smart_display</span>
+                  Watch on YouTube
+                </a>
+              {/if}
+              {#if resource.drive_link}
+                <a class="video-link-btn" href="{resource.drive_link}" target="_blank" rel="noreferrer">
+                  <span class="material-symbols-outlined">folder_open</span>
+                  View Source File
+                </a>
+              {/if}
+            </div>
+
+            <!-- Video metadata details -->
+            {#if videoMetadata}
+              <div class="video-meta-card">
+                {#if videoMetadata.youtube_description}
+                  <div class="video-meta-row">
+                    <span class="video-meta-label">Description</span>
+                    <p class="video-meta-value">{videoMetadata.youtube_description}</p>
+                  </div>
+                {/if}
+                {#if videoMetadata.tags && videoMetadata.tags.length > 0}
+                  <div class="video-meta-row">
+                    <span class="video-meta-label">Tags</span>
+                    <div class="video-tags">
+                      {#each videoMetadata.tags as tag}
+                        <span class="chip">{tag}</span>
+                      {/each}
+                    </div>
+                  </div>
+                {/if}
+                <div class="video-meta-row video-meta-row--inline">
+                  <div class="video-meta-badge">
+                    <span class="material-symbols-outlined">privacy_tip</span>
+                    {videoMetadata.privacy_status}
+                  </div>
+                  <div class="video-meta-badge">
+                    <span class="material-symbols-outlined">{videoMetadata.made_for_kids ? 'child_care' : 'person'}</span>
+                    {videoMetadata.made_for_kids ? 'Made for kids' : 'Not for kids'}
+                  </div>
+                </div>
+              </div>
+            {/if}
+
+          </div>
+
+        <!-- Lesson content (non-Video resources) -->
+        {:else if lessons && lessons.length > 0}
           <div class="lessons-container">
             {#each lessons as lesson}
               {@const lessonContent = parseLessonContent(lesson)}
@@ -649,6 +749,144 @@
     padding: 3rem 2rem;
     color: var(--md-sys-color-on-surface-variant);
     text-align: center;
+  }
+
+  /* ── Video section ──────────────────────────────────────────────────────── */
+  .video-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .video-embed-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--md-sys-shape-corner-md);
+    overflow: hidden;
+    background: #000;
+  }
+
+  .video-embed-wrapper iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  .video-not-uploaded {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 3rem 2rem;
+    background: var(--md-sys-color-surface-variant);
+    border-radius: var(--md-sys-shape-corner-md);
+    color: var(--md-sys-color-on-surface-variant);
+    text-align: center;
+  }
+
+  .video-pending-icon {
+    font-size: 3rem;
+  }
+
+  .video-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .video-link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.25rem;
+    border-radius: var(--md-sys-shape-corner-full);
+    border: 1px solid var(--md-sys-color-outline);
+    background: var(--md-sys-color-surface);
+    color: var(--md-sys-color-on-surface);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background 0.2s;
+  }
+
+  .video-link-btn:hover {
+    background: var(--md-sys-color-surface-variant);
+  }
+
+  .video-link-btn--primary {
+    background: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+    border-color: transparent;
+  }
+
+  .video-link-btn--primary:hover {
+    background: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+  }
+
+  .video-meta-card {
+    background: var(--md-sys-color-surface);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: var(--md-sys-shape-corner-md);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .video-meta-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .video-meta-row--inline {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .video-meta-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--md-sys-color-on-surface-variant);
+  }
+
+  .video-meta-value {
+    font-size: 0.95rem;
+    color: var(--md-sys-color-on-surface);
+    line-height: 1.5;
+    margin: 0;
+    white-space: pre-wrap;
+  }
+
+  .video-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .video-meta-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: var(--md-sys-shape-corner-full);
+    background: var(--md-sys-color-surface-variant);
+    color: var(--md-sys-color-on-surface-variant);
+    font-size: 0.825rem;
+    font-weight: 500;
+    text-transform: capitalize;
+  }
+
+  .video-meta-badge .material-symbols-outlined {
+    font-size: 1rem;
   }
   
   .no-lessons .material-symbols-outlined {
