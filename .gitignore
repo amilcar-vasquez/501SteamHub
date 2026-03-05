@@ -92,7 +92,6 @@ secrets.*
 *.db-wal
 *.sql.gz
 pgdata/
-data/
 backup/
 dumps/
 
