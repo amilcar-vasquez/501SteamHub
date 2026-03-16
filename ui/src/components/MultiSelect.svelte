@@ -11,9 +11,20 @@
   let isOpen = false;
   let searchQuery = '';
 
-  $: filteredOptions = options.filter(opt => 
-    opt.label.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  function parseLabel(labelText) {
+    const parts = labelText.split(' ');
+    if (parts.length > 1) {
+      const iconName = parts[0];
+      const displayText = parts.slice(1).join(' ');
+      return { iconName, displayText };
+    }
+    return { iconName: null, displayText: labelText };
+  }
+
+  $: filteredOptions = options.filter(opt => {
+    const { displayText } = parseLabel(opt.label);
+    return displayText.toLowerCase().includes(searchQuery.toLowerCase());
+  });
 
   $: selectedLabels = value.map(val => {
     const option = options.find(opt => opt.value === val);
@@ -58,8 +69,12 @@
         <div class="chips">
           {#each value as val}
             {@const option = options.find(opt => opt.value === val)}
+            {@const { iconName, displayText } = parseLabel(option?.label || '')}
             <div class="chip">
-              <span>{option?.label || val}</span>
+              {#if iconName}
+                <span class="material-symbols-outlined chip-icon">{iconName}</span>
+              {/if}
+              <span>{displayText}</span>
               <button 
                 type="button"
                 class="chip-remove" 
@@ -91,6 +106,7 @@
       </div>
       <div class="options">
         {#each filteredOptions as option}
+          {@const { iconName, displayText } = parseLabel(option.label)}
           <div 
             class="option" 
             class:selected={value.includes(option.value)}
@@ -103,7 +119,10 @@
                 <span class="material-symbols-outlined">check_box_outline_blank</span>
               {/if}
             </div>
-            <span>{option.label}</span>
+            {#if iconName}
+              <span class="material-symbols-outlined option-icon">{iconName}</span>
+            {/if}
+            <span class="option-text">{displayText}</span>
           </div>
         {:else}
           <div class="no-options">No options found</div>
@@ -214,6 +233,15 @@
     color: inherit;
   }
 
+  .chip-icon {
+    font-size: 16px;
+    margin-right: 0.25rem;
+  }
+
+  .chip-remove {
+    margin-left: 0.25rem;
+  }
+
   .chip-remove .material-symbols-outlined {
     font-size: 16px;
   }
@@ -296,10 +324,22 @@
     display: flex;
     align-items: center;
     color: var(--md-sys-color-primary);
+    flex-shrink: 0;
   }
 
   .checkbox .material-symbols-outlined {
     font-size: 24px;
+  }
+
+  .option-icon {
+    font-size: 18px;
+    color: var(--md-sys-color-primary);
+    flex-shrink: 0;
+  }
+
+  .option-text {
+    font-size: 0.875rem;
+    color: var(--md-sys-color-on-surface);
   }
 
   .no-options {

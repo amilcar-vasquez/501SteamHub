@@ -47,44 +47,44 @@
   }
 
   const privacyOptions = [
-    { value: 'unlisted', label: '🔗 Unlisted' },
-    { value: 'public',   label: '🌐 Public' },
-    { value: 'private',  label: '🔒 Private' },
+    { value: 'unlisted', label: 'Unlisted' },
+    { value: 'public',   label: 'Public' },
+    { value: 'private',  label: 'Private' },
   ];
 
   const categoryOptions = [
-    { value: 'LessonPlan', label: '📚 Lesson Plan' },
-    { value: 'Video', label: '🎥 Video' },
-    { value: 'Slideshow', label: '📊 Slideshow' },
-    { value: 'Assessment', label: '📝 Assessment' },
-    { value: 'Other', label: '📂 Other' },
+    { value: 'LessonPlan', label: 'school Lesson Plan' },
+    { value: 'Video', label: 'video_file Video' },
+    { value: 'Slideshow', label: 'slideshow Slideshow' },
+    { value: 'Assessment', label: 'assignment Assessment' },
+    { value: 'Other', label: 'media_link Other' },
   ];
 
   const gradeLevelOptions = [
-    { value: 'Preschool', label: 'Preschool' },
-    { value: 'Infant 1', label: 'Infant 1' },
-    { value: 'Infant 2', label: 'Infant 2' },
-    { value: 'Standard 1', label: 'Standard 1' },
-    { value: 'Standard 2', label: 'Standard 2' },
-    { value: 'Standard 3', label: 'Standard 3' },
-    { value: 'Standard 4', label: 'Standard 4' },
-    { value: 'Standard 5', label: 'Standard 5' },
-    { value: 'Standard 6', label: 'Standard 6' },
-    { value: 'Mixed', label: 'Mixed Grades' },
+    { value: 'Preschool', label: 'playground Preschool' },
+    { value: 'Infant 1', label: 'counter_1 Infant 1' },
+    { value: 'Infant 2', label: 'counter_2 Infant 2' },
+    { value: 'Standard 1', label: 'filter_1 Standard 1' },
+    { value: 'Standard 2', label: 'filter_2 Standard 2' },
+    { value: 'Standard 3', label: 'filter_3 Standard 3' },
+    { value: 'Standard 4', label: 'filter_4 Standard 4' },
+    { value: 'Standard 5', label: 'filter_5 Standard 5' },
+    { value: 'Standard 6', label: 'filter_6 Standard 6' },
+    { value: 'Mixed', label: 'pin Mixed Grades' },
   ];
 
   const subjectOptions = [
-    { value: 'Computer Science', label: '💻 Computer Science' },
-    { value: 'Information Technology', label: '🖥️ Information Technology' },
-    { value: 'Science', label: '🔬 Science' },
-    { value: 'Engineering', label: '⚙️ Engineering' },
-    { value: 'Robotics', label: '🤖 Robotics' },
-    { value: 'Arts', label: '🎨 Arts' },
-    { value: 'Belizean History', label: '🇧🇿 Belizean History' },
-    { value: 'Mathematics', label: '➕ Mathematics' },
-    { value: 'English Language Arts', label: '📖 English Language Arts' },
-    { value: 'Social Studies', label: '🌍 Social Studies' },
-    { value: 'Physical Education', label: '⚽ Physical Education' },
+    { value: 'Computer Science', label: 'code_blocks Computer Science' },
+    { value: 'Information Technology', label: 'network_node Information Technology' },
+    { value: 'Science', label: 'science Science' },
+    { value: 'Engineering', label: 'construction Engineering' },
+    { value: 'Robotics', label: 'smart_toy Robotics' },
+    { value: 'Arts', label: 'palette Arts' },
+    { value: 'Belizean History', label: 'history Belizean History' },
+    { value: 'Mathematics', label: 'calculate Mathematics' },
+    { value: 'English Language Arts', label: 'library_books English Language Arts' },
+    { value: 'Social Studies', label: 'public Social Studies' },
+    { value: 'Physical Education', label: 'sports_soccer Physical Education' },
   ];
 
   onMount(() => {
@@ -284,15 +284,21 @@
 </script>
 
 <div class="submit-resource">
-  <div class="header">
-    <button class="back-button" on:click={handleCancel}>
-      <span class="material-symbols-outlined">arrow_back</span>
-    </button>
-    <div>
-      <h1>Submit a Resource</h1>
-      <p class="subtitle">Share your teaching materials with the 501SteamHub community</p>
+  <!-- HEADER -->
+  <header class="page-header">
+    <div class="header-left">
+      <button class="back-button" on:click={handleCancel}>
+        <span class="material-symbols-outlined">arrow_back</span>
+      </button>
+      <div class="header-text">
+        <h1>Submit a Resource</h1>
+        <p class="subtitle">Share your teaching materials with the 501SteamHub community</p>
+      </div>
     </div>
-  </div>
+    <div class="header-right">
+      <span class="save-indicator">Saved just now</span>
+    </div>
+  </header>
 
   {#if successMessage}
     <div class="success-banner">
@@ -314,199 +320,238 @@
     </div>
   {/if}
 
-  <form on:submit|preventDefault={handleSubmit}>
-    <div class="form-section">
-      <h2>Basic Information</h2>
-      
-      <TextField
-        label="Resource Title"
-        bind:value={formData.title}
-        error={errors.title}
-        required
-        placeholder="e.g., Introduction to Fractions for Standard 1"
-        helperText="Give your resource a clear, descriptive title"
-      />
-
-      <Select
-        label="Category"
-        bind:value={formData.category}
-        options={categoryOptions}
-        error={errors.category}
-        required
-        helperText="What type of resource is this?"
-      />
-
-      <MultiSelect
-        label="Subjects"
-        bind:value={formData.subjects}
-        options={subjectOptions}
-        error={errors.subjects}
-        required
-        helperText="Select all subjects this resource covers"
-        placeholder="Select subjects..."
-      />
-
-      <MultiSelect
-        label="Grade Levels"
-        bind:value={formData.grade_levels}
-        options={gradeLevelOptions}
-        error={errors.grade_levels}
-        required
-        helperText="Select all grade levels this resource is designed for"
-        placeholder="Select grade levels..."
-      />
-    </div>
-
-    <div class="form-section">
-      <h2>Description</h2>
-      
-      <TextArea
-        label="Summary (Optional)"
-        bind:value={formData.summary}
-        error={errors.summary}
-        rows={4}
-        maxLength={500}
-        placeholder="Provide a brief description of this resource and what it covers..."
-        helperText="A short summary to help others understand what this resource is about"
-      />
-    </div>
-
-    {#if formData.category === 'LessonPlan'}
-      <div class="form-section lesson-plan-section">
-        <h2>Lesson Plan Structure</h2>
-        <LessonBuilder bind:lessonContent />
-        {#if errors.lesson_content}
-          <p class="error-text">{errors.lesson_content}</p>
-        {/if}
-      </div>
-    {/if}
-
-    {#if isVideo}
-      <div class="form-section video-details-section">
-        <h2>🎬 YouTube Details</h2>
-        <p class="section-hint">These fields control how your video appears on YouTube after it is approved and uploaded. Leaving a field blank will use the resource title / summary as the default.</p>
-
-        <TextField
-          label="YouTube Title"
-          bind:value={videoDetails.youtube_title}
-          placeholder={formData.title || 'Video title for YouTube…'}
-          helperText="Max 100 characters. Defaults to the resource title if left blank."
-          maxLength={100}
-        />
-
-        <TextArea
-          label="YouTube Description"
-          bind:value={videoDetails.youtube_description}
-          placeholder={formData.summary || 'Describe the video for YouTube viewers…'}
-          rows={4}
-          helperText="Defaults to the resource summary if left blank."
-        />
-
-        <TextField
-          label="Tags (comma-separated)"
-          bind:value={videoDetails.tags}
-          placeholder="science, grade 3, fractions…"
-          helperText="Separate tags with commas. These help YouTube viewers discover your video."
-        />
-
-        <Select
-          label="Privacy Status"
-          bind:value={videoDetails.privacy_status}
-          options={privacyOptions}
-          error={errors.privacy_status}
-          required
-          helperText="Unlisted means only people with the link can view it. You can change this on YouTube later."
-        />
-
-        <!-- Made for Kids — explicitly required by YouTube / COPPA -->
-        <div class="made-for-kids-field">
-          <p class="mfk-label">
-            <span class="material-symbols-outlined mfk-icon">child_care</span>
-            Is this video made for kids?
-            <span class="mfk-required">*</span>
-          </p>
-          <p class="mfk-hint">YouTube requires this declaration. Choosing &ldquo;Yes&rdquo; restricts comments and certain features.</p>
-          <div class="mfk-options">
-            <button
-              type="button"
-              class="mfk-btn"
-              class:selected={videoDetails.made_for_kids === false}
-              on:click={() => (videoDetails.made_for_kids = false)}
-            >
-              <span class="material-symbols-outlined">close</span>
-              No — not for kids
-            </button>
-            <button
-              type="button"
-              class="mfk-btn"
-              class:selected={videoDetails.made_for_kids === true}
-              on:click={() => (videoDetails.made_for_kids = true)}
-            >
-              <span class="material-symbols-outlined">child_care</span>
-              Yes — made for kids
-            </button>
-          </div>
-          {#if errors.made_for_kids}
-            <p class="error-text">{errors.made_for_kids}</p>
-          {/if}
+  <form on:submit|preventDefault={handleSubmit} class="workspace-container">
+    <!-- DOCUMENT CANVAS (Left Column) -->
+    <div class="document-canvas">
+      <div class="document">
+        <!-- Title Field -->
+        <div class="canvas-section">
+          <TextField
+            label="Resource Title"
+            bind:value={formData.title}
+            error={errors.title}
+            required
+            placeholder="e.g., Introduction to Fractions for Standard 1"
+            helperText="Give your resource a clear, descriptive title"
+          />
         </div>
-      </div>
-    {/if}
 
-    <div class="form-section">
-      <h2>Resource Link{formData.category && formData.category !== 'LessonPlan' ? ' (Required)' : ' (Optional)'}</h2>
-      
-      <TextField
-        type="url"
-        label="Google Drive Link"
-        bind:value={formData.drive_link}
-        error={errors.drive_link}
-        placeholder="https://drive.google.com/..."
-        helperText={formData.category && formData.category !== 'LessonPlan'
-          ? 'Required — share a Google Drive link to the resource file so it can be reviewed and uploaded to YouTube when approved'
-          : 'Optional — share a link to your resource on Google Drive or other cloud storage'}
-      />
-    </div>
+        <!-- Summary Field -->
+        <div class="canvas-section">
+          <TextArea
+            label="Summary (Optional)"
+            bind:value={formData.summary}
+            error={errors.summary}
+            rows={4}
+            maxLength={500}
+            placeholder="Provide a brief description of this resource and what it covers..."
+            helperText="A short summary to help others understand what this resource is about"
+          />
+        </div>
 
-    <div class="form-actions">
-      <Button
-        variant="text"
-        type="button"
-        on:click={handleCancel}
-        disabled={loading}
-      >
-        Cancel
-      </Button>
-      
-      <Button
-        variant="filled"
-        type="submit"
-        disabled={loading}
-      >
-        {#if loading}
-          <span class="material-symbols-outlined spinning">progress_activity</span>
-          Submitting...
-        {:else}
-          <span class="material-symbols-outlined">send</span>
-          Submit Resource
+        <!-- Lesson Builder (if Lesson Plan) -->
+        {#if formData.category === 'LessonPlan'}
+          <div class="canvas-section lesson-plan-canvas">
+            <LessonBuilder bind:lessonContent />
+            {#if errors.lesson_content}
+              <p class="error-text">{errors.lesson_content}</p>
+            {/if}
+          </div>
         {/if}
+      </div>
+    </div>
+
+    <!-- SIDEBAR METADATA (Right Column) -->
+    <aside class="sidebar-metadata">
+      <!-- Category -->
+      <div class="sidebar-card">
+        <h3 class="sidebar-title">Category</h3>
+        <Select
+          bind:value={formData.category}
+          options={categoryOptions}
+          error={errors.category}
+          required
+          helperText="What type of resource is this?"
+        />
+      </div>
+
+      <!-- Subjects -->
+      <div class="sidebar-card">
+        <h3 class="sidebar-title">Subjects</h3>
+        <MultiSelect
+          bind:value={formData.subjects}
+          options={subjectOptions}
+          error={errors.subjects}
+          required
+          helperText="Select all subjects this resource covers"
+          placeholder="Select subjects..."
+        />
+      </div>
+
+      <!-- Grade Levels -->
+      <div class="sidebar-card">
+        <h3 class="sidebar-title">Grade Levels</h3>
+        <MultiSelect
+          bind:value={formData.grade_levels}
+          options={gradeLevelOptions}
+          error={errors.grade_levels}
+          required
+          helperText="Select all grade levels this resource is designed for"
+          placeholder="Select grade levels..."
+        />
+      </div>
+
+      <!-- Google Drive Link -->
+      <div class="sidebar-card">
+        <h3 class="sidebar-title">Resource Link</h3>
+        <TextField
+          type="url"
+          label="Google Drive Link"
+          bind:value={formData.drive_link}
+          error={errors.drive_link}
+          placeholder="https://drive.google.com/..."
+          helperText={formData.category && formData.category !== 'LessonPlan'
+            ? 'Required for this resource type'
+            : 'Optional'}
+        />
+      </div>
+
+      <!-- Video Metadata (if Video) -->
+      {#if isVideo}
+        <div class="sidebar-card video-metadata-card">
+          <h3 class="sidebar-title">YouTube Details</h3>
+          <p class="sidebar-hint">These fields control how your video appears on YouTube after it is approved and uploaded.</p>
+
+          <TextField
+            label="YouTube Title"
+            bind:value={videoDetails.youtube_title}
+            placeholder={formData.title || 'Video title for YouTube…'}
+            helperText="Max 100 characters. Defaults to the resource title if left blank."
+            maxLength={100}
+          />
+
+          <TextArea
+            label="YouTube Description"
+            bind:value={videoDetails.youtube_description}
+            placeholder={formData.summary || 'Describe the video for YouTube viewers…'}
+            rows={3}
+            helperText="Defaults to the resource summary if left blank."
+          />
+
+          <TextField
+            label="Tags (comma-separated)"
+            bind:value={videoDetails.tags}
+            placeholder="science, grade 3, fractions…"
+            helperText="Separate tags with commas."
+          />
+
+          <Select
+            label="Privacy Status"
+            bind:value={videoDetails.privacy_status}
+            options={privacyOptions}
+            error={errors.privacy_status}
+            required
+            helperText="Unlisted means only people with the link can view it."
+          />
+
+          <!-- Made for Kids Toggle -->
+          <div class="made-for-kids-field">
+            <p class="mfk-label">
+              <span class="material-symbols-outlined mfk-icon">child_care</span>
+              Is this video made for kids?
+              <span class="mfk-required">*</span>
+            </p>
+            <p class="mfk-hint">YouTube requires this declaration.</p>
+            <div class="mfk-options">
+              <button
+                type="button"
+                class="mfk-btn"
+                class:selected={videoDetails.made_for_kids === false}
+                on:click={() => (videoDetails.made_for_kids = false)}
+              >
+                <span class="material-symbols-outlined">close</span>
+                No
+              </button>
+              <button
+                type="button"
+                class="mfk-btn"
+                class:selected={videoDetails.made_for_kids === true}
+                on:click={() => (videoDetails.made_for_kids = true)}
+              >
+                <span class="material-symbols-outlined">child_care</span>
+                Yes
+              </button>
+            </div>
+          </div>
+        </div>
+      {/if}
+    </aside>
+  </form>
+
+  <!-- STICKY ACTION BAR -->
+  <div class="action-bar">
+    <Button
+      variant="text"
+      type="button"
+      on:click={handleCancel}
+      disabled={loading}
+    >
+      Cancel
+    </Button>
+    
+    <div class="action-spacer">
+      <Button
+        variant="outlined"
+        type="button"
+        disabled={loading}
+      >
+        Save Draft
       </Button>
     </div>
-  </form>
+
+    <Button
+      variant="filled"
+      type="submit"
+      disabled={loading}
+      on:click={handleSubmit}
+    >
+      {#if loading}
+        <span class="material-symbols-outlined spinning">progress_activity</span>
+        Submitting...
+      {:else}
+        <span class="material-symbols-outlined">send</span>
+        Submit Resource
+      {/if}
+    </Button>
+  </div>
 </div>
 
 <style>
   .submit-resource {
-    max-width: 1024px;
-    margin: 0 auto;
-    padding: var(--md-sys-spacing-xl);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: var(--md-sys-color-background);
   }
 
-  .header {
+  /* HEADER */
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--md-sys-spacing-lg) var(--md-sys-spacing-xl);
+    border-bottom: 1px solid var(--md-sys-color-outline-variant);
+    background: white;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-left {
     display: flex;
     align-items: flex-start;
     gap: var(--md-sys-spacing-md);
-    margin-bottom: var(--md-sys-spacing-xl);
+    flex: 1;
   }
 
   .back-button {
@@ -518,6 +563,7 @@
     border-radius: var(--md-sys-shape-corner-full);
     transition: background-color 0.2s;
     margin-top: 4px;
+    flex-shrink: 0;
   }
 
   .back-button:hover {
@@ -528,33 +574,52 @@
     font-size: 28px;
   }
 
+  .header-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
   h1 {
-    font-size: 36px;
+    font-size: 28px;
     font-weight: 500;
     color: var(--md-sys-color-primary);
-    margin: 0 0 8px 0;
+    margin: 0;
   }
 
   .subtitle {
-    font-size: 18px;
+    font-size: 14px;
     color: var(--md-sys-color-on-surface-variant);
     margin: 0;
   }
 
+  .header-right {
+    display: flex;
+    align-items: center;
+  }
+
+  .save-indicator {
+    font-size: 13px;
+    color: var(--md-sys-color-on-surface-variant);
+    font-weight: 500;
+  }
+
+  /* BANNERS */
   .success-banner {
     display: flex;
     align-items: flex-start;
     gap: var(--md-sys-spacing-md);
     padding: var(--md-sys-spacing-lg);
+    margin: var(--md-sys-spacing-lg) var(--md-sys-spacing-xl) 0;
     background-color: rgba(6, 158, 201, 0.1);
     border-left: 4px solid var(--md-sys-color-secondary);
     border-radius: var(--md-sys-shape-corner-sm);
-    margin-bottom: var(--md-sys-spacing-lg);
   }
 
   .success-banner .material-symbols-outlined {
     font-size: 28px;
     color: var(--md-sys-color-secondary);
+    flex-shrink: 0;
   }
 
   .success-banner strong {
@@ -574,15 +639,16 @@
     align-items: flex-start;
     gap: var(--md-sys-spacing-md);
     padding: var(--md-sys-spacing-lg);
+    margin: var(--md-sys-spacing-lg) var(--md-sys-spacing-xl) 0;
     background-color: rgba(179, 38, 30, 0.1);
     border-left: 4px solid var(--md-sys-color-error);
     border-radius: var(--md-sys-shape-corner-sm);
-    margin-bottom: var(--md-sys-spacing-lg);
   }
 
   .error-banner .material-symbols-outlined {
     font-size: 28px;
     color: var(--md-sys-color-error);
+    flex-shrink: 0;
   }
 
   .error-banner strong {
@@ -597,29 +663,117 @@
     color: var(--md-sys-color-on-surface);
   }
 
-  .lesson-plan-section {
-    background: linear-gradient(135deg, rgba(6, 158, 201, 0.05) 0%, rgba(252, 180, 21, 0.05) 100%);
-    border: 2px solid var(--md-sys-color-primary);
+  /* WORKSPACE CONTAINER */
+  .workspace-container {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 32px;
+    align-items: start;
+    padding: var(--md-sys-spacing-xl);
+    width: 90%;
+    max-width: 1600px;
+    margin: 0 auto;
+    flex: 1;
   }
 
-  .video-details-section {
-    background: linear-gradient(135deg, rgba(200, 30, 30, 0.04) 0%, rgba(252, 100, 50, 0.04) 100%);
-    border: 2px solid var(--md-sys-color-error, #b52213);
+  /* DOCUMENT CANVAS */
+  .document-canvas {
+    display: flex;
+    flex-direction: column;
   }
 
-  .section-hint {
-    margin: -0.5rem 0 1rem;
-    font-size: 0.875rem;
+  .document {
+    background: white;
+    padding: 40px;
+    border-radius: var(--md-sys-shape-corner-large);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .canvas-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .lesson-plan-canvas {
+    gap: 20px;
+  }
+
+  .lesson-plan-canvas h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--md-sys-color-primary);
+    margin: 0;
+  }
+
+  /* SIDEBAR METADATA */
+  .sidebar-metadata {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: sticky;
+    top: 80px;
+    overflow: visible;
+  }
+
+  .sidebar-card {
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: var(--md-sys-shape-corner-md);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* Ensure MultiSelect dropdowns appear above all cards */
+  .sidebar-card :global(.dropdown) {
+    z-index: 1000 !important;
+    position: absolute;
+  }
+
+  .sidebar-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--md-sys-color-on-surface);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .sidebar-hint {
+    font-size: 12px;
     color: var(--md-sys-color-on-surface-variant);
-    line-height: 1.5;
+    margin: 0;
+    line-height: 1.4;
   }
 
-  /* Made-for-kids toggle */
+  .video-metadata-card {
+    border: 1px solid rgba(200, 30, 30, 0.15);
+    background: linear-gradient(135deg, rgba(200, 30, 30, 0.02) 0%, rgba(252, 100, 50, 0.02) 100%);
+  }
+
+  /* ERROR TEXT */
+  .error-text {
+    color: var(--md-sys-color-error);
+    font-size: 0.875rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  /* MADE FOR KIDS TOGGLE */
   .made-for-kids-field {
-    margin-top: 1rem;
-    padding: 1rem;
+    margin-top: 8px;
+    padding: 12px;
     border: 1px solid var(--md-sys-color-outline-variant);
-    border-radius: var(--md-sys-shape-corner-md, 8px);
+    border-radius: var(--md-sys-shape-corner-sm);
     background: var(--md-sys-color-surface);
   }
 
@@ -628,13 +782,13 @@
     align-items: center;
     gap: 0.375rem;
     font-weight: 600;
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
     color: var(--md-sys-color-on-surface);
-    margin: 0 0 0.25rem;
+    margin: 0 0 8px 0;
   }
 
   .mfk-icon {
-    font-size: 20px;
+    font-size: 18px;
     color: var(--md-sys-color-primary);
   }
 
@@ -644,26 +798,27 @@
   }
 
   .mfk-hint {
-    font-size: 0.8125rem;
+    font-size: 0.75rem;
     color: var(--md-sys-color-on-surface-variant);
-    margin: 0 0 0.875rem;
+    margin: 0 0 10px 0;
+    line-height: 1.3;
   }
 
   .mfk-options {
     display: flex;
-    gap: 0.75rem;
+    gap: 8px;
     flex-wrap: wrap;
   }
 
   .mfk-btn {
     display: inline-flex;
     align-items: center;
-    gap: 0.375rem;
-    padding: 0.5rem 1.25rem;
+    gap: 6px;
+    padding: 6px 12px;
     border: 2px solid var(--md-sys-color-outline-variant);
     border-radius: 999px;
     background: none;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     font-weight: 500;
     color: var(--md-sys-color-on-surface-variant);
     cursor: pointer;
@@ -673,7 +828,7 @@
   .mfk-btn:hover {
     border-color: var(--md-sys-color-primary);
     color: var(--md-sys-color-primary);
-    background: var(--md-sys-color-primary-container, rgba(6,158,201,0.1));
+    background: var(--md-sys-color-primary-container, rgba(6, 158, 201, 0.1));
   }
 
   .mfk-btn.selected {
@@ -683,39 +838,29 @@
   }
 
   .mfk-btn .material-symbols-outlined {
-    font-size: 18px;
+    font-size: 16px;
   }
 
-  .error-text {
-    color: var(--md-sys-color-error);
-    font-size: 0.875rem;
-    margin-top: 0.5rem;
+  /* STICKY ACTION BAR */
+  .action-bar {
+    position: sticky;
+    bottom: 0;
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 0.25rem;
-  }
-
-  .form-section {
-    margin-bottom: var(--md-sys-spacing-xl);
-    padding: var(--md-sys-spacing-lg);
-    background-color: var(--md-sys-color-surface-variant);
-    border-radius: var(--md-sys-shape-corner-lg);
-  }
-
-  .form-section h2 {
-    font-size: 24px;
-    font-weight: 500;
-    color: var(--md-sys-color-primary);
-    margin: 0 0 var(--md-sys-spacing-lg) 0;
-  }
-
-  .form-actions {
-    display: flex;
-    justify-content: flex-end;
     gap: var(--md-sys-spacing-md);
-    margin-top: var(--md-sys-spacing-xl);
-    padding-top: var(--md-sys-spacing-lg);
-    border-top: 1px solid var(--md-sys-color-outline-variant);
+    padding: 16px 24px;
+    background: rgba(255, 255, 255, 0.95);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.02);
+    z-index: 50;
+    backdrop-filter: blur(2px);
+  }
+
+  .action-spacer {
+    flex: 1;
+    display: flex;
+    justify-content: center;
   }
 
   @keyframes spin {
@@ -731,30 +876,76 @@
     animation: spin 1s linear infinite;
   }
 
-  /* Mobile responsiveness */
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .workspace-container {
+      grid-template-columns: 1fr;
+      gap: 24px;
+      padding: var(--md-sys-spacing-lg);
+    }
+
+    .sidebar-metadata {
+      position: static;
+      top: auto;
+    }
+
+    .sidebar-card {
+      flex-direction: row;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .sidebar-title {
+      min-width: 100px;
+    }
+  }
+
   @media (max-width: 768px) {
-    .submit-resource {
+    .page-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
       padding: var(--md-sys-spacing-md);
+    }
+
+    .header-left {
+      width: 100%;
+    }
+
+    .header-right {
+      width: 100%;
+    }
+
+    .save-indicator {
+      font-size: 12px;
     }
 
     h1 {
-      font-size: 28px;
+      font-size: 24px;
     }
 
     .subtitle {
-      font-size: 16px;
+      font-size: 12px;
     }
 
-    .form-section {
-      padding: var(--md-sys-spacing-md);
+    .document {
+      padding: 24px;
+      gap: 24px;
     }
 
-    .form-actions {
+    .action-bar {
       flex-direction: column-reverse;
+      gap: 12px;
     }
 
-    .form-actions :global(button) {
+    .action-bar :global(button) {
       width: 100%;
+    }
+
+    .workspace-container {
+      grid-template-columns: 1fr;
+      gap: 16px;
+      padding: var(--md-sys-spacing-md);
     }
   }
 </style>

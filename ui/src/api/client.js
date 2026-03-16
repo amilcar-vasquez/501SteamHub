@@ -39,19 +39,37 @@ async function request(endpoint, options = {}) {
     });
 
     if (!response.ok) {
+      // Check if error is a validation errors object (map) or a string message
+      let errorMessage = 'An error occurred';
+      let errorMap = {};
+      
+      if (typeof data.error === 'object' && data.error !== null) {
+        // Validation errors come as an object map
+        errorMap = data.error;
+        errorMessage = 'Validation failed';
+      } else if (typeof data.error === 'string') {
+        // Regular error messages come as strings
+        errorMessage = data.error;
+      }
+      
       throw new APIError(
-        data.error || 'An error occurred',
+        errorMessage,
         response.status,
-        data.errors || {}
+        errorMap
       );
     }
 
     return data;
   } catch (error) {
-    console.error('API Request Failed:', error);
     if (error instanceof APIError) {
+      console.error('API Request Failed - Validation Errors:', {
+        status: error.status,
+        message: error.message,
+        errors: error.errors
+      });
       throw error;
     }
+    console.error('API Request Failed:', error);
     throw new APIError('Network error. Please check your connection.', 0);
   }
 }

@@ -24,13 +24,13 @@
   let collapsed = false;
 
   const blockTypeLabels = {
-    objectives: '🎯 Learning Objectives',
-    materials: '📦 Materials',
-    warmup: '🔥 Warm-up',
-    activity: '⚡ Activity',
-    assessment: '✅ Assessment',
-    extension: '🚀 Extension',
-    fellow_notes: '📝 Fellow Notes',
+    objectives: 'Learning Objectives',
+    materials: 'Materials',
+    warmup: 'Warm-up',
+    activity: 'Activity',
+    assessment: 'Assessment',
+    extension: 'Extension',
+    fellow_notes: 'Fellow Notes',
   };
 
   const blockTypeIcons = {
