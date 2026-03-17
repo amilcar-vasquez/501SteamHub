@@ -8,6 +8,7 @@
   import Button from '../components/Button.svelte';
   import { createEventDispatcher } from 'svelte';
   import { currentUser } from '../stores/auth.js';
+  import { bookmarkedResourceIds, toggleBookmark } from '../stores/bookmarks.js';
   import { navigateTo } from '../router.js';
   import { resourceAPI } from '../api/client.js';
   
@@ -101,6 +102,7 @@
       const apiResources = response.resources || [];
       allResources = apiResources.map(resource => ({
         id: resource.resource_id,
+        resource_id: resource.resource_id,
         category: resource.category,
         title: resource.title,
         description: resource.summary || 'No description available',
@@ -159,6 +161,11 @@
   function handleSignUp() {
     dispatch('navigate', { page: 'signup' });
   }
+
+  function handleBookmarkToggle(resourceId) {
+    toggleBookmark(resourceId);
+  }
+
 </script>
 
 <div class="app">
@@ -287,6 +294,8 @@
               status={resource.status}
               showStatus={showRoleBasedStatus}
               slug={resource.slug}
+              isBookmarked={$bookmarkedResourceIds.has(resource.resource_id)}
+              on:bookmark={() => handleBookmarkToggle(resource.resource_id)}
             />
           {/each}
         </div>

@@ -5,6 +5,7 @@
   import { cubicOut } from 'svelte/easing';
   import { fade } from 'svelte/transition';
   import { currentUser, authToken } from '../stores/auth.js';
+  import { bookmarkedResourceIds, toggleBookmark } from '../stores/bookmarks.js';
   import { navigateTo } from '../router.js';
   import { userAPI, resourceAPI, fellowAPI } from '../api/client.js';
   import TopAppBar from '../components/TopAppBar.svelte';
@@ -25,7 +26,10 @@
   let successMessage = '';
 
   // Tab navigation state
-  let activeTab = 'overview'; // 'overview', 'resources', 'settings'
+  let activeTab = 'overview'; // 'overview', 'resources', 'bookmarks', 'settings'
+
+  // Bookmarked resources
+  let bookmarkedResources = [];
 
   // Resource filtering
   let selectedCategories = new Set();
@@ -70,6 +74,9 @@
       return;
     }
 
+    // Load bookmarked resources on mount
+    loadBookmarkedResources();
+
     await loadUserData();
   });
 
@@ -80,9 +87,15 @@
       error = '';
       const userId = getUserId();
 
-      // Fetch user data
-      const userData = await userAPI.getUser(userId, $authToken);
-      user = userData.user || userData;
+      // Fetch user data - gracefully handle permission errors
+      try {
+        const userData = await userAPI.getUser(userId, $authToken);
+        user = userData.user || userData;
+      } catch (err) {
+        // If user fetch fails (e.g., permission denied), use current user from auth store
+        console.log('Using auth store user data due to API error:', err.message);
+        user = $currentUser;
+      }
 
       // Fetch user resources
       await loadUserResources();
@@ -117,12 +130,24 @@
 
   async function loadUserResources() {
     try {
-      // Fetch ALL resources created by this user (no status filter)
-      const data = await resourceAPI.getAll({ contributor: user?.user_id });
-      resources = data.resources || [];
+      const userId = getUserId();
+      
+      // Try to load resources - will fail gracefully for regular users
+      // who don't have permission to view their resource submissions
+      try {
+        const data = await resourceAPI.getAll({ contributor: userId });
+        resources = data.resources || [];
+      } catch (err) {
+        // User likely doesn't have permission (e.g., regular User role)
+        // This is expected behavior - regular users shouldn't see resources tab
+        console.log('Note: User cannot view submitted resources (expected for regular users)');
+        resources = [];
+      }
+      
       applyResourceFilters();
     } catch (err) {
       console.error('Failed to load resources:', err);
+      resources = [];
     }
   }
 
@@ -190,6 +215,17 @@
         selectedCategories.has(r.category)
       );
     }
+  }
+
+  // ── Bookmark Functions ────────────────────────────────────────────────────
+  function loadBookmarkedResources() {
+    // Subscribe to bookmarks store and update displayed resources
+    // This handles real-time updates when bookmarks change
+    bookmarkedResourceIds.subscribe(bookmarks => {
+      // For now, we use cached resources from the profile data if available
+      // In a real app, we could fetch full details from API for all bookmarked IDs
+      bookmarkedResources = resources.filter(r => bookmarks.has(r.resource_id));
+    });
   }
 
   // ── Getters ────────────────────────────────────────────────────────────────
@@ -269,13 +305,23 @@
         <span class="material-symbols-outlined">person</span>
         <span>Overview</span>
       </button>
+      {#if isFellow}
+        <button
+          class="tab"
+          class:active={activeTab === 'resources'}
+          on:click={() => (activeTab = 'resources')}
+        >
+          <span class="material-symbols-outlined">collections</span>
+          <span>My Resources</span>
+        </button>
+      {/if}
       <button
         class="tab"
-        class:active={activeTab === 'resources'}
-        on:click={() => (activeTab = 'resources')}
+        class:active={activeTab === 'bookmarks'}
+        on:click={() => (activeTab = 'bookmarks')}
       >
-        <span class="material-symbols-outlined">collections</span>
-        <span>My Resources</span>
+        <span class="material-symbols-outlined">bookmark</span>
+        <span>Bookmarks</span>
       </button>
       <button
         class="tab"
@@ -422,6 +468,44 @@
               <p class="body-medium">Start creating and sharing educational resources</p>
               <Button variant="filled" on:click={() => navigateTo('/submit')}>
                 Submit a Resource
+              </Button>
+            </div>
+          {/if}
+        </div>
+
+        <!-- BOOKMARKED RESOURCES TAB -->
+      {:else if activeTab === 'bookmarks'}
+        <div class="tab-panel" transition:fade={{ duration: 300 }}>
+          {#if bookmarkedResources.length > 0}
+            <div class="resources-grid">
+              {#each bookmarkedResources as resource (resource.resource_id)}
+                <ResourceCard
+                  id={resource.resource_id}
+                  category={resource.category}
+                  title={resource.title}
+                  description={resource.summary}
+                  subject={resource.subjects?.[0]}
+                  subjects={resource.subjects}
+                  grade={resource.grade_levels?.[0]}
+                  grades={resource.grade_levels}
+                  status={resource.status}
+                  avgRating={resource.avg_rating}
+                  reviewCount={resource.review_count}
+                  isBookmarked={true}
+                  on:bookmark={() => toggleBookmark(resource.resource_id)}
+                  slug={resource.slug}
+                />
+              {/each}
+            </div>
+          {:else}
+            <div class="empty-state">
+              <span class="material-symbols-outlined">bookmark</span>
+              <p class="headline-medium">No Bookmarked Resources</p>
+              <p class="body-medium">
+                Save your favorite resources to access them quickly. Visit the home page to start adding bookmarks!
+              </p>
+              <Button variant="filled" on:click={() => navigateTo('/')}>
+                Explore Resources
               </Button>
             </div>
           {/if}

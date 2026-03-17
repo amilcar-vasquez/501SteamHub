@@ -7,13 +7,13 @@
   export let subjects = []; // Optional array of all subjects
   export let grade;
   export let grades = []; // Optional array of all grades
-  export let iloCount;
   export let contributor;
   export let viewCount;
   export let contributionScore = null; // Optional: now replaced by STEAM Points
   export let status = null;
   export let showStatus = false;
   export let slug = null; // Add slug prop
+  export let isBookmarked = false; // Bookmark status
   
   let isHovered = false;
 
@@ -28,8 +28,11 @@
   let previewFetched = lessons.length > 0;
   let previewLoading = false;
 
+  import { createEventDispatcher } from 'svelte';
   import { navigateTo } from '../router.js';
   import { resourceAPI } from '../api/client.js';
+
+  const dispatch = createEventDispatcher();
 
   // Trigger fetch on first hover
   $: if (isHovered && !previewFetched && slug && !previewLoading) {
@@ -167,6 +170,22 @@
       {status}
     </div>
   {/if}
+
+  <!-- Bookmark button -->
+  <button
+    class="bookmark-btn"
+    class:bookmarked={isBookmarked}
+    on:click={(e) => {
+      e.stopPropagation();
+      dispatch('bookmark');
+    }}
+    aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark resource'}
+    title={isBookmarked ? 'Remove from bookmarks' : 'Add to bookmarks'}
+  >
+    <span class="material-symbols-outlined">
+      {isBookmarked ? 'bookmark' : 'bookmark'}
+    </span>
+  </button>
   
   <article class="card-content">
     <!-- Category chip -->
@@ -721,7 +740,68 @@
     background-color: var(--md-sys-color-surface-variant);
     color: var(--md-sys-color-on-surface-variant);
   }
-  
+
+  /* ── BOOKMARK BUTTON ────────────────────────────────────────────────────────── */
+  .bookmark-btn {
+    position: absolute;
+    top: var(--md-sys-spacing-sm);
+    right: 56px;
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background-color: transparent;
+    color: var(--md-sys-color-outline);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 10;
+  }
+
+  .bookmark-btn:hover {
+    background-color: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-secondary);
+    transform: scale(1.1);
+  }
+
+  .bookmark-btn:active {
+    transform: scale(0.95);
+  }
+
+  .bookmark-btn.bookmarked {
+    color: var(--md-sys-color-primary);
+    background-color: var(--md-sys-color-primary-container);
+  }
+
+  .bookmark-btn.bookmarked:hover {
+    background-color: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+  }
+
+  .bookmark-btn .material-symbols-outlined {
+    font-size: 24px;
+    font-weight: 400;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .bookmark-btn:active .material-symbols-outlined {
+    animation: bookmarkPulse 0.6s ease-out;
+  }
+
+  @keyframes bookmarkPulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.3);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
   .card-content {
     display: flex;
     flex-direction: column;

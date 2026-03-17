@@ -7,7 +7,9 @@
   const dispatch = createEventDispatcher();
   
   const REVIEWER_ROLES = ['SubjectExpert', 'TeamLead', 'DSC', 'admin'];
+  const ADMIN_ROLES = ['admin', 'DSC'];
   $: canAccessDashboard = $currentUser && REVIEWER_ROLES.includes($currentUser.role_name);
+  $: canAccessAdminDashboard = $currentUser && ADMIN_ROLES.includes($currentUser.role_name);
 
   let isMobile = false;
   let showUserMenu = false;
@@ -48,6 +50,16 @@
   function handleReviewerDashboard() {
     showUserMenu = false;
     navigateTo('/dashboard/reviewer');
+  }
+
+  function handleProfile() {
+    showUserMenu = false;
+    navigateTo('/profile');
+  }
+
+  function handleAdminDashboard() {
+    showUserMenu = false;
+    navigateTo('/dashboard/admin');
   }
   
   // Close menu when clicking outside
@@ -125,13 +137,23 @@
                 </div>
               </div>
               <div class="menu-divider"></div>
+              <button class="menu-item label-large" on:click={handleProfile}>
+                <span class="material-symbols-outlined">account_circle</span>
+                My Profile
+              </button>
               {#if canAccessDashboard}
                 <button class="menu-item label-large" on:click={handleReviewerDashboard}>
                   <span class="material-symbols-outlined">rate_review</span>
                   Reviewer Dashboard
                 </button>
-                <div class="menu-divider"></div>
               {/if}
+              {#if canAccessAdminDashboard}
+                <button class="menu-item label-large" on:click={handleAdminDashboard}>
+                  <span class="material-symbols-outlined">admin_panel_settings</span>
+                  Admin Dashboard
+                </button>
+              {/if}
+              <div class="menu-divider"></div>
               <button class="menu-item label-large" on:click={handleSignOut}>
                 <span class="material-symbols-outlined">logout</span>
                 Sign Out
