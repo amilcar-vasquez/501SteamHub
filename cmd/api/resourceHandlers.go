@@ -281,9 +281,10 @@ func (a *app) getAllResourcesHandler(w http.ResponseWriter, r *http.Request) {
 	qs := r.URL.Query()
 
 	var input struct {
-		Status     string
-		Subject    string
-		GradeLevel string
+		Status      string
+		Subject     string
+		GradeLevel  string
+		Contributor int64 // Filter by contributor_id (user_id)
 		data.Filters
 	}
 
@@ -292,6 +293,7 @@ func (a *app) getAllResourcesHandler(w http.ResponseWriter, r *http.Request) {
 	input.Status = a.getSingleQueryParameter(qs, "status", "")
 	input.Subject = a.getSingleQueryParameter(qs, "subject", "")
 	input.GradeLevel = a.getSingleQueryParameter(qs, "grade_level", "")
+	input.Contributor = int64(a.getSingleIntegerParameter(qs, "contributor", 0, v))
 
 	input.Filters.Page = a.getSingleIntegerParameter(qs, "page", 1, v)
 	input.Filters.PageSize = a.getSingleIntegerParameter(qs, "page_size", 20, v)
@@ -303,7 +305,7 @@ func (a *app) getAllResourcesHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resources, metadata, err := a.models.Resources.GetAll(input.Status, input.Subject, input.GradeLevel, input.Filters)
+	resources, metadata, err := a.models.Resources.GetAll(input.Status, input.Subject, input.GradeLevel, input.Contributor, input.Filters)
 	if err != nil {
 		a.serverErrorResponse(w, r, err)
 		return

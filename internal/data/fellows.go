@@ -14,10 +14,11 @@ type Fellow struct {
 	FirstName             string    `json:"first_name"`
 	LastName              string    `json:"last_name"`
 	MoeIdentifier         string    `json:"moe_identifier"`
-	School                string    `json:"school,omitempty"`
-	SubjectSpecialization string    `json:"subject_specialization,omitempty"`
-	District              string    `json:"district,omitempty"`
+	School                *string   `json:"school,omitempty"`
+	SubjectSpecialization *string   `json:"subject_specialization,omitempty"`
+	District              *string   `json:"district,omitempty"`
 	ProfileStatus         string    `json:"profile_status"`
+	SteamPoints           float64   `json:"steam_points"` // Accumulated 501 STEAM Points from contributions (FR-27)
 	CreatedAt             time.Time `json:"created_at"`
 }
 
@@ -56,7 +57,7 @@ func (m FellowModel) Get(id int64) (*Fellow, error) {
 	}
 
 	query := `
-		SELECT fellow_id, user_id, first_name, last_name, moe_identifier, school, subject_specialization, district, profile_status, created_at
+		SELECT fellow_id, user_id, first_name, last_name, moe_identifier, school, subject_specialization, district, profile_status, steam_points, created_at
 		FROM fellows
 		WHERE fellow_id = $1`
 
@@ -75,6 +76,7 @@ func (m FellowModel) Get(id int64) (*Fellow, error) {
 		&fellow.SubjectSpecialization,
 		&fellow.District,
 		&fellow.ProfileStatus,
+		&fellow.SteamPoints,
 		&fellow.CreatedAt,
 	)
 
@@ -97,7 +99,7 @@ func (m FellowModel) GetByUserID(userID int64) (*Fellow, error) {
 	}
 
 	query := `
-		SELECT fellow_id, user_id, first_name, last_name, moe_identifier, school, subject_specialization, district, profile_status, created_at
+		SELECT fellow_id, user_id, first_name, last_name, moe_identifier, school, subject_specialization, district, profile_status, steam_points, created_at
 		FROM fellows
 		WHERE user_id = $1`
 
@@ -116,6 +118,7 @@ func (m FellowModel) GetByUserID(userID int64) (*Fellow, error) {
 		&fellow.SubjectSpecialization,
 		&fellow.District,
 		&fellow.ProfileStatus,
+		&fellow.SteamPoints,
 		&fellow.CreatedAt,
 	)
 
@@ -135,8 +138,8 @@ func (m FellowModel) GetByUserID(userID int64) (*Fellow, error) {
 func (m FellowModel) Update(fellow *Fellow) error {
 	query := `
 		UPDATE fellows
-		SET first_name = $1, last_name = $2, moe_identifier = $3, school = $4, subject_specialization = $5, district = $6, profile_status = $7
-		WHERE fellow_id = $8
+		SET first_name = $1, last_name = $2, moe_identifier = $3, school = $4, subject_specialization = $5, district = $6, profile_status = $7, steam_points = $8
+		WHERE fellow_id = $9
 		RETURNING fellow_id`
 
 	args := []any{
@@ -147,6 +150,7 @@ func (m FellowModel) Update(fellow *Fellow) error {
 		fellow.SubjectSpecialization,
 		fellow.District,
 		fellow.ProfileStatus,
+		fellow.SteamPoints,
 		fellow.ID,
 	}
 
@@ -191,6 +195,36 @@ func (m FellowModel) Delete(id int64) error {
 
 	if rowsAffected == 0 {
 		return ErrRecordNotFound
+	}
+
+	return nil
+}
+
+// UpdateSteamPoints adds the given points to a fellow's existing steam_points (FR-27 requirement).
+// This is called when a contribution is scored using CalculateSteamPoints.
+func (m FellowModel) UpdateSteamPoints(fellowID int64, pointsToAdd float64) error {
+	if fellowID < 1 {
+		return ErrRecordNotFound
+	}
+
+	query := `
+		UPDATE fellows
+		SET steam_points = steam_points + $1
+		WHERE fellow_id = $2
+		RETURNING steam_points`
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	var updatedPoints float64
+	err := m.DB.QueryRowContext(ctx, query, pointsToAdd, fellowID).Scan(&updatedPoints)
+	if err != nil {
+		switch {
+		case err == sql.ErrNoRows:
+			return ErrRecordNotFound
+		default:
+			return err
+		}
 	}
 
 	return nil

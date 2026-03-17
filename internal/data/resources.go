@@ -8,22 +8,32 @@ import (
 	"time"
 )
 
+// LessonContent represents the structured content of a lesson plan with 5 instructional fields.
+type LessonContent struct {
+	Objectives           string `json:"objectives,omitempty"`
+	Materials            string `json:"materials,omitempty"`
+	InstructionalContent string `json:"instructional_content,omitempty"`
+	Assessment           string `json:"assessment,omitempty"`
+	Differentiation      string `json:"differentiation,omitempty"`
+}
+
 type Resource struct {
-	ID              int64     `json:"resource_id"`
-	Title           string    `json:"title"`
-	Category        string    `json:"category"`
-	Slug            *string   `json:"slug,omitempty"`
-	Summary         *string   `json:"summary,omitempty"`
-	DriveLink       *string   `json:"drive_link,omitempty"`
-	Status          string    `json:"status"`
-	PublishedURL    *string   `json:"published_url,omitempty"`
-	ContributorID   int64     `json:"contributor_id"`
-	CreatedAt       time.Time `json:"created_at"`
-	UpdatedAt       time.Time `json:"updated_at"`
-	Subjects        []string  `json:"subjects,omitempty"`
-	GradeLevels     []string  `json:"grade_levels,omitempty"`
-	ContributorName string    `json:"contributor_name,omitempty"`
-	ViewCount       int64     `json:"view_count"`
+	ID              int64          `json:"resource_id"`
+	Title           string         `json:"title"`
+	Category        string         `json:"category"`
+	Slug            *string        `json:"slug,omitempty"`
+	Summary         *string        `json:"summary,omitempty"`
+	DriveLink       *string        `json:"drive_link,omitempty"`
+	Status          string         `json:"status"`
+	PublishedURL    *string        `json:"published_url,omitempty"`
+	ContributorID   int64          `json:"contributor_id"`
+	CreatedAt       time.Time      `json:"created_at"`
+	UpdatedAt       time.Time      `json:"updated_at"`
+	Subjects        []string       `json:"subjects,omitempty"`
+	GradeLevels     []string       `json:"grade_levels,omitempty"`
+	ContributorName string         `json:"contributor_name,omitempty"`
+	ViewCount       int64          `json:"view_count"`
+	LessonContent   *LessonContent `json:"lesson_content,omitempty"`
 }
 
 type ResourceModel struct {
@@ -219,7 +229,7 @@ func (m ResourceModel) GetBySlug(slug string) (*Resource, error) {
 }
 
 // Get all resources with optional filters
-func (m ResourceModel) GetAll(status string, subject string, gradeLevel string, filters Filters) ([]*Resource, Metadata, error) {
+func (m ResourceModel) GetAll(status string, subject string, gradeLevel string, contributorID int64, filters Filters) ([]*Resource, Metadata, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
@@ -237,7 +247,8 @@ func (m ResourceModel) GetAll(status string, subject string, gradeLevel string, 
 			LEFT JOIN resource_grade_levels rgl ON r.resource_id = rgl.resource_id
 			WHERE ($1 = '' OR r.status = $1::resource_status)
 			AND ($2 = '' OR rs.subject::text = $2)
-			AND ($3 = '' OR rgl.grade_level::text = $3)`
+			AND ($3 = '' OR rgl.grade_level::text = $3)
+			AND ($4 = 0 OR r.contributor_id = $4)`
 
 		// Main query with joins
 		query = `
@@ -252,13 +263,14 @@ func (m ResourceModel) GetAll(status string, subject string, gradeLevel string, 
 			WHERE ($1 = '' OR r.status = $1::resource_status)
 			AND ($2 = '' OR rs.subject::text = $2)
 			AND ($3 = '' OR rgl.grade_level::text = $3)
+			AND ($4 = 0 OR r.contributor_id = $4)
 			ORDER BY r.created_at DESC
-			LIMIT $4 OFFSET $5`
+			LIMIT $5 OFFSET $6`
 
-		args = []any{status, subject, gradeLevel, filters.limit(), filters.offset()}
+		args = []any{status, subject, gradeLevel, contributorID, filters.limit(), filters.offset()}
 
 		// Get total count
-		err := m.DB.QueryRowContext(ctx, countQuery, status, subject, gradeLevel).Scan(&totalRecords)
+		err := m.DB.QueryRowContext(ctx, countQuery, status, subject, gradeLevel, contributorID).Scan(&totalRecords)
 		if err != nil {
 			return nil, Metadata{}, err
 		}
@@ -267,7 +279,8 @@ func (m ResourceModel) GetAll(status string, subject string, gradeLevel string, 
 		countQuery = `
 			SELECT COUNT(*)
 			FROM resources
-			WHERE ($1 = '' OR status = $1::resource_status)`
+			WHERE ($1 = '' OR status = $1::resource_status)
+			AND ($2 = 0 OR contributor_id = $2)`
 
 		// Simple main query
 		query = `
@@ -278,13 +291,14 @@ func (m ResourceModel) GetAll(status string, subject string, gradeLevel string, 
 			LEFT JOIN fellows f ON f.user_id = r.contributor_id
 			LEFT JOIN users u ON u.user_id = r.contributor_id
 			WHERE ($1 = '' OR r.status = $1::resource_status)
+			AND ($2 = 0 OR r.contributor_id = $2)
 			ORDER BY r.created_at DESC
-			LIMIT $2 OFFSET $3`
+			LIMIT $3 OFFSET $4`
 
-		args = []any{status, filters.limit(), filters.offset()}
+		args = []any{status, contributorID, filters.limit(), filters.offset()}
 
 		// Get total count
-		err := m.DB.QueryRowContext(ctx, countQuery, status).Scan(&totalRecords)
+		err := m.DB.QueryRowContext(ctx, countQuery, status, contributorID).Scan(&totalRecords)
 		if err != nil {
 			return nil, Metadata{}, err
 		}

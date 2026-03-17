@@ -5,8 +5,10 @@ package main
 import (
 	"errors"
 	"net/http"
+	"strings"
 
 	"github.com/amilcar-vasquez/501SteamHub/internal/data"
+	"github.com/amilcar-vasquez/501SteamHub/internal/services"
 	"github.com/amilcar-vasquez/501SteamHub/internal/validator"
 )
 
@@ -90,6 +92,60 @@ func (a *app) createResourceReviewHandler(w http.ResponseWriter, r *http.Request
 				} else {
 					a.logger.Warn("video approved but YouTube uploader is not configured — skipping upload",
 						"resource_id", resource.ID)
+				}
+			}
+
+			// Calculate and award STEAM Points if resource is approved (FR-27)
+			if review.Decision == "Approved" {
+				// Prepare resource with lesson content for score calculation
+				if strings.ToLower(resource.Category) == "lesson plan" {
+					lessons, err := a.models.Lessons.GetByResource(resource.ID)
+					if err == nil && len(lessons) > 0 {
+						lesson := lessons[0]
+						resource.LessonContent = &data.LessonContent{
+							Objectives:           strings.Join(lesson.Objectives, "; "),
+							Materials:            strings.Join(lesson.Materials, "; "),
+							InstructionalContent: lesson.Content,
+							Assessment:           a.derefString(lesson.Assessment),
+							Differentiation:      a.derefString(lesson.Differentiation),
+						}
+					}
+				}
+
+				// Calculate STEAM Points for this resource
+				points := services.CalculateSteamPoints([]data.Resource{*resource})
+
+				// Award points to contributor (fellow)
+				if points > 0 {
+					// Get the fellow for this user (ContributorID is a user_id, not fellow_id)
+					fellow, err := a.models.Fellows.GetByUserID(resource.ContributorID)
+					if err != nil {
+						a.logger.Warn("Could not find fellow for user when awarding STEAM Points",
+							"user_id", resource.ContributorID,
+							"resource_id", resource.ID,
+							"points", points,
+							"error", err.Error())
+						// Don't fail the approval if fellow doesn't exist
+					} else {
+						// Update the fellow's steam points
+						err := a.models.Fellows.UpdateSteamPoints(fellow.ID, points)
+						if err != nil {
+							a.logger.Error("Failed to update fellow steam points",
+								"fellow_id", fellow.ID,
+								"user_id", resource.ContributorID,
+								"resource_id", resource.ID,
+								"points", points,
+								"error", err.Error())
+							// Don't fail the approval if scoring fails — log and continue
+						} else {
+							a.logger.Info("STEAM Points awarded to contributor",
+								"fellow_id", fellow.ID,
+								"user_id", resource.ContributorID,
+								"resource_id", resource.ID,
+								"category", resource.Category,
+								"points", points)
+						}
+					}
 				}
 			}
 		}

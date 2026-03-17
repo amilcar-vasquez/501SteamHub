@@ -34,9 +34,9 @@ func (a *app) createFellowHandler(w http.ResponseWriter, r *http.Request) {
 		FirstName:             input.FirstName,
 		LastName:              input.LastName,
 		MoeIdentifier:         input.MoeIdentifier,
-		School:                input.School,
-		SubjectSpecialization: input.SubjectSpecialization,
-		District:              input.District,
+		School:                a.refString(input.School),
+		SubjectSpecialization: a.refString(input.SubjectSpecialization),
+		District:              a.refString(input.District),
 		ProfileStatus:         input.ProfileStatus,
 	}
 
@@ -108,8 +108,18 @@ func (a *app) getFellowByUserIDHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if id < 1 {
+		a.badRequestResponse(w, r, errors.New("user_id must be a positive integer"))
+		return
+	}
+
+	a.logger.Info("Fetching fellow by user_id", "user_id", id)
+
 	fellow, err := a.models.Fellows.GetByUserID(int64(id))
 	if err != nil {
+		a.logger.Warn("Failed to fetch fellow by user_id",
+			"user_id", id,
+			"error", err.Error())
 		switch {
 		case errors.Is(err, data.ErrRecordNotFound):
 			a.notFoundResponse(w, r)
@@ -118,6 +128,8 @@ func (a *app) getFellowByUserIDHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
+
+	a.logger.Info("Successfully fetched fellow", "fellow_id", fellow.ID, "user_id", fellow.UserID)
 
 	response := envelope{
 		"fellow": fellow,
@@ -225,13 +237,13 @@ func (a *app) updateFellowHandler(w http.ResponseWriter, r *http.Request) {
 		fellow.MoeIdentifier = *input.MoeIdentifier
 	}
 	if input.School != nil {
-		fellow.School = *input.School
+		fellow.School = input.School
 	}
 	if input.SubjectSpecialization != nil {
-		fellow.SubjectSpecialization = *input.SubjectSpecialization
+		fellow.SubjectSpecialization = input.SubjectSpecialization
 	}
 	if input.District != nil {
-		fellow.District = *input.District
+		fellow.District = input.District
 	}
 	if input.ProfileStatus != nil {
 		fellow.ProfileStatus = *input.ProfileStatus

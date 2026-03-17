@@ -40,6 +40,11 @@ export function handleRouteChange() {
     return;
   }
 
+  if (pathname === '/profile' || pathname === '/profile/') {
+    currentRoute.set({ page: 'profile', params: {} });
+    return;
+  }
+
   // Simple page routes
   const page = pathname.replace(/^\//, '') || 'home';
 

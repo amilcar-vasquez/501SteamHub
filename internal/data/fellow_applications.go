@@ -5,6 +5,8 @@ package data
 import (
 	"context"
 	"database/sql"
+	"fmt"
+	"strings"
 	"time"
 
 	"github.com/lib/pq"
@@ -167,6 +169,7 @@ func (m FellowApplicationModel) HasPendingApplication(userID int64) (bool, error
 
 // Approve sets an application's status to Approved, records the reviewer, and
 // promotes the applicant to the Fellow role (role_id = 3).
+// It also creates a Fellow record in the fellows table.
 func (m FellowApplicationModel) Approve(id, reviewerID int64) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -177,12 +180,13 @@ func (m FellowApplicationModel) Approve(id, reviewerID int64) error {
 	}
 	defer tx.Rollback()
 
-	// 1. Fetch the application so we can get the applicant's user_id.
+	// 1. Fetch the application so we can get the applicant's user_id and details.
 	var userID int64
+	var fullName, organization string
 	err = tx.QueryRowContext(ctx,
-		`SELECT user_id FROM fellow_applications WHERE application_id = $1 AND status = 'Pending'`,
+		`SELECT user_id, full_name, organization FROM fellow_applications WHERE application_id = $1 AND status = 'Pending'`,
 		id,
-	).Scan(&userID)
+	).Scan(&userID, &fullName, &organization)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return ErrRecordNotFound
@@ -208,6 +212,42 @@ func (m FellowApplicationModel) Approve(id, reviewerID int64) error {
 	)
 	if err != nil {
 		return err
+	}
+
+	// 4. Create a Fellow record in the fellows table.
+	// Split full_name into first and last names
+	names := strings.Fields(strings.TrimSpace(fullName))
+	firstName := fullName
+	lastName := ""
+	if len(names) > 1 {
+		firstName = names[0]
+		lastName = strings.Join(names[1:], " ")
+	}
+
+	// Check if fellow record already exists for this user
+	var existingFellowID int64
+	err = tx.QueryRowContext(ctx,
+		`SELECT fellow_id FROM fellows WHERE user_id = $1`,
+		userID,
+	).Scan(&existingFellowID)
+	if err != nil && err != sql.ErrNoRows {
+		return err
+	}
+
+	// Only create if it doesn't exist
+	if err == sql.ErrNoRows {
+		_, err = tx.ExecContext(ctx, `
+			INSERT INTO fellows (user_id, first_name, last_name, moe_identifier, school, profile_status)
+			VALUES ($1, $2, $3, $4, $5, 'approved')`,
+			userID,
+			firstName,
+			lastName,
+			fmt.Sprintf("user_%d", userID), // Generate a default moe_identifier from user_id
+			organization,
+		)
+		if err != nil {
+			return err
+		}
 	}
 
 	return tx.Commit()

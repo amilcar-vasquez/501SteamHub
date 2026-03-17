@@ -10,7 +10,7 @@
   export let iloCount;
   export let contributor;
   export let viewCount;
-  export let contributionScore;
+  export let contributionScore = null; // Optional: now replaced by STEAM Points
   export let status = null;
   export let showStatus = false;
   export let slug = null; // Add slug prop
@@ -349,10 +349,12 @@
           <span class="material-symbols-outlined">visibility</span>
           {formatNumber(viewCount)}
         </div>
-        <div class="stat-item label-medium">
-          <span class="material-symbols-outlined">star</span>
-          {contributionScore}
-        </div>
+        {#if contributionScore !== null && contributionScore !== undefined}
+          <div class="stat-item label-medium">
+            <span class="material-symbols-outlined">star</span>
+            {contributionScore}
+          </div>
+        {/if}
       </div>
     </div>
   </article>
@@ -373,13 +375,13 @@
     align-items: stretch;
   }
 
-  /* Scaled inner page — 210% wide so 0.476× makes it fill the viewport */
+  /* Scaled inner page — 210% wide so 0.8× makes it fill the viewport */
   .page-preview-content {
     width: 210%;
-    transform: scale(0.476);
+    transform: scale(0.9);
     transform-origin: top left;
     /* keep the scaled height filling the viewport */
-    height: calc(190px / 0.476);
+    height: calc(190px / 0.9);
     pointer-events: none;
     user-select: none;
     font-family: inherit;

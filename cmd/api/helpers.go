@@ -258,3 +258,19 @@ func (a *app) readSlugParam(r *http.Request) (string, error) {
 	}
 	return slug, nil
 }
+
+// derefString safely dereferences a string pointer, returning empty string if nil
+func (a *app) derefString(s *string) string {
+	if s == nil {
+		return ""
+	}
+	return *s
+}
+
+// refString converts a string to a pointer to string
+func (a *app) refString(s string) *string {
+	if s == "" {
+		return nil
+	}
+	return &s
+}

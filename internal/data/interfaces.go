@@ -18,7 +18,7 @@ type ResourceModelInterface interface {
 	InsertWithVideoMetadata(*Resource, *VideoMetadata) error
 	Get(int64) (*Resource, error)
 	GetBySlug(string) (*Resource, error)
-	GetAll(status, subject, gradeLevel string, filters Filters) ([]*Resource, Metadata, error)
+	GetAll(status, subject, gradeLevel string, contributorID int64, filters Filters) ([]*Resource, Metadata, error)
 	GetStatusCounts() (*ResourceStatusCounts, error)
 	Update(*Resource) error
 	Delete(int64) error
@@ -46,6 +46,7 @@ type FellowModelInterface interface {
 	GetByUserID(int64) (*Fellow, error)
 	Update(*Fellow) error
 	Delete(int64) error
+	UpdateSteamPoints(int64, float64) error
 }
 
 // NotificationModelInterface defines the interface for notification operations

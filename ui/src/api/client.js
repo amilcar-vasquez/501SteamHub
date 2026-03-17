@@ -289,4 +289,49 @@ Object.assign(adminAPI, {
   },
 });
 
+// Fellow API methods
+export const fellowAPI = {
+  // GET /v1/fellows/:id - get a fellow by fellow ID
+  get: async (id, authToken) => {
+    return request(`/fellows/${id}`, {
+      headers: { 'Authorization': `Bearer ${authToken}` },
+    });
+  },
+
+  // GET /v1/fellows?user_id=:user_id - get a fellow by user ID
+  getByUserId: async (userId, authToken) => {
+    return request(`/fellows?user_id=${userId}`, {
+      headers: { 'Authorization': `Bearer ${authToken}` },
+    });
+  },
+
+  // PATCH /v1/fellows/:id - update fellow profile
+  update: async (id, fellowData, authToken) => {
+    return request(`/fellows/${id}`, {
+      method: 'PATCH',
+      headers: { 'Authorization': `Bearer ${authToken}` },
+      body: JSON.stringify(fellowData),
+    });
+  },
+
+  // GET /v1/fellows - get all fellows
+  getAll: async (authToken) => {
+    return request('/fellows', {
+      headers: { 'Authorization': `Bearer ${authToken}` },
+    });
+  },
+};
+
+// User API improvements (add missing methods)
+Object.assign(userAPI, {
+  // PATCH /v1/users/:id - update user profile
+  update: async (id, userData, authToken) => {
+    return request(`/users/${id}`, {
+      method: 'PATCH',
+      headers: { 'Authorization': `Bearer ${authToken}` },
+      body: JSON.stringify(userData),
+    });
+  },
+});
+
 export { APIError };
