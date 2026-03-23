@@ -1,0 +1,63 @@
+{{ define "subject" }}New Fellow Application: {{.FullName}}{{ end }}
+
+{{ define "plainBody" }}
+Dear Administrator,
+
+A new fellow application has been submitted and is waiting for your review.
+
+Applicant: {{.FullName}}
+Email: {{.ApplicantEmail}}
+Organization: {{.Organization}}
+Subjects: {{.Subjects}}
+Grade Levels: {{.GradeLevels}}
+Years of Experience: {{.ExperienceYears}}
+
+Please log in to the 501 STEAM Hub to review this application.
+
+Best regards,
+501 STEAM Hub
+{{ end }}
+
+{{ define "htmlBody" }}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #f8f9fa; padding: 20px; border-radius: 5px; margin-bottom: 20px; }
+        .content { margin: 20px 0; }
+        .field { margin: 10px 0; }
+        .field strong { display: inline-block; width: 150px; }
+        .button { display: inline-block; background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 20px; }
+        .footer { font-size: 12px; color: #666; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>New Fellow Application</h2>
+            <p>A new fellow application requires your review.</p>
+        </div>
+        
+        <div class="content">
+            <div class="field"><strong>Applicant:</strong> {{.FullName}}</div>
+            <div class="field"><strong>Email:</strong> {{.ApplicantEmail}}</div>
+            <div class="field"><strong>Organization:</strong> {{.Organization}}</div>
+            <div class="field"><strong>Subjects:</strong> {{.Subjects}}</div>
+            <div class="field"><strong>Grade Levels:</strong> {{.GradeLevels}}</div>
+            <div class="field"><strong>Experience:</strong> {{.ExperienceYears}} years</div>
+        </div>
+        
+        <p>
+            <a href="{{.DashboardURL}}/fellow-applications" class="button">Review Application</a>
+        </p>
+        
+        <div class="footer">
+            <p>501 STEAM Hub | All rights reserved</p>
+        </div>
+    </div>
+</body>
+</html>
+{{ end }}

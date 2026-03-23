@@ -5,6 +5,7 @@ package main
 import (
 	"errors"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/amilcar-vasquez/501SteamHub/internal/data"
@@ -150,6 +151,13 @@ func (a *app) activateUserHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
+
+	// Send account activated notification
+	a.notificationHelper.AsyncNotifyAccountActivated(
+		user.Email,
+		user.Username,
+		os.Getenv("DASHBOARD_URL"),
+	)
 
 	// Update the user object for the response
 	user.IsActive = true
@@ -440,6 +448,15 @@ func (a *app) updateUserHandler(w http.ResponseWriter, r *http.Request) {
 			a.serverErrorResponse(w, r, err)
 		}
 		return
+	}
+
+	// Send notifications for account changes
+	if input.Password != nil && *input.Password != "" {
+		a.notificationHelper.AsyncNotifyPasswordChanged(user.Email, user.Username)
+	}
+	if input.Email != nil && *input.Email != "" && *input.Email != user.Email {
+		// Send to OLD email to confirm the change
+		a.notificationHelper.AsyncNotifyEmailChanged(user.Email, user.Username, *input.Email)
 	}
 
 	response := envelope{

@@ -1,0 +1,99 @@
+{{ define "subject" }}Resource Status Update: {{.ResourceTitle}}{{ end }}
+
+{{ define "plainBody" }}
+Hello {{.ContributorName}},
+
+Your resource has been updated by the review team.
+
+Resource: {{.ResourceTitle}}
+Previous Status: {{.OldStatus}}
+Current Status: {{.NewStatus}}
+Updated: {{.UpdatedAt}}
+
+{{if .ReviewerComment}}
+Reviewer Comment:
+{{.ReviewerComment}}
+{{end}}
+
+{{if .ActionRequired}}
+Action Required:
+Please log in to the 501 STEAM Hub to review the feedback and make the necessary revisions.
+{{end}}
+
+Best regards,
+501 STEAM Hub Team
+{{ end }}
+
+{{ define "htmlBody" }}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #e7f3ff; padding: 20px; border-radius: 5px; margin-bottom: 20px; border-left: 4px solid #0066cc; }
+        .content { margin: 20px 0; }
+        .status-box { padding: 15px; background-color: #f8f9fa; border-left: 4px solid #0066cc; margin: 15px 0; }
+        .status-item { margin: 10px 0; }
+        .label { font-weight: bold; color: #0066cc; }
+        .old-status { color: #666; }
+        .new-status { color: #28a745; font-weight: bold; }
+        .comment-box { padding: 15px; background-color: #fff3cd; border-left: 4px solid #ffc107; margin: 15px 0; }
+        .action-required { padding: 15px; background-color: #f8d7da; border-left: 4px solid #dc3545; margin: 15px 0; color: #721c24; }
+        .button { display: inline-block; background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 15px; }
+        .footer { font-size: 12px; color: #666; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Resource Status Update</h2>
+            <p>{{.ResourceTitle}}</p>
+        </div>
+        
+        <div class="content">
+            <p>Hello {{.ContributorName}},</p>
+            <p>Your resource has been reviewed and its status has been updated.</p>
+            
+            <div class="status-box">
+                <div class="status-item">
+                    <span class="label">Resource:</span> {{.ResourceTitle}}
+                </div>
+                <div class="status-item">
+                    <span class="label">Previous Status:</span> <span class="old-status">{{.OldStatus}}</span>
+                </div>
+                <div class="status-item">
+                    <span class="label">Current Status:</span> <span class="new-status">{{.NewStatus}}</span>
+                </div>
+                <div class="status-item">
+                    <span class="label">Updated:</span> {{.UpdatedAt}}
+                </div>
+            </div>
+            
+            {{if .ReviewerComment}}
+            <div class="comment-box">
+                <p><strong>Feedback from Reviewer:</strong></p>
+                <p>{{.ReviewerComment}}</p>
+            </div>
+            {{end}}
+            
+            {{if .ActionRequired}}
+            <div class="action-required">
+                <p><strong>Action Required:</strong></p>
+                <p>Please log in to the 501 STEAM Hub to review the feedback and make the necessary revisions to your resource.</p>
+            </div>
+            {{end}}
+        </div>
+        
+        <p>
+            <a href="{{.DashboardURL}}/resources" class="button">View Your Resources</a>
+        </p>
+        
+        <div class="footer">
+            <p>501 STEAM Hub | Advancing STEAM Education in Belize</p>
+        </div>
+    </div>
+</body>
+</html>
+{{ end }}

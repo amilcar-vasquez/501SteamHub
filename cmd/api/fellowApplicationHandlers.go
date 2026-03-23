@@ -5,6 +5,8 @@ package main
 import (
 	"errors"
 	"net/http"
+	"os"
+	"strings"
 
 	"github.com/amilcar-vasquez/501SteamHub/internal/data"
 	"github.com/amilcar-vasquez/501SteamHub/internal/validator"
@@ -89,6 +91,19 @@ func (a *app) applyForFellowHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Send notification to admins/DSC about new fellow application
+	adminEmails := []string{"admin@example.com"} // TODO: Fetch from config or admin users list
+	a.notificationHelper.AsyncNotifyFellowApplicationSubmitted(
+		adminEmails,
+		app.FullName,
+		user.Email,
+		app.Organization,
+		strings.Join(app.Subjects, ", "),
+		strings.Join(app.GradeLevels, ", "),
+		app.ExperienceYears,
+		os.Getenv("DASHBOARD_URL"),
+	)
+
 	err = a.writeJSON(w, http.StatusCreated, envelope{"application": app}, nil)
 	if err != nil {
 		a.serverErrorResponse(w, r, err)
@@ -158,6 +173,23 @@ func (a *app) adminApproveFellowHandler(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
+	// Send approval notification to applicant
+	app, err := a.models.FellowApplications.Get(id)
+	if err == nil {
+		user, err := a.models.Users.Get(int(app.UserID))
+		if err != nil {
+			a.logger.Error("failed to fetch user for approval notification", "error", err)
+		} else {
+			a.notificationHelper.AsyncNotifyFellowApplicationApproved(
+				user.Email,
+				user.Username,
+				os.Getenv("DASHBOARD_URL"),
+			)
+		}
+	} else {
+		a.logger.Error("failed to fetch application for approval notification", "error", err)
+	}
+
 	err = a.writeJSON(w, http.StatusOK,
 		envelope{"message": "application approved; user promoted to Fellow"}, nil)
 	if err != nil {
@@ -183,6 +215,22 @@ func (a *app) adminRejectFellowHandler(w http.ResponseWriter, r *http.Request) {
 			a.serverErrorResponse(w, r, err)
 		}
 		return
+	}
+
+	// Send rejection notification to applicant
+	app, err := a.models.FellowApplications.Get(id)
+	if err == nil {
+		user, err := a.models.Users.Get(int(app.UserID))
+		if err != nil {
+			a.logger.Error("failed to fetch user for rejection notification", "error", err)
+		} else {
+			a.notificationHelper.AsyncNotifyFellowApplicationRejected(
+				user.Email,
+				user.Username,
+			)
+		}
+	} else {
+		a.logger.Error("failed to fetch application for rejection notification", "error", err)
 	}
 
 	err = a.writeJSON(w, http.StatusOK,

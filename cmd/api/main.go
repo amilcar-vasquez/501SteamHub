@@ -16,6 +16,7 @@ import (
 
 	"github.com/amilcar-vasquez/501SteamHub/internal/data"
 	"github.com/amilcar-vasquez/501SteamHub/internal/mailer"
+	"github.com/amilcar-vasquez/501SteamHub/internal/notifications"
 	"github.com/amilcar-vasquez/501SteamHub/internal/services"
 	_ "github.com/lib/pq" // PostgreSQL driver
 	"golang.org/x/oauth2"
@@ -71,12 +72,13 @@ type configuration struct {
 }
 
 type app struct {
-	config          configuration
-	logger          *slog.Logger
-	models          *data.Models
-	mailer          mailer.Mailer
-	wg              sync.WaitGroup
-	youtubeUploader *services.YouTubeUploader
+	config             configuration
+	logger             *slog.Logger
+	models             *data.Models
+	mailer             mailer.Mailer
+	wg                 sync.WaitGroup
+	youtubeUploader    *services.YouTubeUploader
+	notificationHelper *notifications.NotificationHelper
 }
 
 // loads the application configuration from terminal flags or defaults in the env.
@@ -219,13 +221,19 @@ func main() {
 		logger.Warn("YouTube uploader not configured — set YOUTUBE_CLIENT_ID, YOUTUBE_CLIENT_SECRET, YOUTUBE_REFRESH_TOKEN to enable auto-upload")
 	}
 
+	// initialize the notifier and notification helper
+	m := mailer.New(cfg.smtp.host, cfg.smtp.port, cfg.smtp.username, cfg.smtp.password, cfg.smtp.sender)
+	notifier := notifications.NewEmailNotifier(m, logger.With("service", "notifications"))
+	notificationHelper := notifications.NewNotificationHelper(notifier, logger)
+
 	// initialize the app struct
 	app := &app{
-		config:          cfg,
-		logger:          logger,
-		models:          models,
-		mailer:          mailer.New(cfg.smtp.host, cfg.smtp.port, cfg.smtp.username, cfg.smtp.password, cfg.smtp.sender),
-		youtubeUploader: ytUploader,
+		config:             cfg,
+		logger:             logger,
+		models:             models,
+		mailer:             m,
+		youtubeUploader:    ytUploader,
+		notificationHelper: notificationHelper,
 	}
 
 	// publish basic expvar metrics

@@ -267,7 +267,7 @@
                   Watch on YouTube
                 </a>
               {/if}
-              {#if resource.drive_link}
+              {#if resource.drive_link && !resource.published_url}
                 <a class="video-link-btn" href="{resource.drive_link}" target="_blank" rel="noreferrer">
                   <span class="material-symbols-outlined">folder_open</span>
                   View Source File

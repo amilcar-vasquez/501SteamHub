@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"os"
 
 	"github.com/amilcar-vasquez/501SteamHub/internal/data"
 	"github.com/amilcar-vasquez/501SteamHub/internal/validator"
@@ -417,6 +418,24 @@ func (a *app) updateResourceHandler(w http.ResponseWriter, r *http.Request) {
 	if oldStatus != resource.Status {
 		user := a.contextGetUser(r)
 		a.logResourceStatusChange(resource.ID, oldStatus, resource.Status, user.ID)
+
+		// Send notification to resource owner about status change
+		contributor, err := a.models.Users.Get(int(resource.ContributorID))
+		if err != nil {
+			a.logger.Error("failed to fetch contributor for status notification", "error", err)
+		} else {
+			actionRequired := resource.Status == "NeedsRevision" || resource.Status == "Rejected"
+			a.notificationHelper.AsyncNotifyResourceStatusChanged(
+				contributor.Email,
+				contributor.Username,
+				resource.Title,
+				oldStatus,
+				resource.Status,
+				"", // No reviewer comment for auto-transitions
+				os.Getenv("DASHBOARD_URL"),
+				actionRequired,
+			)
+		}
 	}
 
 	// Update subjects if provided

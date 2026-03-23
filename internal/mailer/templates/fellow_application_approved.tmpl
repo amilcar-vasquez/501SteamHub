@@ -1,0 +1,71 @@
+{{ define "subject" }}Your Fellow Application Has Been Approved{{ end }}
+
+{{ define "plainBody" }}
+Dear {{.FullName}},
+
+Congratulations! Your application to become a 501 STEAM Fellow has been approved.
+
+Your account has been upgraded with Fellow privileges. You can now:
+- Submit and manage educational resources
+- Contribute lesson plans, videos, slideshows, and assessments
+- Build your profile within the 501 STEAM community
+
+Thank you for your commitment to STEAM education in Belize.
+
+Best regards,
+501 STEAM Hub
+{{ end }}
+
+{{ define "htmlBody" }}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #d4edda; padding: 20px; border-radius: 5px; margin-bottom: 20px; border-left: 4px solid #28a745; }
+        .header h2 { color: #155724; margin: 0; }
+        .content { margin: 20px 0; }
+        .features { padding: 15px; background-color: #f8f9fa; border-left: 4px solid #007bff; margin: 15px 0; }
+        .features li { margin: 8px 0; }
+        .button { display: inline-block; background-color: #28a745; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 20px; }
+        .footer { font-size: 12px; color: #666; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>🎉 Congratulations!</h2>
+            <p>Your Fellow application has been approved.</p>
+        </div>
+        
+        <div class="content">
+            <p>Dear {{.FullName}},</p>
+            <p>Your application to become a 501 STEAM Fellow has been approved. Welcome to our community of dedicated educators!</p>
+            
+            <div class="features">
+                <p><strong>Your new Fellow privileges include:</strong></p>
+                <ul>
+                    <li>Submit educational resources (lesson plans, videos, slideshows, assessments)</li>
+                    <li>Manage and update your submitted resources</li>
+                    <li>Track your contribution score and impact</li>
+                    <li>Access the Fellow dashboard and community insights</li>
+                    <li>Contribute to the 501 STEAM community</li>
+                </ul>
+            </div>
+            
+            <p>Get started by logging into your account and exploring the submission interface.</p>
+        </div>
+        
+        <p>
+            <a href="{{.DashboardURL}}" class="button">Go to Your Dashboard</a>
+        </p>
+        
+        <div class="footer">
+            <p>501 STEAM Hub | Advancing STEAM Education in Belize</p>
+        </div>
+    </div>
+</body>
+</html>
+{{ end }}

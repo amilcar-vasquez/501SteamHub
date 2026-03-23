@@ -5,6 +5,7 @@ package main
 import (
 	"errors"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/amilcar-vasquez/501SteamHub/internal/data"
@@ -81,6 +82,24 @@ func (a *app) createResourceReviewHandler(w http.ResponseWriter, r *http.Request
 			}
 			user := a.contextGetUser(r)
 			a.logResourceStatusChange(resource.ID, oldStatus, resource.Status, user.ID)
+
+			// Send notification to resource owner about review decision
+			contributor, err := a.models.Users.Get(int(resource.ContributorID))
+			if err != nil {
+				a.logger.Error("failed to fetch contributor for review notification", "error", err)
+			} else {
+				actionRequired := resource.Status == "NeedsRevision"
+				a.notificationHelper.AsyncNotifyResourceStatusChanged(
+					contributor.Email,
+					contributor.Username,
+					resource.Title,
+					oldStatus,
+					resource.Status,
+					review.CommentSummary,
+					os.Getenv("DASHBOARD_URL"),
+					actionRequired,
+				)
+			}
 
 			// Trigger YouTube upload for approved Video resources only when
 			// no published_url exists yet — prevents re-uploading after an
