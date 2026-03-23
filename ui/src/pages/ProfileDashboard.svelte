@@ -100,18 +100,26 @@
       // Fetch user resources
       await loadUserResources();
 
-      // Check if user has fellow profile
-      try {
-        const fellowData = await fellowAPI.getByUserId(userId, $authToken);
-        fellow = fellowData.fellow || fellowData;
-        isFellow = !!fellow && fellow.profile_status !== 'rejected';
-        
-        // Trigger STEAM Points animation
-        if (fellow && fellow.steam_points) {
-          steamPointsDisplay.set(fellow.steam_points);
+      // Check if user has fellow profile - only if user has Fellow role
+      // This prevents unnecessary API calls for regular users and enhances security
+      if ($currentUser?.role_name === 'Fellow') {
+        try {
+          const fellowData = await fellowAPI.getByUserId(userId, $authToken);
+          fellow = fellowData.fellow || fellowData;
+          isFellow = !!fellow && fellow.profile_status !== 'rejected';
+          
+          // Trigger STEAM Points animation
+          if (fellow && fellow.steam_points) {
+            steamPointsDisplay.set(fellow.steam_points);
+          }
+        } catch (e) {
+          // Unexpected error fetching fellow data
+          console.error('Failed to load fellow profile:', e);
+          isFellow = false;
+          steamPointsDisplay.set(0);
         }
-      } catch (e) {
-        // User is not a fellow yet
+      } else {
+        // User is not a fellow - no need to make the API call
         isFellow = false;
         steamPointsDisplay.set(0);
       }
@@ -219,12 +227,29 @@
 
   // ── Bookmark Functions ────────────────────────────────────────────────────
   function loadBookmarkedResources() {
-    // Subscribe to bookmarks store and update displayed resources
+    // Subscribe to bookmarks store and fetch full resource details
     // This handles real-time updates when bookmarks change
-    bookmarkedResourceIds.subscribe(bookmarks => {
-      // For now, we use cached resources from the profile data if available
-      // In a real app, we could fetch full details from API for all bookmarked IDs
-      bookmarkedResources = resources.filter(r => bookmarks.has(r.resource_id));
+    bookmarkedResourceIds.subscribe(async (bookmarks) => {
+      const bookmarkedList = [];
+      
+      // First, check if resource is in the existing resources array (user submissions)
+      for (const resourceId of bookmarks) {
+        const existingResource = resources.find(r => r.resource_id === resourceId);
+        if (existingResource) {
+          bookmarkedList.push(existingResource);
+        } else {
+          // Fetch the resource details from the API
+          try {
+            const data = await resourceAPI.get(resourceId);
+            const resource = data.resource || data;
+            bookmarkedList.push(resource);
+          } catch (err) {
+            console.error(`Failed to load bookmarked resource ${resourceId}:`, err);
+          }
+        }
+      }
+      
+      bookmarkedResources = bookmarkedList;
     });
   }
 
@@ -284,14 +309,16 @@
           {/if}
         </div>
 
-        <!-- STEAM Points Card (Elevated) -->
-        <div class="steam-points-card">
-          <div class="points-display">
-            <span class="points-value">{$steamPointsDisplay.toFixed(0)}</span>
-            <span class="points-label">501 STEAM Points</span>
+        <!-- STEAM Points Card (Elevated) - Only for Fellows -->
+        {#if isFellow}
+          <div class="steam-points-card">
+            <div class="points-display">
+              <span class="points-value">{$steamPointsDisplay.toFixed(0)}</span>
+              <span class="points-label">501 STEAM Points</span>
+            </div>
+            <span class="material-symbols-outlined points-icon">trending_up</span>
           </div>
-          <span class="material-symbols-outlined points-icon">trending_up</span>
-        </div>
+        {/if}
       </div>
     </section>
 
@@ -488,9 +515,9 @@
                   subjects={resource.subjects}
                   grade={resource.grade_levels?.[0]}
                   grades={resource.grade_levels}
+                  contributor={resource.contributor_id}
+                  viewCount={resource.view_count || 0}
                   status={resource.status}
-                  avgRating={resource.avg_rating}
-                  reviewCount={resource.review_count}
                   isBookmarked={true}
                   on:bookmark={() => toggleBookmark(resource.resource_id)}
                   slug={resource.slug}

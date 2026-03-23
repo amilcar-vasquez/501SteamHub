@@ -1,13 +1,11 @@
 // Bookmarks store for managing user's saved resources
-import { writable } from 'svelte/store';
+import { writable, get } from 'svelte/store';
 import { currentUser } from './auth.js';
 
 // Get the localStorage key scoped to current user
 function getBookmarksKey() {
-  let userId = null;
-  currentUser.subscribe(user => {
-    userId = user?.user_id || user?.id;
-  })();
+  const user = get(currentUser);
+  const userId = user?.user_id || user?.id;
   return userId ? `bookmarkedResourceIds_${userId}` : null;
 }
 
