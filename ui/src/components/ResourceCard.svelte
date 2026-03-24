@@ -200,6 +200,7 @@
     <p class="card-description body-medium">{description}</p>
     
   <!-- ── Content preview ─────────────────────────────────────────── -->
+  {#if !showStatus}
   <div class="page-preview-viewport" class:pp-video-viewport={isVideo}>
 
     {#if isVideo}
@@ -346,6 +347,7 @@
       </div>
     {/if}
   </div>
+  {/if}
 
 
     <!-- Metadata chips -->
@@ -745,7 +747,7 @@
   .bookmark-btn {
     position: absolute;
     top: var(--md-sys-spacing-sm);
-    right: 56px;
+    right: 110px;
     width: 40px;
     height: 40px;
     border: none;

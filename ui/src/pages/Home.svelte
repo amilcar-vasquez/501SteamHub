@@ -18,7 +18,6 @@
   let isMobileFilterOpen = false;
   let isLoading = true;
   let loadError = '';
-  let showRoleBasedStatus = false; // Toggle for reviewer/admin view — shows all statuses
   
   // Roles allowed to see non-Approved resources
   const REVIEWER_ROLES = ['SubjectExpert', 'TeamLead', 'DSC', 'admin'];
@@ -65,7 +64,7 @@
   });
   
   // Reload when filters or review-mode toggle changes
-  $: if (filters.subjects || filters.gradeLevels || searchQuery || showRoleBasedStatus !== undefined) {
+  $: if (filters.subjects || filters.gradeLevels || searchQuery) {
     loadResources();
   }
   
@@ -76,11 +75,9 @@
     try {
       const params = {};
       
-      // Public users and fellows only see Approved resources.
-      // Reviewer roles can toggle to see all statuses for review purposes.
-      if (!canReview || !showRoleBasedStatus) {
-        params.status = 'Approved';
-      }
+      // Always show only Approved resources on the home page
+      // Reviewers should use the ReviewerDashboard for pending review resources
+      params.status = 'Approved';
       
       // Note: Current API supports single filter values, not arrays
       // For now, we'll use the first value if multiple are selected
@@ -220,16 +217,15 @@
         
         {#if canReview}
           <button
-            class="review-mode-toggle"
-            class:active={showRoleBasedStatus}
+            class="reviewer-dashboard-cta"
             type="button"
-            on:click={() => { showRoleBasedStatus = !showRoleBasedStatus; loadResources(); }}
-            title={showRoleBasedStatus ? 'Showing all statuses — click to show Approved only' : 'Show resources pending review'}
+            on:click={() => navigateTo('/dashboard/reviewer')}
+            title="Go to Reviewer Dashboard"
           >
             <span class="material-symbols-outlined">
-              {showRoleBasedStatus ? 'visibility' : 'pending_actions'}
+              rate_review
             </span>
-            {showRoleBasedStatus ? 'All Statuses' : 'Pending Review'}
+            Review Queue
           </button>
         {/if}
         
@@ -292,7 +288,7 @@
               viewCount={resource.viewCount}
               contributionScore={resource.contributionScore}
               status={resource.status}
-              showStatus={showRoleBasedStatus}
+              showStatus={false}
               slug={resource.slug}
               isBookmarked={$bookmarkedResourceIds.has(resource.resource_id)}
               on:bookmark={() => handleBookmarkToggle(resource.resource_id)}
@@ -400,33 +396,33 @@
     gap: var(--md-sys-spacing-sm);
   }
 
-  .review-mode-toggle {
+  .reviewer-dashboard-cta {
     display: inline-flex;
     align-items: center;
     gap: 0.375rem;
     padding: 0.375rem 0.875rem;
-    border: 1px solid var(--md-sys-color-outline-variant);
+    border: 1px solid var(--md-sys-color-outline);
     border-radius: 999px;
-    background: none;
-    color: var(--md-sys-color-on-surface-variant);
+    background: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
     font-size: 0.8125rem;
     font-weight: 500;
     cursor: pointer;
-    transition: background 0.2s, color 0.2s, border-color 0.2s;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
     white-space: nowrap;
   }
 
-  .review-mode-toggle:hover {
-    background: var(--md-sys-color-surface-variant);
+  .reviewer-dashboard-cta:hover {
+    background: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+    box-shadow: var(--md-sys-elevation-1);
   }
 
-  .review-mode-toggle.active {
-    background: var(--md-sys-color-primary-container);
-    color: var(--md-sys-color-on-primary-container);
-    border-color: var(--md-sys-color-primary);
+  .reviewer-dashboard-cta:active {
+    transform: scale(0.98);
   }
 
-  .review-mode-toggle .material-symbols-outlined {
+  .reviewer-dashboard-cta .material-symbols-outlined {
     font-size: 18px;
   }
   

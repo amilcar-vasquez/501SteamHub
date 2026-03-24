@@ -189,7 +189,7 @@
       const resourceData = {
         ...formData,
         drive_link: formData.drive_link.trim() || null,
-        status: 'Draft', // Default status
+        status: 'Submitted', // Submit directly to review queue
         contributor_id: $currentUser.user_id,
       };
       
