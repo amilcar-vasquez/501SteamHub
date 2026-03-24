@@ -287,6 +287,14 @@ Object.assign(adminAPI, {
       headers: { 'Authorization': `Bearer ${authToken}` },
     });
   },
+
+  // GET /v1/admin/moe-documents?path=... - retrieve MOE verification document
+  getMoeDocument: async (moeDocPath, authToken) => {
+    const qs = moeDocPath ? `?path=${encodeURIComponent(moeDocPath)}` : '';
+    return request(`/admin/moe-documents${qs}`, {
+      headers: { 'Authorization': `Bearer ${authToken}` },
+    });
+  },
 });
 
 // Fellow API methods

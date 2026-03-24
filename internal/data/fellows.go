@@ -9,17 +9,21 @@ import (
 )
 
 type Fellow struct {
-	ID                    int64     `json:"fellow_id"`
-	UserID                int64     `json:"user_id"`
-	FirstName             string    `json:"first_name"`
-	LastName              string    `json:"last_name"`
-	MoeIdentifier         string    `json:"moe_identifier"`
-	School                *string   `json:"school,omitempty"`
-	SubjectSpecialization *string   `json:"subject_specialization,omitempty"`
-	District              *string   `json:"district,omitempty"`
-	ProfileStatus         string    `json:"profile_status"`
-	SteamPoints           float64   `json:"steam_points"` // Accumulated 501 STEAM Points from contributions (FR-27)
-	CreatedAt             time.Time `json:"created_at"`
+	ID                    int64      `json:"fellow_id"`
+	UserID                int64      `json:"user_id"`
+	FirstName             string     `json:"first_name"`
+	LastName              string     `json:"last_name"`
+	MoeIdentifier         string     `json:"moe_identifier"`
+	School                *string    `json:"school,omitempty"`
+	SubjectSpecialization *string    `json:"subject_specialization,omitempty"`
+	District              *string    `json:"district,omitempty"`
+	ProfileStatus         string     `json:"profile_status"`
+	SteamPoints           float64    `json:"steam_points"` // Accumulated 501 STEAM Points from contributions (FR-27)
+	SourceApplicationID   *int64     `json:"source_application_id,omitempty"`
+	MoeIdentifierVerified bool       `json:"moe_identifier_verified"`
+	VerifiedAt            *time.Time `json:"verified_at,omitempty"`
+	VerifiedBy            *int64     `json:"verified_by,omitempty"`
+	CreatedAt             time.Time  `json:"created_at"`
 }
 
 type FellowModel struct {
@@ -29,8 +33,8 @@ type FellowModel struct {
 // Insert a new fellow into the database
 func (m FellowModel) Insert(fellow *Fellow) error {
 	query := `
-		INSERT INTO fellows (user_id, first_name, last_name, moe_identifier, school, subject_specialization, district, profile_status)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+		INSERT INTO fellows (user_id, first_name, last_name, moe_identifier, school, subject_specialization, district, profile_status, source_application_id, moe_identifier_verified, verified_at, verified_by)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
 		RETURNING fellow_id, created_at`
 
 	args := []any{
@@ -42,6 +46,10 @@ func (m FellowModel) Insert(fellow *Fellow) error {
 		fellow.SubjectSpecialization,
 		fellow.District,
 		fellow.ProfileStatus,
+		fellow.SourceApplicationID,
+		fellow.MoeIdentifierVerified,
+		fellow.VerifiedAt,
+		fellow.VerifiedBy,
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
@@ -57,7 +65,7 @@ func (m FellowModel) Get(id int64) (*Fellow, error) {
 	}
 
 	query := `
-		SELECT fellow_id, user_id, first_name, last_name, moe_identifier, school, subject_specialization, district, profile_status, steam_points, created_at
+		SELECT fellow_id, user_id, first_name, last_name, moe_identifier, school, subject_specialization, district, profile_status, steam_points, source_application_id, moe_identifier_verified, verified_at, verified_by, created_at
 		FROM fellows
 		WHERE fellow_id = $1`
 
@@ -77,6 +85,10 @@ func (m FellowModel) Get(id int64) (*Fellow, error) {
 		&fellow.District,
 		&fellow.ProfileStatus,
 		&fellow.SteamPoints,
+		&fellow.SourceApplicationID,
+		&fellow.MoeIdentifierVerified,
+		&fellow.VerifiedAt,
+		&fellow.VerifiedBy,
 		&fellow.CreatedAt,
 	)
 
@@ -99,7 +111,7 @@ func (m FellowModel) GetByUserID(userID int64) (*Fellow, error) {
 	}
 
 	query := `
-		SELECT fellow_id, user_id, first_name, last_name, moe_identifier, school, subject_specialization, district, profile_status, steam_points, created_at
+		SELECT fellow_id, user_id, first_name, last_name, moe_identifier, school, subject_specialization, district, profile_status, steam_points, source_application_id, moe_identifier_verified, verified_at, verified_by, created_at
 		FROM fellows
 		WHERE user_id = $1`
 
@@ -119,6 +131,10 @@ func (m FellowModel) GetByUserID(userID int64) (*Fellow, error) {
 		&fellow.District,
 		&fellow.ProfileStatus,
 		&fellow.SteamPoints,
+		&fellow.SourceApplicationID,
+		&fellow.MoeIdentifierVerified,
+		&fellow.VerifiedAt,
+		&fellow.VerifiedBy,
 		&fellow.CreatedAt,
 	)
 
@@ -138,8 +154,8 @@ func (m FellowModel) GetByUserID(userID int64) (*Fellow, error) {
 func (m FellowModel) Update(fellow *Fellow) error {
 	query := `
 		UPDATE fellows
-		SET first_name = $1, last_name = $2, moe_identifier = $3, school = $4, subject_specialization = $5, district = $6, profile_status = $7, steam_points = $8
-		WHERE fellow_id = $9
+		SET first_name = $1, last_name = $2, moe_identifier = $3, school = $4, subject_specialization = $5, district = $6, profile_status = $7, steam_points = $8, source_application_id = $9, moe_identifier_verified = $10, verified_at = $11, verified_by = $12
+		WHERE fellow_id = $13
 		RETURNING fellow_id`
 
 	args := []any{
@@ -151,6 +167,10 @@ func (m FellowModel) Update(fellow *Fellow) error {
 		fellow.District,
 		fellow.ProfileStatus,
 		fellow.SteamPoints,
+		fellow.SourceApplicationID,
+		fellow.MoeIdentifierVerified,
+		fellow.VerifiedAt,
+		fellow.VerifiedBy,
 		fellow.ID,
 	}
 

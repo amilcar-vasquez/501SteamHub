@@ -4,11 +4,14 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/amilcar-vasquez/501SteamHub/internal/data"
+	"github.com/amilcar-vasquez/501SteamHub/internal/services"
 	"github.com/amilcar-vasquez/501SteamHub/internal/validator"
 )
 
@@ -45,8 +48,11 @@ func (a *app) applyForFellowHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var input struct {
-		FullName        string   `json:"full_name"`
+		FirstName       string   `json:"first_name"`
+		LastName        string   `json:"last_name"`
 		Organization    string   `json:"organization"`
+		MoeIdentifier   string   `json:"moe_identifier"`
+		MoeDocPath      string   `json:"moe_doc_path"`
 		Subjects        []string `json:"subjects"`
 		GradeLevels     []string `json:"grade_levels"`
 		ExperienceYears int      `json:"experience_years"`
@@ -61,8 +67,11 @@ func (a *app) applyForFellowHandler(w http.ResponseWriter, r *http.Request) {
 
 	app := &data.FellowApplication{
 		UserID:          user.ID,
-		FullName:        input.FullName,
+		FirstName:       input.FirstName,
+		LastName:        input.LastName,
 		Organization:    input.Organization,
+		MoeIdentifier:   input.MoeIdentifier,
+		MoeDocPath:      input.MoeDocPath,
 		Subjects:        input.Subjects,
 		GradeLevels:     input.GradeLevels,
 		ExperienceYears: input.ExperienceYears,
@@ -71,8 +80,13 @@ func (a *app) applyForFellowHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	v := validator.New()
-	v.Check(app.FullName != "", "full_name", "must be provided")
-	v.Check(len(app.FullName) <= 200, "full_name", "must not exceed 200 characters")
+	v.Check(app.FirstName != "", "first_name", "must be provided")
+	v.Check(len(app.FirstName) <= 100, "first_name", "must not exceed 100 characters")
+	v.Check(app.LastName != "", "last_name", "must be provided")
+	v.Check(len(app.LastName) <= 100, "last_name", "must not exceed 100 characters")
+	v.Check(app.MoeIdentifier != "", "moe_identifier", "must be provided")
+	v.Check(len(app.MoeIdentifier) <= 50, "moe_identifier", "must not exceed 50 characters")
+	v.Check(app.MoeDocPath != "", "moe_doc_path", "must be provided")
 	v.Check(app.Organization != "", "organization", "must be provided")
 	v.Check(len(app.Organization) <= 200, "organization", "must not exceed 200 characters")
 	v.Check(len(app.Subjects) > 0, "subjects", "must include at least one subject")
@@ -93,9 +107,10 @@ func (a *app) applyForFellowHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Send notification to admins/DSC about new fellow application
 	adminEmails := []string{"admin@example.com"} // TODO: Fetch from config or admin users list
+	fullName := app.FirstName + " " + app.LastName
 	a.notificationHelper.AsyncNotifyFellowApplicationSubmitted(
 		adminEmails,
-		app.FullName,
+		fullName,
 		user.Email,
 		app.Organization,
 		strings.Join(app.Subjects, ", "),
@@ -238,4 +253,137 @@ func (a *app) adminRejectFellowHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		a.serverErrorResponse(w, r, err)
 	}
+}
+
+// uploadMoeDocumentHandler handles POST /v1/fellow-applications/moe-document/upload.
+// Authenticated users upload their MOE verification documents (PDF, JPG, PNG).
+// The file is validated strictly on the backend (type, size, content).
+// Only the storage path (NOT public URL) is saved in the database.
+func (a *app) uploadMoeDocumentHandler(w http.ResponseWriter, r *http.Request) {
+	user := a.contextGetUser(r)
+
+	// Set maximum request body size to 5MB + some overhead for multipart headers
+	r.Body = http.MaxBytesReader(w, r.Body, 6<<20) // 6 MB limit
+
+	// Parse multipart form (required before accessing FormFile)
+	err := r.ParseMultipartForm(1 << 20) // 1 MB in-memory limit for form parsing
+	if err != nil {
+		a.errorResponseJSON(w, r, http.StatusBadRequest, "failed to parse multipart form: "+err.Error())
+		return
+	}
+
+	// Get the file from the multipart form
+	file, fileHeader, err := r.FormFile("moe_document")
+	if err != nil {
+		if err == http.ErrMissingFile {
+			a.errorResponseJSON(w, r, http.StatusBadRequest, "file field (moe_document) is required")
+		} else {
+			a.errorResponseJSON(w, r, http.StatusBadRequest, "failed to retrieve file: "+err.Error())
+		}
+		return
+	}
+	defer file.Close()
+
+	// Validate and save the file
+	validator := services.NewMoeDocumentValidator()
+	storagePath, err := validator.ValidateAndSaveFile(file, fileHeader.Filename, validator)
+	if err != nil {
+		// Determine the specific error to give appropriate HTTP status
+		if strings.Contains(err.Error(), "file too large") {
+			a.errorResponseJSON(w, r, http.StatusRequestEntityTooLarge, err.Error())
+		} else if strings.Contains(err.Error(), "invalid file type") {
+			a.errorResponseJSON(w, r, http.StatusBadRequest, err.Error())
+		} else {
+			a.errorResponseJSON(w, r, http.StatusBadRequest, "file validation failed: "+err.Error())
+		}
+		return
+	}
+
+	// Return the storage path to the client (not a public URL)
+	err = a.writeJSON(w, http.StatusOK, envelope{
+		"message":      "file uploaded successfully",
+		"storage_path": storagePath,
+		"user_id":      user.ID,
+		"uploaded_at":  time.Now(),
+	}, nil)
+	if err != nil {
+		a.serverErrorResponse(w, r, err)
+	}
+}
+
+// getMoeDocumentHandler handles GET /v1/admin/moe-documents/:storagePath.
+// Only authenticated admin/reviewers can download MOE verification documents.
+// Returns a time-limited access to the stored file.
+func (a *app) getMoeDocumentHandler(w http.ResponseWriter, r *http.Request) {
+	user := a.contextGetUser(r)
+
+	// Check authorization: only admin or users with review permission
+	role, err := a.models.Roles.Get(user.RoleID)
+	if err != nil {
+		a.serverErrorResponse(w, r, err)
+		return
+	}
+
+	// Only allow admin, DSC, and users with Fellow reviewer role
+	allowedRoles := map[string]bool{
+		"admin": true,
+		"DSC":   true,
+	}
+	if !allowedRoles[role.RoleName] {
+		a.errorResponseJSON(w, r, http.StatusForbidden, "you do not have permission to access MOE documents")
+		return
+	}
+
+	// Get storage path from query parameter
+	storagePath := r.URL.Query().Get("path")
+	if storagePath == "" {
+		a.errorResponseJSON(w, r, http.StatusBadRequest, "path parameter is required")
+		return
+	}
+
+	// Retrieve the file from secure storage
+	fileData, err := services.RetrieveSecureFile(storagePath)
+	if err != nil {
+		if strings.Contains(err.Error(), "access denied") {
+			a.errorResponseJSON(w, r, http.StatusForbidden, err.Error())
+		} else {
+			a.errorResponseJSON(w, r, http.StatusNotFound, "document not found")
+		}
+		a.logger.Error("moe document retrieval error", "user_id", user.ID, "path", storagePath, "error", err)
+		return
+	}
+
+	// Determine content type based on file extension
+	contentType := "application/pdf"
+	if strings.HasSuffix(storagePath, ".jpg") || strings.HasSuffix(storagePath, ".jpeg") {
+		contentType = "image/jpeg"
+	} else if strings.HasSuffix(storagePath, ".png") {
+		contentType = "image/png"
+	}
+
+	// Set response headers for file download
+	w.Header().Set("Content-Type", contentType)
+	w.Header().Set("Content-Length", fmt.Sprintf("%d", len(fileData)))
+	w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=\"moe-document%s\"",
+		getExtensionFromPath(storagePath)))
+	w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
+	w.Header().Set("Pragma", "no-cache")
+
+	// Write file to response
+	_, err = w.Write(fileData)
+	if err != nil {
+		a.logger.Error("failed to write moe document response", "user_id", user.ID, "error", err)
+	}
+}
+
+// getExtensionFromPath extracts file extension from storage path
+func getExtensionFromPath(storagePath string) string {
+	if strings.HasSuffix(storagePath, ".pdf") {
+		return ".pdf"
+	} else if strings.HasSuffix(storagePath, ".jpg") || strings.HasSuffix(storagePath, ".jpeg") {
+		return ".jpg"
+	} else if strings.HasSuffix(storagePath, ".png") {
+		return ".png"
+	}
+	return ".bin"
 }

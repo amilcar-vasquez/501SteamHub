@@ -5,8 +5,6 @@ package data
 import (
 	"context"
 	"database/sql"
-	"fmt"
-	"strings"
 	"time"
 
 	"github.com/lib/pq"
@@ -16,8 +14,11 @@ import (
 type FellowApplication struct {
 	ID              int64          `json:"application_id"`
 	UserID          int64          `json:"user_id"`
-	FullName        string         `json:"full_name"`
+	FirstName       string         `json:"first_name"`
+	LastName        string         `json:"last_name"`
 	Organization    string         `json:"organization"`
+	MoeIdentifier   string         `json:"moe_identifier"`
+	MoeDocPath      string         `json:"moe_doc_path,omitempty"` // Storage key for MOE verification document (NOT public URL)
 	Subjects        pq.StringArray `json:"subjects"`
 	GradeLevels     pq.StringArray `json:"grade_levels"`
 	ExperienceYears int            `json:"experience_years"`
@@ -37,15 +38,18 @@ type FellowApplicationModel struct {
 func (m FellowApplicationModel) Insert(app *FellowApplication) error {
 	query := `
 		INSERT INTO fellow_applications
-			(user_id, full_name, organization, subjects, grade_levels,
+			(user_id, first_name, last_name, organization, moe_identifier, moe_doc_path, subjects, grade_levels,
 			 experience_years, bio, credentials_link, status)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'Pending')
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, 'Pending')
 		RETURNING application_id, created_at`
 
 	args := []any{
 		app.UserID,
-		app.FullName,
+		app.FirstName,
+		app.LastName,
 		app.Organization,
+		app.MoeIdentifier,
+		app.MoeDocPath,
 		pq.Array(app.Subjects),
 		pq.Array(app.GradeLevels),
 		app.ExperienceYears,
@@ -66,7 +70,7 @@ func (m FellowApplicationModel) Get(id int64) (*FellowApplication, error) {
 	}
 
 	query := `
-		SELECT application_id, user_id, full_name, organization, subjects, grade_levels,
+		SELECT application_id, user_id, first_name, last_name, organization, moe_identifier, moe_doc_path, subjects, grade_levels,
 		       experience_years, bio, COALESCE(credentials_link, ''), status, reviewed_by, reviewed_at, created_at
 		FROM fellow_applications
 		WHERE application_id = $1`
@@ -79,8 +83,11 @@ func (m FellowApplicationModel) Get(id int64) (*FellowApplication, error) {
 	err := m.DB.QueryRowContext(ctx, query, id).Scan(
 		&app.ID,
 		&app.UserID,
-		&app.FullName,
+		&app.FirstName,
+		&app.LastName,
 		&app.Organization,
+		&app.MoeIdentifier,
+		&app.MoeDocPath,
 		&app.Subjects,
 		&app.GradeLevels,
 		&app.ExperienceYears,
@@ -106,7 +113,7 @@ func (m FellowApplicationModel) Get(id int64) (*FellowApplication, error) {
 // GetByUserID retrieves the most-recent application for a given user.
 func (m FellowApplicationModel) GetByUserID(userID int64) (*FellowApplication, error) {
 	query := `
-		SELECT application_id, user_id, full_name, organization, subjects, grade_levels,
+		SELECT application_id, user_id, first_name, last_name, organization, moe_identifier, moe_doc_path, subjects, grade_levels,
 		       experience_years, bio, COALESCE(credentials_link, ''), status, reviewed_by, reviewed_at, created_at
 		FROM fellow_applications
 		WHERE user_id = $1
@@ -121,8 +128,11 @@ func (m FellowApplicationModel) GetByUserID(userID int64) (*FellowApplication, e
 	err := m.DB.QueryRowContext(ctx, query, userID).Scan(
 		&app.ID,
 		&app.UserID,
-		&app.FullName,
+		&app.FirstName,
+		&app.LastName,
 		&app.Organization,
+		&app.MoeIdentifier,
+		&app.MoeDocPath,
 		&app.Subjects,
 		&app.GradeLevels,
 		&app.ExperienceYears,
@@ -169,7 +179,7 @@ func (m FellowApplicationModel) HasPendingApplication(userID int64) (bool, error
 
 // Approve sets an application's status to Approved, records the reviewer, and
 // promotes the applicant to the Fellow role (role_id = 3).
-// It also creates a Fellow record in the fellows table.
+// It also creates a Fellow record in the fellows table if it doesn't already exist.
 func (m FellowApplicationModel) Approve(id, reviewerID int64) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -180,13 +190,13 @@ func (m FellowApplicationModel) Approve(id, reviewerID int64) error {
 	}
 	defer tx.Rollback()
 
-	// 1. Fetch the application so we can get the applicant's user_id and details.
+	// 1. Fetch the application details (first_name, last_name, organization, moe_identifier).
 	var userID int64
-	var fullName, organization string
+	var firstName, lastName, organization, moeIdentifier string
 	err = tx.QueryRowContext(ctx,
-		`SELECT user_id, full_name, organization FROM fellow_applications WHERE application_id = $1 AND status = 'Pending'`,
+		`SELECT user_id, first_name, last_name, organization, moe_identifier FROM fellow_applications WHERE application_id = $1 AND status = 'Pending'`,
 		id,
-	).Scan(&userID, &fullName, &organization)
+	).Scan(&userID, &firstName, &lastName, &organization, &moeIdentifier)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return ErrRecordNotFound
@@ -194,7 +204,7 @@ func (m FellowApplicationModel) Approve(id, reviewerID int64) error {
 		return err
 	}
 
-	// 2. Update the application status.
+	// 2. Update the application status to Approved.
 	_, err = tx.ExecContext(ctx, `
 		UPDATE fellow_applications
 		SET status = 'Approved', reviewed_by = $1, reviewed_at = NOW()
@@ -214,17 +224,7 @@ func (m FellowApplicationModel) Approve(id, reviewerID int64) error {
 		return err
 	}
 
-	// 4. Create a Fellow record in the fellows table.
-	// Split full_name into first and last names
-	names := strings.Fields(strings.TrimSpace(fullName))
-	firstName := fullName
-	lastName := ""
-	if len(names) > 1 {
-		firstName = names[0]
-		lastName = strings.Join(names[1:], " ")
-	}
-
-	// Check if fellow record already exists for this user
+	// 4. Check if fellow record already exists for this user.
 	var existingFellowID int64
 	err = tx.QueryRowContext(ctx,
 		`SELECT fellow_id FROM fellows WHERE user_id = $1`,
@@ -234,16 +234,18 @@ func (m FellowApplicationModel) Approve(id, reviewerID int64) error {
 		return err
 	}
 
-	// Only create if it doesn't exist
+	// 5. Only create if it doesn't already exist.
 	if err == sql.ErrNoRows {
 		_, err = tx.ExecContext(ctx, `
-			INSERT INTO fellows (user_id, first_name, last_name, moe_identifier, school, profile_status)
-			VALUES ($1, $2, $3, $4, $5, 'approved')`,
+			INSERT INTO fellows (user_id, first_name, last_name, moe_identifier, school, profile_status, source_application_id)
+			VALUES ($1, $2, $3, $4, $5, $6, $7)`,
 			userID,
 			firstName,
 			lastName,
-			fmt.Sprintf("user_%d", userID), // Generate a default moe_identifier from user_id
+			moeIdentifier,
 			organization,
+			"approved",
+			id,
 		)
 		if err != nil {
 			return err
@@ -282,7 +284,7 @@ func (m FellowApplicationModel) Reject(id, reviewerID int64) error {
 // GetAll returns all applications, optionally filtered by status.
 func (m FellowApplicationModel) GetAll(statusFilter string) ([]*FellowApplication, error) {
 	query := `
-		SELECT application_id, user_id, full_name, organization, subjects, grade_levels,
+		SELECT application_id, user_id, first_name, last_name, organization, moe_identifier, moe_doc_path, subjects, grade_levels,
 		       experience_years, bio, COALESCE(credentials_link, ''), status, reviewed_by, reviewed_at, created_at
 		FROM fellow_applications`
 
@@ -309,8 +311,11 @@ func (m FellowApplicationModel) GetAll(statusFilter string) ([]*FellowApplicatio
 		err := rows.Scan(
 			&app.ID,
 			&app.UserID,
-			&app.FullName,
+			&app.FirstName,
+			&app.LastName,
 			&app.Organization,
+			&app.MoeIdentifier,
+			&app.MoeDocPath,
 			&app.Subjects,
 			&app.GradeLevels,
 			&app.ExperienceYears,

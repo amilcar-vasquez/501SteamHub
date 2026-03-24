@@ -188,6 +188,12 @@ func (a *app) routes() http.Handler {
 	router.Handler(http.MethodPatch, apiV1Route+"/admin/fellow-applications/:id/reject",
 		a.requireAnyRole([]string{"admin", "DSC"}, http.HandlerFunc(a.adminRejectFellowHandler)))
 
+	// MOE document upload and retrieval (for fellow applications)
+	router.Handler(http.MethodPost, apiV1Route+"/fellow-applications/moe-document/upload",
+		a.requireAuthenticatedUser(http.HandlerFunc(a.uploadMoeDocumentHandler)))
+	router.Handler(http.MethodGet, apiV1Route+"/admin/moe-documents",
+		a.requireAnyRole([]string{"admin", "DSC"}, http.HandlerFunc(a.getMoeDocumentHandler)))
+
 	// Admin-level metrics: user counts + full resource-status breakdown.
 	router.Handler(http.MethodGet, apiV1Route+"/admin/metrics",
 		a.requireAnyRole([]string{"admin", "DSC"}, http.HandlerFunc(a.adminMetricsHandler)))

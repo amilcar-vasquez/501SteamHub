@@ -39,7 +39,9 @@
 
   // ── State ─────────────────────────────────────────────────────────────────
   let formData = {
-    full_name: '',
+    first_name: '',
+    last_name: '',
+    moe_identifier: '',
     organization: '',
     subjects: [],
     grade_levels: [],
@@ -52,6 +54,9 @@
   let loading = false;
   let submitError = '';
   let submitted = false;
+  let uploadingFile = false;
+  let moeDocFile = null;
+  let fileUploadError = '';
 
   let existingApplication = null;
   let loadingExisting = true;
@@ -80,9 +85,11 @@
       loadingExisting = false;
     }
 
-    // Pre-fill full name from user profile if available
+    // Pre-fill names from user profile if available
     if ($currentUser.username) {
-      formData.full_name = $currentUser.username;
+      const parts = $currentUser.username.trim().split(' ');
+      formData.first_name = parts[0] || '';
+      formData.last_name = parts.slice(1).join(' ') || '';
     }
   });
 
@@ -90,10 +97,22 @@
   function validateForm() {
     errors = {};
 
-    if (!formData.full_name.trim()) {
-      errors.full_name = 'Full name is required';
-    } else if (formData.full_name.length > 200) {
-      errors.full_name = 'Full name must be 200 characters or less';
+    if (!formData.first_name.trim()) {
+      errors.first_name = 'First name is required';
+    } else if (formData.first_name.length > 100) {
+      errors.first_name = 'First name must be 100 characters or less';
+    }
+
+    if (!formData.last_name.trim()) {
+      errors.last_name = 'Last name is required';
+    } else if (formData.last_name.length > 100) {
+      errors.last_name = 'Last name must be 100 characters or less';
+    }
+
+    if (!formData.moe_identifier.trim()) {
+      errors.moe_identifier = 'MOE Identifier is required';
+    } else if (formData.moe_identifier.length > 50) {
+      errors.moe_identifier = 'MOE Identifier must be 50 characters or less';
     }
 
     if (!formData.organization.trim()) {
@@ -131,7 +150,30 @@
       }
     }
 
+    // File validation (client-side, backend is final authority)
+    if (!moeDocFile) {
+      errors.moe_document = 'MOE verification document is required';
+    } else {
+      const maxSize = 5 * 1024 * 1024; // 5 MB
+      if (moeDocFile.size > maxSize) {
+        errors.moe_document = 'File must be smaller than 5MB';
+      }
+      const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+      if (!allowedTypes.includes(moeDocFile.type)) {
+        errors.moe_document = 'Only PDF, JPG, and PNG files are allowed';
+      }
+    }
+
     return Object.keys(errors).length === 0;
+  }
+
+  // ── File Handling ─────────────────────────────────────────────────────────
+  function handleFileSelect(e) {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      moeDocFile = files[0];
+      fileUploadError = '';
+    }
   }
 
   // ── Submit ────────────────────────────────────────────────────────────────
@@ -140,11 +182,23 @@
 
     loading = true;
     submitError = '';
+    fileUploadError = '';
 
     try {
+      // Step 1: Upload MOE document first
+      uploadingFile = true;
+      const moeDocPath = await uploadMoeDocument();
+      uploadingFile = false;
+
+      if (!moeDocPath) {
+        return; // Error already set in fileUploadError
+      }
+
+      // Step 2: Submit application with MOE document path
       const payload = {
         ...formData,
         experience_years: parseInt(formData.experience_years, 10),
+        moe_doc_path: moeDocPath,
       };
       await fellowApplicationAPI.apply(payload, token);
       submitted = true;
@@ -152,6 +206,41 @@
       submitError = err.message || 'Failed to submit application. Please try again.';
     } finally {
       loading = false;
+      uploadingFile = false;
+    }
+  }
+
+  // ── Upload MOE Document ────────────────────────────────────────────────────
+  async function uploadMoeDocument() {
+    if (!moeDocFile) {
+      fileUploadError = 'No document selected';
+      return null;
+    }
+
+    const formData = new FormData();
+    formData.append('moe_document', moeDocFile);
+
+    try {
+      // Use the configured API base URL (from Vite environment)
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:4000/v1';
+      const response = await fetch(`${apiUrl}/fellow-applications/moe-document/upload`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'File upload failed');
+      }
+
+      const data = await response.json();
+      return data.storage_path;
+    } catch (err) {
+      fileUploadError = err.message || 'Failed to upload document. Please try again.';
+      return null;
     }
   }
 </script>
@@ -240,12 +329,30 @@
             <div class="form-section">
               <h2 class="title-medium section-title">Personal Information</h2>
 
+              <div class="form-row">
+                <TextField
+                  label="First Name"
+                  bind:value={formData.first_name}
+                  error={errors.first_name}
+                  required
+                  placeholder="Your first name"
+                />
+
+                <TextField
+                  label="Last Name"
+                  bind:value={formData.last_name}
+                  error={errors.last_name}
+                  required
+                  placeholder="Your last name"
+                />
+              </div>
+
               <TextField
-                label="Full Name"
-                bind:value={formData.full_name}
-                error={errors.full_name}
+                label="MOE Identifier"
+                bind:value={formData.moe_identifier}
+                error={errors.moe_identifier}
                 required
-                placeholder="Your full name"
+                placeholder="Your Ministry of Education identifier"
               />
 
               <TextField
@@ -309,12 +416,60 @@
               />
             </div>
 
+            <div class="form-section">
+              <h2 class="title-medium section-title">MOE Verification Document</h2>
+
+              <p class="body-medium section-subtitle">
+                Please upload a scanned copy of your Ministry of Education identification or verification document.
+              </p>
+
+              {#if fileUploadError}
+                <div class="banner-error" role="alert">
+                  <span class="material-symbols-outlined">error</span>
+                  {fileUploadError}
+                </div>
+              {/if}
+
+              <div class="file-input-container">
+                <input
+                  type="file"
+                  id="moe_document"
+                  accept=".pdf,image/jpeg,image/png"
+                  on:change={handleFileSelect}
+                  disabled={uploadingFile}
+                  class:error={errors.moe_document}
+                />
+                <label for="moe_document" class="file-input-label">
+                  <span class="material-symbols-outlined">cloud_upload</span>
+                  <div class="file-label-text">
+                    {#if moeDocFile}
+                      <strong>Selected: {moeDocFile.name}</strong>
+                      <span class="file-size">({(moeDocFile.size / 1024 / 1024).toFixed(2)} MB)</span>
+                    {:else}
+                      <strong>Click to select file or drag and drop</strong>
+                      <span class="file-info">PDF, JPG, or PNG (max 5 MB)</span>
+                    {/if}
+                  </div>
+                </label>
+              </div>
+
+              {#if errors.moe_document}
+                <p class="error-message">{errors.moe_document}</p>
+              {/if}
+            </div>
+
             <div class="form-actions">
               <Button variant="outlined" type="button" on:click={() => navigateTo('/')}>
                 Cancel
               </Button>
-              <Button variant="filled" type="submit" disabled={loading}>
-                {loading ? 'Submitting…' : 'Submit Application'}
+              <Button variant="filled" type="submit" disabled={loading || uploadingFile}>
+                {#if uploadingFile}
+                  Uploading Document…
+                {:else if loading}
+                  Submitting…
+                {:else}
+                  Submit Application
+                {/if}
               </Button>
             </div>
 
@@ -468,5 +623,102 @@
     justify-content: flex-end;
     gap: 12px;
     flex-wrap: wrap;
+  }
+
+  /* ── Form rows for side-by-side fields ── */
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  /* ── File Input ── */
+  .file-input-container {
+    position: relative;
+  }
+
+  #moe_document {
+    display: none;
+  }
+
+  .file-input-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 32px 24px;
+    border: 2px dashed var(--md-sys-color-primary, #6750a4);
+    border-radius: 12px;
+    background: var(--md-sys-color-surface-container, #ede7f6);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .file-input-label:hover {
+    border-color: var(--md-sys-color-primary, #6750a4);
+    background: color-mix(in srgb, var(--md-sys-color-primary, #6750a4) 5%, var(--md-sys-color-surface-container, #ede7f6));
+  }
+
+  #moe_document:disabled + .file-input-label {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  #moe_document.error + .file-input-label {
+    border-color: var(--md-sys-color-error, #b3261e);
+    background: color-mix(in srgb, var(--md-sys-color-error, #b3261e) 10%, transparent);
+  }
+
+  .file-input-label .material-symbols-outlined {
+    font-size: 40px;
+    color: var(--md-sys-color-primary, #6750a4);
+  }
+
+  .file-label-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    text-align: center;
+  }
+
+  .file-label-text strong {
+    color: var(--md-sys-color-on-background, #1d1b20);
+    font-size: 0.95rem;
+  }
+
+  .file-info {
+    font-size: 0.85rem;
+    color: var(--md-sys-color-on-surface-variant, #49454f);
+  }
+
+  .file-size {
+    font-size: 0.8rem;
+    color: var(--md-sys-color-on-surface-variant, #49454f);
+  }
+
+  .section-subtitle {
+    color: var(--md-sys-color-on-surface-variant, #49454f);
+  }
+
+  .error-message {
+    font-size: 0.8rem;
+    color: var(--md-sys-color-error, #b3261e);
+    margin: 8px 0 0;
+  }
+
+  @media (max-width: 600px) {
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+
+    .file-input-label {
+      padding: 24px 16px;
+    }
+
+    .file-input-label .material-symbols-outlined {
+      font-size: 32px;
+    }
   }
 </style>
