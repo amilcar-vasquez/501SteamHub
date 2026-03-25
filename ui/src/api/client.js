@@ -232,6 +232,15 @@ export const adminAPI = {
     });
   },
 
+  // POST /v1/admin/users/:id/send-email
+  sendEmailToUser: async (id, subject, body, authToken) => {
+    return request(`/admin/users/${id}/send-email`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${authToken}` },
+      body: JSON.stringify({ subject, body }),
+    });
+  },
+
   // POST /v1/resources/:id/status
   overrideResourceStatus: async (resourceId, status, reason, authToken) => {
     return request(`/resources/${resourceId}/status`, {

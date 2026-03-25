@@ -251,6 +251,8 @@ func (a *app) adminUpdateUserHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // adminUpdateUserRoleHandler changes only the role_id of a user.
+// Prevents any user from changing role_id to/from 1 (admin role) to prevent
+// accidental loss of admin access or intentional privilege escalation.
 //
 // PATCH /v1/admin/users/:id/role
 func (a *app) adminUpdateUserRoleHandler(w http.ResponseWriter, r *http.Request) {
@@ -281,6 +283,18 @@ func (a *app) adminUpdateUserRoleHandler(w http.ResponseWriter, r *http.Request)
 
 	v := validator.New()
 	v.Check(input.RoleID > 0, "role_id", "must be a positive integer")
+
+	// Prevent any changes to/from admin role (role_id = 1) for security
+	adminRoleID := 1
+	if user.RoleID == adminRoleID || input.RoleID == adminRoleID {
+		// If either the old or new role is admin, reject the change
+		if user.RoleID == adminRoleID && input.RoleID != adminRoleID {
+			v.Check(false, "role_id", "cannot remove admin privileges from an admin user")
+		} else if user.RoleID != adminRoleID && input.RoleID == adminRoleID {
+			v.Check(false, "role_id", "cannot assign admin role to non-admin users")
+		}
+	}
+
 	if !v.IsEmpty() {
 		a.failedValidationResponse(w, r, v.Errors)
 		return
@@ -346,6 +360,67 @@ func (a *app) adminToggleUserActiveHandler(w http.ResponseWriter, r *http.Reques
 	}
 
 	err = a.writeJSON(w, http.StatusOK, envelope{"user": user}, nil)
+	if err != nil {
+		a.serverErrorResponse(w, r, err)
+	}
+}
+
+// adminSendEmailHandler allows an admin to send a custom email to a user
+//
+// POST /v1/admin/users/:id/send-email
+func (a *app) adminSendEmailHandler(w http.ResponseWriter, r *http.Request) {
+	id, err := a.readIDParam(r)
+	if err != nil {
+		a.notFoundResponse(w, r)
+		return
+	}
+
+	var input struct {
+		Subject string `json:"subject"`
+		Body    string `json:"body"`
+	}
+	if err := a.readJSON(w, r, &input); err != nil {
+		a.badRequestResponse(w, r, err)
+		return
+	}
+
+	v := validator.New()
+	v.Check(input.Subject != "", "subject", "must be provided")
+	v.Check(input.Body != "", "body", "must be provided")
+	v.Check(len(input.Subject) <= 255, "subject", "must not exceed 255 characters")
+	v.Check(len(input.Body) <= 5000, "body", "must not exceed 5000 characters")
+	if !v.IsEmpty() {
+		a.failedValidationResponse(w, r, v.Errors)
+		return
+	}
+
+	// Get the user
+	user, err := a.models.Users.Get(int(id))
+	if err != nil {
+		switch {
+		case errors.Is(err, data.ErrRecordNotFound):
+			a.notFoundResponse(w, r)
+		default:
+			a.serverErrorResponse(w, r, err)
+		}
+		return
+	}
+
+	// Send the email
+	data := map[string]string{
+		"subject": input.Subject,
+		"body":    input.Body,
+	}
+	if err := a.mailer.Send(user.Email, "admin_custom.tmpl", data); err != nil {
+		a.serverErrorResponse(w, r, err)
+		return
+	}
+
+	// Return success
+	response := envelope{
+		"message": "Email sent successfully",
+	}
+	err = a.writeJSON(w, http.StatusOK, response, nil)
 	if err != nil {
 		a.serverErrorResponse(w, r, err)
 	}

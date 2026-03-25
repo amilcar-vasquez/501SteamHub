@@ -208,6 +208,8 @@ func (a *app) routes() http.Handler {
 		a.requireAnyRole([]string{"admin", "DSC"}, http.HandlerFunc(a.adminUpdateUserRoleHandler)))
 	router.Handler(http.MethodPatch, apiV1Route+"/admin/users/:id/active",
 		a.requireAnyRole([]string{"admin", "DSC"}, http.HandlerFunc(a.adminToggleUserActiveHandler)))
+	router.Handler(http.MethodPost, apiV1Route+"/admin/users/:id/send-email",
+		a.requireAnyRole([]string{"admin", "DSC"}, http.HandlerFunc(a.adminSendEmailHandler)))
 
 	// Token routes
 	// TODO: Implement token handlers

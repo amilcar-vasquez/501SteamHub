@@ -31,6 +31,18 @@
   let createError = '';
   let createLoading = false;
 
+  // Send email dialog
+  let showEmailDialog = false;
+  let emailUser = null;
+  let emailForm = { subject: '', body: '' };
+  let emailError = '';
+  let emailSending = false;
+
+  // Role change confirmation dialog (for admin role changes)
+  let showRoleConfirmDialog = false;
+  let roleChangeUser = null;
+  let roleChangeNewId = null;
+
   onMount(loadUsers);
 
   async function loadUsers() {
@@ -49,8 +61,25 @@
   async function handleRoleChange(user, newRoleId) {
     actionError = '';
     actionSuccess = '';
+    
+    const newRoleIdInt = parseInt(newRoleId);
+    const adminRoleId = 1;
+    
+    // If changing to/from admin role, show confirmation dialog
+    if (user.role_id === adminRoleId || newRoleIdInt === adminRoleId) {
+      roleChangeUser = user;
+      roleChangeNewId = newRoleIdInt;
+      showRoleConfirmDialog = true;
+      return;
+    }
+    
+    // Otherwise proceed with the change
+    await commitRoleChange(user, newRoleIdInt);
+  }
+
+  async function commitRoleChange(user, newRoleId) {
     try {
-      const result = await adminAPI.updateUserRole(user.user_id, parseInt(newRoleId), token);
+      const result = await adminAPI.updateUserRole(user.user_id, newRoleId, token);
       users = users.map(u => u.user_id === user.user_id ? result.user : u);
       actionSuccess = `Role updated for ${user.username}.`;
     } catch (err) {
@@ -83,6 +112,29 @@
       createError = err.message || 'Failed to create user.';
     } finally {
       createLoading = false;
+    }
+  }
+
+  function openEmailDialog(user) {
+    emailUser = user;
+    emailForm = { subject: '', body: '' };
+    emailError = '';
+    showEmailDialog = true;
+  }
+
+  async function handleSendEmail() {
+    emailError = '';
+    emailSending = true;
+    try {
+      await adminAPI.sendEmailToUser(emailUser.user_id, emailForm.subject, emailForm.body, token);
+      actionSuccess = `Email sent to ${emailUser.username}.`;
+      showEmailDialog = false;
+      emailUser = null;
+      emailForm = { subject: '', body: '' };
+    } catch (err) {
+      emailError = err.message || 'Failed to send email.';
+    } finally {
+      emailSending = false;
     }
   }
 
@@ -224,11 +276,154 @@
                   </span>
                   {user.is_active ? 'Disable' : 'Enable'}
                 </button>
+                <button
+                  class="btn-tonal label-small btn-email"
+                  on:click={() => openEmailDialog(user)}
+                  title="Send email to {user.username}"
+                >
+                  <span class="material-symbols-outlined">mail</span>
+                  Email
+                </button>
               </td>
             </tr>
           {/each}
         </tbody>
       </table>
+    </div>
+  {/if}
+
+  <!-- Email dialog -->
+  {#if showEmailDialog && emailUser}
+    <div 
+      class="dialog-overlay" 
+      on:click={() => (showEmailDialog = false)}
+      on:keydown={(e) => e.key === 'Escape' && (showEmailDialog = false)}
+      role="button"
+      tabindex="0"
+      aria-label="Close email dialog"
+    >
+      <div class="dialog" on:click|stopPropagation role="presentation">
+        <div class="dialog-header">
+          <h3 class="title-medium">Send Email to {emailUser.username}</h3>
+          <button
+            class="dialog-close"
+            on:click={() => (showEmailDialog = false)}
+            aria-label="Close dialog"
+          >
+            ×
+          </button>
+        </div>
+
+        <div class="dialog-content">
+          {#if emailError}
+            <div class="banner banner-error body-small">
+              <span class="material-symbols-outlined">error</span>
+              {emailError}
+            </div>
+          {/if}
+
+          <div class="form-field">
+            <label class="label-medium" for="email-subject">Subject</label>
+            <input
+              id="email-subject"
+              class="input-field body-medium"
+              type="text"
+              bind:value={emailForm.subject}
+              placeholder="Email subject..."
+              maxlength="255"
+              disabled={emailSending}
+            />
+          </div>
+
+          <div class="form-field">
+            <label class="label-medium" for="email-body">Message</label>
+            <textarea
+              id="email-body"
+              class="input-field body-medium"
+              bind:value={emailForm.body}
+              placeholder="Email body..."
+              rows="6"
+              maxlength="5000"
+              disabled={emailSending}
+            />
+          </div>
+        </div>
+
+        <div class="dialog-footer">
+          <button
+            class="btn-text label-medium"
+            on:click={() => (showEmailDialog = false)}
+            disabled={emailSending}
+          >
+            Cancel
+          </button>
+          <button
+            class="btn-filled label-medium"
+            on:click={handleSendEmail}
+            disabled={emailSending || !emailForm.subject || !emailForm.body}
+          >
+            {emailSending ? 'Sending...' : 'Send Email'}
+          </button>
+        </div>
+      </div>
+    </div>
+  {/if}
+
+  <!-- Role change confirmation dialog (for admin role changes) -->
+  {#if showRoleConfirmDialog && roleChangeUser}
+    <div 
+      class="dialog-overlay" 
+      on:click={() => (showRoleConfirmDialog = false)}
+      on:keydown={(e) => e.key === 'Escape' && (showRoleConfirmDialog = false)}
+      role="button"
+      tabindex="0"
+      aria-label="Close role confirmation dialog"
+    >
+      <div class="dialog" on:click|stopPropagation role="presentation">
+        <div class="dialog-header">
+          <h3 class="title-medium warning-title">
+            <span class="material-symbols-outlined">warning</span>
+            Confirm Role Change
+          </h3>
+          <button
+            class="dialog-close"
+            on:click={() => (showRoleConfirmDialog = false)}
+            aria-label="Close dialog"
+          >
+            ×
+          </button>
+        </div>
+
+        <div class="dialog-content">
+          <p class="body-medium warning-text">
+            {roleChangeUser.role_id === 1
+              ? `You are about to remove admin privileges from <strong>${roleChangeUser.username}</strong>. This user will lose access to the admin panel.`
+              : `You are about to assign admin privileges to <strong>${roleChangeUser.username}</strong>. This user will gain full administrative access.`
+            }
+          </p>
+          <p class="body-small secondary-text">This action is protected due to its security impact.</p>
+        </div>
+
+        <div class="dialog-footer">
+          <button
+            class="btn-text label-medium"
+            on:click={() => (showRoleConfirmDialog = false)}
+          >
+            Cancel
+          </button>
+          <button
+            class="btn-filled btn-warning label-medium"
+            on:click={async () => {
+              await commitRoleChange(roleChangeUser, roleChangeNewId);
+              showRoleConfirmDialog = false;
+              roleChangeUser = null;
+              roleChangeNewId = null;
+            }}
+          >
+            Confirm Change
+          </button>
+        </div>
+      </div>
     </div>
   {/if}
 </section>
@@ -344,7 +539,7 @@
 
   .user-table th {
     text-align: left;
-    padding: 8px 12px;
+    padding: 12px 12px;
     border-bottom: 1px solid var(--md-sys-color-outline-variant);
     color: var(--md-sys-color-on-surface-variant);
     white-space: nowrap;
@@ -352,8 +547,6 @@
 
   .user-table td {
     padding: 12px 12px;
-    border-bottom: 1px solid var(--md-sys-color-outline-variant);
-    vertical-align: middle;
   }
 
   .user-table tbody tr:hover { background: color-mix(in srgb, var(--md-sys-color-primary) 5%, transparent); }
@@ -371,7 +564,7 @@
   .avatar-icon { font-size: 20px; color: var(--md-sys-color-on-surface-variant); }
 
   .role-select {
-    padding: 5px 8px;
+    padding: 8px 8px;
     border: 1px solid var(--md-sys-color-outline);
     border-radius: 6px;
     background: var(--md-sys-color-surface);
@@ -417,6 +610,11 @@
     background: #e8f5e9;
     color: #1b5e20;
   }
+  .btn-email {
+    background: #e3f2fd;
+    color: #0d47a1;
+    margin-left: 8px;
+  }
 
   /* Shared filled button */
   .btn-filled {
@@ -437,4 +635,135 @@
   .btn-filled .material-symbols-outlined { font-size: 18px; }
   .btn-filled:hover { opacity: 0.9; }
   .btn-filled:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* Email dialog */
+  .dialog-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+
+  .dialog {
+    background: var(--md-sys-color-surface);
+    border-radius: 12px;
+    box-shadow: 0 5px 16px rgba(0, 0, 0, 0.25);
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .dialog-header {
+    padding: 20px;
+    border-bottom: 1px solid var(--md-sys-color-outline-variant);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .dialog-header h3 {
+    color: var(--md-sys-color-on-surface);
+    margin: 0;
+    font-size: 20px;
+  }
+
+  .dialog-close {
+    background: none;
+    border: none;
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+    color: var(--md-sys-color-on-surface-variant);
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .dialog-close:hover {
+    color: var(--md-sys-color-on-surface);
+  }
+
+  .dialog-content {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .dialog-footer {
+    padding: 16px 20px;
+    border-top: 1px solid var(--md-sys-color-outline-variant);
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  .btn-text {
+    background: none;
+    border: none;
+    color: var(--md-sys-color-primary);
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background 0.15s;
+  }
+
+  .btn-text:hover {
+    background: var(--md-sys-color-primary-container);
+  }
+
+  .btn-text:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  textarea.input-field {
+    resize: vertical;
+    font-family: inherit;
+  }
+
+  /* Warning dialog styling */
+  .warning-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #f57f17;
+  }
+
+  .warning-title .material-symbols-outlined {
+    font-size: 24px;
+  }
+
+  .warning-text {
+    color: var(--md-sys-color-on-surface);
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .secondary-text {
+    color: var(--md-sys-color-on-surface-variant);
+    margin: 8px 0 0;
+  }
+
+  .btn-warning {
+    background: #ff9800;
+    color: white;
+  }
+
+  .btn-warning:hover {
+    opacity: 0.9;
+  }
 </style>

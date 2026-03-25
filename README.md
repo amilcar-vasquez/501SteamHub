@@ -94,44 +94,103 @@ Draft → Submitted → UnderReview ──→ NeedsRevision
 
 ## Features
 
-### Resources
-- Five categories: `LessonPlan`, `Video`, `Slideshow`, `Assessment`, `Other`
-- Multi-value subjects and grade levels via junction tables
-- URL slug auto-generated from title for shareable links
-- Drive link for source file storage
-- Per-resource status history (full audit trail)
-- View access tracking
+### 🔐 Authentication & Authorization
+- **Email + Password Registration** — self-service sign-up with field validation
+- **Email Activation Flow** — confirmation token sent via SMTP; user must click to activate
+- **Bearer Token Auth** — scoped tokens (`authentication` for login, `activation` for email verification)
+- **Password Security** — bcrypt hashing (cost 12)
+- **Role-Based Access Control** — 7 roles with permission inheritance: `admin`, `DSC`, `TeamLead`, `SubjectExpert`, `Fellow`, `Secretary`, `User`
+- **Admin User Management** — create/update/delete users; change roles; toggle active status (all audited)
 
-### Lesson Plans
-- Structured block-based lesson builder (objectives, activities, assessment, differentiation)
-- Versioned lesson content with change descriptions
+### 📚 Resources & Content
+- **Five Resource Categories** — Lesson Plans, Videos, Slideshows, Assessments, Other
+- **Multi-Subject & Grade Level Tagging** — resources can belong to many subjects/levels simultaneously
+- **Auto-Generated URL Slugs** — shareable links like `/resource-by-slug/my-great-lesson`
+- **Google Drive Integration** — store file links with resources
+- **Contributor Tracking** — record who created/modified each resource
+- **View Count Metrics** — track engagement per resource
+- **Full CRUD with Filtering** — list by subject, grade level, status, contributor; pagination support
+- **Bulk Metrics** — dashboard counts by status (Draft, UnderReview, Approved, Published, etc.)
 
-### Review Workflow
-- Multi-role decision records per resource
-- Inline reviewer comments tied to specific lesson block indices
-- Comment resolution tracking
+### 📝 Lesson Plans
+- **Block-Based Builder** — 5 instructional fields: Objectives, Materials, Content, Assessment, Differentiation
+- **Versioned Content** — each edit creates a new version with change description tracked
+- **Duration Tracking** — lesson length recorded in minutes
+- **Structure Validation** — ensures lessons meet minimum completion criteria
 
-### Fellows
-- Extended user profiles with school, district, MOE identifier
-- Fellow application flow: User → applies → DSC/admin approves → role upgraded
-- Applications track status (Pending / Approved / Rejected)
+### ⭐ Resource Review Workflow
+- **Multi-Status Lifecycle** — Draft → Submitted → UnderReview → Approved/Rejected/NeedsRevision → DesignCurate → Published → Indexed → Archived
+- **Multi-Role ReviewDecisions** — SubjectExpert, TeamLead, DSC, and admin can review independently
+- **Inline Comments** — reviewers add block-specific feedback tied to lesson indices with resolution tracking
+- **Status History & Audit Trail** — every status change logged with user, timestamp, and context
+- **Force Override** — admin/DSC can jump resources to any status for emergency adjustments
+- **Reviewer Dashboard** — see real-time count of resources per status
 
-### Users & Auth
-- Email + password registration with email activation flow
-- Bearer token authentication (scoped: `authentication`, `activation`)
-- Admin can create, update, toggle active status, and change roles directly
+### 👥 Fellow System
+- **Extended Profiles** — school, district, MOE identifier (Ministry of Education), subject specialization
+- **STEAM Points Tracking** — cumulative contribution score via weighted algorithm (FR-27)
+- **Application Workflow** — User → applies → DSC/Admin approves → role upgraded to Fellow
+- **Application Status Tracking** — Pending / Approved / Rejected (with audit trail)
+- **MOE Document Upload** — applicants attach supporting files stored securely in private directory
+- **Fellows Directory** — activated fellows listed for discovery and collaboration
 
-### YouTube Integration
-- Approved `Video` resources are uploaded automatically in a background goroutine
-- YouTube title, description, tags, privacy, made-for-kids, category configurable at submission
-- Google OAuth2 login/callback flow to obtain refresh token
+### 🏆 Contribution Scoring (FR-27)
+- **Weighted Algorithm** — base points vary by resource type (Video: 7pts, LessonPlan: 10pts, etc.)
+- **Completeness Multiplier** — lesson plans with all 5 blocks filled earn full bonus
+- **Synergy Bonus** — multi-category contributions earn up to 2.0x multiplier (e.g., lesson + video + assessment)
+- **Automatic Calculation** — points awarded upon resource approval, no manual entry
+- **Leaderboard Ready** — cached scores for ranking top contributors
+- **Audit Logging** — track when points were awarded and by what action
 
-### Notifications
-- In-app notifications with email channel support
-- Admin / DSC / Secretary can create; users manage their own
+### 💬 Comments & Discussion
+- **Public Comments** — users browse resources and leave discussion; full CRUD
+- **Review Comments** — privileged feedback during approval process by reviewers
+- **Comment Resolution** — mark review feedback as addressed to track reviewer sign-off
+- **Threaded Discussions** — support for comment threads (schema ready)
 
-### Contribution Scoring
-- Cached per-resource contribution score for ranking contributors
+### 📹 YouTube Integration
+- **Automatic Upload** — approved Video resources uploaded in background without blocking the UI
+- **Full Metadata Control** — title, description, tags, privacy (public/unlisted/private), made-for-kids, category all configurable
+- **Google OAuth2 Flow** — secure auth to obtain and refresh YouTube credentials
+- **Google Drive Extraction** — supports multiple Drive link formats automatically
+- **Non-Blocking Processing** — upload happens asynchronously; user sees status in resource
+
+### 🔔 Notifications
+- **Email Notifications** — SMTP-based messaging for 7+ events (application approved, status changed, password reset, etc.)
+- **In-App Notifications** — persistent messages in user dashboard
+- **Bulk Messaging** — admin/DSC/Secretary send notifications to single users or broadcast
+- **User Notification Preferences** — users manage their own read/unread status
+- **Email Templates** — pre-built templates for common workflows (Fellow approved, Resource published, etc.)
+
+### 📊 Admin Dashboard
+- **Platform Metrics** — total users, resources by status, resource breakdown
+- **User Management Console** — list, create, update, delete users; change roles with confirmation
+- **Admin Safeguards** — prevent accidental removal of own admin role
+- **Force Status Overrides** — jump resources to any lifecycle state
+- **Fellow Application Review** — list pending applications; approve/reject with audit trail
+- **Document Management** — retrieve MOE upload files from fellow applications
+- **Activity Logs** — resource status history and points award history
+
+### 📈 Access & Analytics
+- **View Tracking** — record each resource access with user and timestamp
+- **Access Reports** — admin/DSC/DEC can pull access analytics per resource
+- **Engagement Metrics** — understand which resources are most viewed
+
+### 🛡️ Security & Performance
+- **CORS Support** — cross-origin requests properly configured for SPA frontend
+- **Rate Limiting** — protect endpoints from abuse
+- **Input Validation** — comprehensive validation on all user inputs (fields, lengths, enums, etc.)
+- **Error Handling** — proper HTTP status codes (400, 401, 403, 404, 409, 500, etc.)
+- **Graceful Shutdown** — safe cleanup when server stops
+- **Metrics Endpoint** — `/debug/vars` for Go runtime and custom app metrics
+
+### 📦 Database & Infrastructure
+- **PostgreSQL 14+** — normalized schema with 16+ tables, indexes, and constraints
+- **Golang-Migrate Compatibility** — 25 migrations with rollback support
+- **Schema Bootstrap** — `schema.sql` for quick setup without migration tool
+- **Seed Data** — 7 roles and 20+ subjects pre-populated
+- **Default Admin** — `admin` / `Admin@501steam` (change on first login!)
+- **Structured Logging** — `log/slog` to stdout and `logs/server.log`
 
 ---
 

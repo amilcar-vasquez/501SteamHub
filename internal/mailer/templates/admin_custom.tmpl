@@ -1,0 +1,7 @@
+// Filename: internal/mailer/templates/admin_custom.tmpl
+
+{{define "subject"}}{{.subject}}{{end}}
+
+{{define "plainBody"}}{{.body}}{{end}}
+
+{{define "htmlBody"}}<html><body><p>{{.body}}</p></body></html>{{end}}
