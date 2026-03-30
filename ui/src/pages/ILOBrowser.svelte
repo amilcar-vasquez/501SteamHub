@@ -15,7 +15,8 @@
     subject: '',
     grade: '',
     cycle: '',
-    strand: ''
+    strand: '',
+    keyword: ''
   };
 
   // Available filter options
@@ -35,9 +36,9 @@
   ];
 
   const grades = [
-    'Infant 1', 'Infant 2', 'Infant 3',
+    'Preschool', 'Infant 1', 'Infant 2',
     'Standard 1', 'Standard 2', 'Standard 3', 'Standard 4', 'Standard 5', 'Standard 6',
-    'Form 1'
+    'Mixed'
   ];
 
   const cycles = ['1', '2', '3', '4'];
@@ -128,12 +129,23 @@
         </div>
 
         <div class="filter-field">
-          <label for="strand-filter" class="label-medium">Strand ID</label>
+          <label for="strand-filter" class="label-medium">Strand Name</label>
           <input
             id="strand-filter"
             type="text"
             bind:value={filters.strand}
             placeholder="Filter by strand"
+            class="filter-input"
+          />
+        </div>
+
+        <div class="filter-field">
+          <label for="keyword-filter" class="label-medium">Keyword Search</label>
+          <input
+            id="keyword-filter"
+            type="text"
+            bind:value={filters.keyword}
+            placeholder="Search in code or description"
             class="filter-input"
           />
         </div>

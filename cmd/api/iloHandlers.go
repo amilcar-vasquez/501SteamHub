@@ -9,13 +9,16 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-// getAllILOsHandler returns all ILOs with optional filtering
-// GET /v1/ilos?subject=X&grade=Y&cycle=Z&strand=S
+// getAllILOsHandler returns all ILOs with optional filtering and keyword search
+// GET /v1/ilos?subject=X&grade=Y&cycle=Z&strand=S&keyword=K&limit=20&offset=0
 func (a *app) getAllILOsHandler(w http.ResponseWriter, r *http.Request) {
 	// Get and validate query parameters
 	subject := r.URL.Query().Get("subject")
 	gradeLevel := r.URL.Query().Get("grade")
 	cycleStr := r.URL.Query().Get("cycle")
+	keyword := r.URL.Query().Get("keyword")
+	limitStr := r.URL.Query().Get("limit")
+	offsetStr := r.URL.Query().Get("offset")
 
 	var cycle int
 	if cycleStr != "" {
@@ -27,6 +30,24 @@ func (a *app) getAllILOsHandler(w http.ResponseWriter, r *http.Request) {
 		cycle = c
 	}
 
+	var limit, offset int
+	if limitStr != "" {
+		l, err := strconv.Atoi(limitStr)
+		if err != nil || l < 1 {
+			a.badRequestResponse(w, r, errors.New("invalid limit parameter"))
+			return
+		}
+		limit = l
+	}
+	if offsetStr != "" {
+		o, err := strconv.Atoi(offsetStr)
+		if err != nil || o < 0 {
+			a.badRequestResponse(w, r, errors.New("invalid offset parameter"))
+			return
+		}
+		offset = o
+	}
+
 	strand := r.URL.Query().Get("strand")
 
 	// Build filter
@@ -35,6 +56,9 @@ func (a *app) getAllILOsHandler(w http.ResponseWriter, r *http.Request) {
 		GradeLevel: gradeLevel,
 		Cycle:      cycle,
 		Strand:     strand,
+		Keyword:    keyword,
+		Limit:      limit,
+		Offset:     offset,
 	}
 
 	// Get ILOs
@@ -82,13 +106,15 @@ func (a *app) getILOHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// getSuggestedILOsHandler returns ILOs that match resource metadata (smart narrowing)
-// GET /v1/suggested-ilos?subject=X&grade=Y&cycle=Z
+// getSuggestedILOsHandler returns ILOs with smart relevance-based ranking
+// GET /v1/suggested-ilos?subject=X&grade=Y&cycle=Z&keyword=K&limit=25
 func (a *app) getSuggestedILOsHandler(w http.ResponseWriter, r *http.Request) {
 	// Get query parameters
 	subject := r.URL.Query().Get("subject")
 	gradeLevel := r.URL.Query().Get("grade")
 	cycleStr := r.URL.Query().Get("cycle")
+	keyword := r.URL.Query().Get("keyword")
+	limitStr := r.URL.Query().Get("limit")
 
 	var cycle int
 	if cycleStr != "" {
@@ -100,14 +126,26 @@ func (a *app) getSuggestedILOsHandler(w http.ResponseWriter, r *http.Request) {
 		cycle = c
 	}
 
+	var limit int
+	if limitStr != "" {
+		l, err := strconv.Atoi(limitStr)
+		if err != nil || l < 1 {
+			a.badRequestResponse(w, r, errors.New("invalid limit parameter"))
+			return
+		}
+		limit = l
+	}
+
 	// Build filter (don't filter by strand for suggestions - let user browse)
 	filter := &data.ILOFilter{
 		Subject:    subject,
 		GradeLevel: gradeLevel,
 		Cycle:      cycle,
+		Keyword:    keyword,
+		Limit:      limit, // Default 25 in GetSuggestedILOs if not specified
 	}
 
-	// Get suggested ILOs
+	// Get suggested ILOs (with relevance ranking)
 	ilos, err := a.models.ILOs.GetSuggestedILOs(filter)
 	if err != nil {
 		a.serverErrorResponse(w, r, err)

@@ -372,13 +372,17 @@ Object.assign(userAPI, {
 
 // ILO API methods
 export const iloAPI = {
-  // GET /v1/ilos - get all ILOs with optional filtering
+  // GET /v1/ilos - get all ILOs with optional filtering and keyword search
+  // Supports: subject, grade, cycle, strand, keyword, limit, offset
   getAll: async (filters = {}) => {
     const params = new URLSearchParams();
     if (filters.subject) params.append('subject', filters.subject);
     if (filters.grade) params.append('grade', filters.grade);
     if (filters.cycle) params.append('cycle', filters.cycle);
     if (filters.strand) params.append('strand', filters.strand);
+    if (filters.keyword) params.append('keyword', filters.keyword);
+    if (filters.limit) params.append('limit', filters.limit);
+    if (filters.offset) params.append('offset', filters.offset);
     
     const qs = params.toString() ? `?${params.toString()}` : '';
     return request(`/ilos${qs}`);
@@ -389,12 +393,16 @@ export const iloAPI = {
     return request(`/ilos/${id}`);
   },
 
-  // GET /v1/suggested-ilos - get suggested ILOs for browsing
+  // GET /v1/suggested-ilos - get suggested ILOs with smart relevance ranking
+  // Prioritizes: exact subject+grade+cycle > subject+grade > subject only
+  // Supports: subject, grade, cycle, keyword, limit
   getSuggested: async (filters = {}) => {
     const params = new URLSearchParams();
     if (filters.subject) params.append('subject', filters.subject);
     if (filters.grade) params.append('grade', filters.grade);
     if (filters.cycle) params.append('cycle', filters.cycle);
+    if (filters.keyword) params.append('keyword', filters.keyword);
+    if (filters.limit) params.append('limit', filters.limit);
     
     const qs = params.toString() ? `?${params.toString()}` : '';
     return request(`/suggested-ilos${qs}`);

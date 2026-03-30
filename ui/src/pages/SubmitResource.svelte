@@ -1,7 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   import { currentUser, authToken } from '../stores/auth.js';
-  import { resourceAPI } from '../api/client.js';
+  import { resourceAPI, iloAPI } from '../api/client.js';
   import TextField from '../components/TextField.svelte';
   import TextArea from '../components/TextArea.svelte';
   import Select from '../components/Select.svelte';
@@ -27,6 +27,107 @@
   let errors = {};
   let loading = false;
   let successMessage = '';
+
+  // ── ILO Selection ──────────────────────────────────────────────────────────
+  let selectedILOs = [];
+  let suggestedILOs = [];
+  let searchResults = [];
+  let iloSearchQuery = '';
+  let loadingILOs = false;
+  let searchDropdownOpen = false;
+
+  // Debounce timers
+  let suggestedILOsTimer;
+  let searchQueryTimer;
+
+  // ── Helper: Debounce function ──────────────────────────────────────────────
+  function debounce(func, delay) {
+    let timeoutId;
+    return (...args) => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => func(...args), delay);
+    };
+  }
+
+  // ── Fetch suggested ILOs based on subject and grade level ──────────────────
+  async function fetchSuggestedILOs() {
+    // Only fetch if we have at least subject and grade
+    if (!formData.subjects.length || !formData.grade_levels.length) {
+      suggestedILOs = [];
+      return;
+    }
+
+    loadingILOs = true;
+    try {
+      const response = await iloAPI.getSuggested({
+        subject: formData.subjects[0],
+        grade: formData.grade_levels[0],
+        limit: 10
+      });
+      suggestedILOs = response.ilos || [];
+    } catch (err) {
+      console.error('Failed to fetch suggested ILOs:', err);
+      suggestedILOs = [];
+    } finally {
+      loadingILOs = false;
+    }
+  }
+
+  // ── Search ILOs by keyword (autocomplete) ──────────────────────────────────
+  async function searchILOs() {
+    if (iloSearchQuery.length < 2) {
+      searchResults = [];
+      return;
+    }
+
+    loadingILOs = true;
+    try {
+      const response = await iloAPI.getAll({
+        keyword: iloSearchQuery,
+        limit: 10
+      });
+      searchResults = response.ilos || [];
+      searchDropdownOpen = searchResults.length > 0;
+    } catch (err) {
+      console.error('Failed to search ILOs:', err);
+      searchResults = [];
+    } finally {
+      loadingILOs = false;
+    }
+  }
+
+  // ── Add ILO to selection (prevent duplicates) ──────────────────────────────
+  function addILO(ilo) {
+    const isDuplicate = selectedILOs.some(item => item.id === ilo.id);
+    if (!isDuplicate) {
+      selectedILOs = [...selectedILOs, ilo];
+    }
+    // Clear search after adding
+    iloSearchQuery = '';
+    searchResults = [];
+    searchDropdownOpen = false;
+  }
+
+  // ── Remove ILO from selection ──────────────────────────────────────────────
+  function removeILO(id) {
+    selectedILOs = selectedILOs.filter(ilo => ilo.id !== id);
+  }
+
+  // ── Reactive: Fetch suggested ILOs when subject/grade changes ──────────────
+  $: if (formData.subjects.length > 0 || formData.grade_levels.length > 0) {
+    clearTimeout(suggestedILOsTimer);
+    suggestedILOsTimer = setTimeout(() => {
+      fetchSuggestedILOs();
+    }, 300);
+  }
+
+  // ── Reactive: Search ILOs when search query changes ────────────────────────
+  $: if (iloSearchQuery !== undefined) {
+    clearTimeout(searchQueryTimer);
+    searchQueryTimer = setTimeout(() => {
+      searchILOs();
+    }, 300);
+  }
 
   // ── Video-specific metadata ────────────────────────────────────────────────
   let videoDetails = {
@@ -228,6 +329,19 @@
         successMessage += ` <a href="/resources/${response.resource.slug}" style="color: var(--md-sys-color-primary); text-decoration: underline;">View Resource</a>`;
       }
       
+      // Attach ILOs if any were selected
+      if (selectedILOs.length > 0) {
+        try {
+          const iloIds = selectedILOs.map(ilo => ilo.id);
+          await iloAPI.attachToResource(response.resource.id, iloIds, $authToken);
+          console.log('ILOs successfully attached to resource');
+        } catch (err) {
+          console.error('Failed to attach ILOs to resource:', err);
+          // Non-blocking error: ILOs attachment failed but resource was created
+          errors.general = (errors.general || '') + ' Note: Resource was created but ILO attachment had issues.';
+        }
+      }
+      
       // Reset form
       formData = {
         title: '',
@@ -242,6 +356,11 @@
         version: 1,
         blocks: []
       };
+
+      selectedILOs = [];
+      suggestedILOs = [];
+      searchResults = [];
+      iloSearchQuery = '';
 
       videoDetails = {
         youtube_title: '',
@@ -400,6 +519,91 @@
           helperText="Select all grade levels this resource is designed for"
           placeholder="Select grade levels..."
         />
+      </div>
+
+      <!-- Learning Outcomes (ILOs) -->
+      <div class="sidebar-card ilo-card">
+        <h3 class="sidebar-title">Learning Outcomes (ILOs)</h3>
+        <p class="sidebar-hint">Link curriculum-aligned learning outcomes to this resource</p>
+
+        <!-- Suggested ILOs -->
+        {#if suggestedILOs && suggestedILOs.length > 0}
+          <div class="suggested-ilos">
+            <p class="ilo-section-label">Suggested for your selections:</p>
+            <div class="ilo-buttons">
+              {#each suggestedILOs.slice(0, 5) as ilo (ilo.id)}
+                <button
+                  type="button"
+                  class="ilo-suggestion-btn"
+                  on:click={() => addILO(ilo)}
+                  disabled={loadingILOs}
+                >
+                  <span class="suggestion-content">
+                    <span class="ilo-code">{ilo.ilo_code}</span>
+                    <span class="ilo-description">{ilo.description}</span>
+                  </span>
+                  <span class="ilo-add-icon">+</span>
+                </button>
+              {/each}
+            </div>
+          </div>
+        {/if}
+
+        <!-- Search ILOs -->
+        <div class="ilo-search-container">
+          <TextField
+            label="Search ILOs"
+            placeholder="Search by code or description..."
+            bind:value={iloSearchQuery}
+            helperText={iloSearchQuery.length < 2 && iloSearchQuery.length > 0
+              ? 'Type at least 2 characters'
+              : ''}
+            disabled={loadingILOs}
+          />
+          
+          <!-- Search Results Dropdown -->
+          {#if searchDropdownOpen && searchResults && searchResults.length > 0}
+            <div class="ilo-dropdown">
+              {#each searchResults as ilo (ilo.id)}
+                <div class="ilo-result-item" on:click={() => addILO(ilo)}>
+                  <span class="ilo-code">{ilo.ilo_code}</span>
+                  <span class="ilo-description">{ilo.description}</span>
+                </div>
+              {/each}
+            </div>
+          {/if}
+
+          {#if searchDropdownOpen && iloSearchQuery.length >= 2 && searchResults && searchResults.length === 0}
+            <div class="ilo-dropdown">
+              <p class="no-results">No ILOs found matching "{iloSearchQuery}"</p>
+            </div>
+          {/if}
+        </div>
+
+        <!-- Selected ILOs -->
+        {#if selectedILOs && selectedILOs.length > 0}
+          <div class="selected-ilos">
+            <p class="ilo-section-label">Selected ILOs ({selectedILOs.length}):</p>
+            <div class="ilo-chips">
+              {#each selectedILOs as ilo (ilo.id)}
+                <div class="ilo-chip">
+                  <span class="chip-content">
+                    <span class="chip-code">{ilo.ilo_code}</span>
+                    <span class="chip-desc">{ilo.description}</span>
+                  </span>
+                  <button
+                    type="button"
+                    class="ilo-chip-remove"
+                    on:click={() => removeILO(ilo.id)}
+                    aria-label="Remove {ilo.ilo_code}"
+                  >
+                    ×
+                  </button>
+                </div>
+              {/each}
+            </div>
+          </div>
+        {/if}
       </div>
 
       <!-- Google Drive Link -->
@@ -948,5 +1152,258 @@
       gap: 16px;
       padding: var(--md-sys-spacing-md);
     }
+  }
+
+  /* ILO SELECTION CARD */
+  .ilo-card {
+    background: linear-gradient(135deg, rgba(6, 158, 201, 0.02) 0%, rgba(49, 141, 252, 0.02) 100%);
+    border: 1px solid rgba(6, 158, 201, 0.15);
+  }
+
+  .ilo-section-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--md-sys-color-on-surface);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0 0 8px 0;
+  }
+
+  /* Suggested ILOs */
+  .suggested-ilos {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .ilo-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .ilo-suggestion-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: var(--md-sys-shape-corner-sm);
+    font-size: 12px;
+    color: var(--md-sys-color-on-surface);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    overflow: hidden;
+    gap: 8px;
+  }
+
+  .ilo-suggestion-btn:hover:not(:disabled) {
+    background: rgba(6, 158, 201, 0.08);
+    border-color: var(--md-sys-color-primary);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  }
+
+  .ilo-suggestion-btn:active:not(:disabled) {
+    background: rgba(6, 158, 201, 0.12);
+  }
+
+  .ilo-suggestion-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .suggestion-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .suggestion-content .ilo-code {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--md-sys-color-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .suggestion-content .ilo-description {
+    font-size: 10px;
+    color: var(--md-sys-color-on-surface-variant);
+    line-height: 1.2;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .ilo-code {
+    font-weight: 600;
+    flex-shrink: 0;
+    color: var(--md-sys-color-primary);
+  }
+
+  .ilo-add-icon {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--md-sys-color-primary);
+    flex-shrink: 0;
+    margin-left: 8px;
+  }
+
+  /* Search Container */
+  .ilo-search-container {
+    position: relative;
+    margin: 8px 0;
+  }
+
+  .ilo-search-container :global(input) {
+    width: 100%;
+  }
+
+  /* Dropdown */
+  .ilo-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: var(--md-sys-shape-corner-sm);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    max-height: 240px;
+    overflow-y: auto;
+  }
+
+  .ilo-result-item {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    transition: background-color 0.15s;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .ilo-result-item:last-child {
+    border-bottom: none;
+  }
+
+  .ilo-result-item:hover {
+    background-color: rgba(6, 158, 201, 0.08);
+  }
+
+  .ilo-result-item:active {
+    background-color: rgba(6, 158, 201, 0.12);
+  }
+
+  .ilo-result-item .ilo-code {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--md-sys-color-primary);
+  }
+
+  .ilo-result-item .ilo-description {
+    font-size: 11px;
+    color: var(--md-sys-color-on-surface-variant);
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .no-results {
+    padding: 12px;
+    text-align: center;
+    color: var(--md-sys-color-on-surface-variant);
+    font-size: 12px;
+    margin: 0;
+  }
+
+  /* Selected ILOs */
+  .selected-ilos {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  .ilo-chips {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .ilo-chip {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 10px;
+    background: rgba(6, 158, 201, 0.12);
+    border: 1px solid rgba(6, 158, 201, 0.3);
+    border-radius: var(--md-sys-shape-corner-sm);
+    align-items: center;
+  }
+
+  .chip-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .chip-code {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--md-sys-color-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .chip-desc {
+    font-size: 11px;
+    color: var(--md-sys-color-on-surface-variant);
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .ilo-chip-remove {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    color: var(--md-sys-color-error);
+    font-size: 18px;
+    font-weight: 400;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    transition: all 0.15s;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ilo-chip-remove:hover {
+    color: var(--md-sys-color-error);
+    transform: scale(1.2);
+  }
+
+  .ilo-chip-remove:active {
+    transform: scale(0.95);
   }
 </style>
