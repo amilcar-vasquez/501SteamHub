@@ -1,0 +1,55 @@
+{
+    "Belizean History": {
+        "1": "Identity in Belize",
+        "2": "Civics Education",
+        "3": "African and Maya History",
+        "4": "Sustainable Development and Climate Change",
+        "5": "Financial Education",
+        "6": "Road and Personal Safety"
+    },
+    "Expressive Arts": {
+        "1": "Dance and Drama",
+        "2": "Music",
+        "3": "Creative Art Forms",
+        "4": "Three-Dimensional Art"
+    },
+    "Health Education": {
+        "1": "Personal Health, Nutrition, and Disease Prevention",
+        "2": "Environmental Health and Safety",
+        "3": "Social and Emotional Health and Relationships",
+        "4": "Personal Safety and Substance Abuse",
+        "5": "Growth, Development, and Mental Well-being"
+    },
+    "Language Arts": {
+        "1": "Reading Fluency & Accuracy",
+        "2": "Comprehension",
+        "3": "Production",
+        "4": "Language Structure"
+    },
+    "Mathematics": {
+        "1": "Numbers & Number Operations",
+        "2": "Patterns",
+        "3": "Addition & Subtraction",
+        "4": "Multiplication & Division",
+        "5": "Fraction and Decimals",
+        "6": "Geometry",
+        "7": "Measurement",
+        "8": "Sets",
+        "9": "Data"
+    },
+    "Physical Education": {
+        "1": "Body Skills & Fitness",
+        "2": "Football",
+        "3": "Running, Jumping & Throwing",
+        "4": "Games with Bats, Balls & Nets"
+    },
+    "Science and Technology": {
+        "1": "Benefits and Burdens of Science and Technology",
+        "2": "Energy Conversions",
+        "3": "Changes in an Ecosystem",
+        "4": "Energy Resources",
+        "5": "Relationships and Communications Plagiarism",
+        "6": "Plant Diversity",
+        "7": "Heredity and Human Reproduction"
+    }
+}
