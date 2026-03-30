@@ -1,0 +1,5039 @@
+-- Migration: 034b_seed_ilos
+-- Description: Seed Intended Learning Outcomes (ILOs) for all subjects
+-- Total ILOs: 629
+-- Date: 2026-03-30
+
+INSERT INTO ilos (subject_id, grade_level_id, cycle_id, strand_id, ilo_code, description) VALUES
+  (
+    (SELECT id FROM subjects WHERE subject = 'Belizean History'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Belizean History') AND name = 'Identity in Belize'),
+    'BS 1.1',
+    'Record and express personal information such as age, height, gender, date of birth, house address, ethnicity and language spoken in the house.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Belizean History'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Belizean History') AND name = 'Civics Education'),
+    'BS 2.1',
+    'Generate a list and discuss the importance of rules that govern the home.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Belizean History'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Belizean History') AND name = 'Civics Education'),
+    'BS 2.2',
+    'Role play and justify a variety of roles and responsibilities of family members.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Belizean History'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Belizean History') AND name = 'Civics Education'),
+    'BS 2.3',
+    'Research and consider the impact on family members when family rules are broken.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Belizean History'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Belizean History') AND name = 'Identity in Belize'),
+    'BS 1.2',
+    'Investigate and document the cultural aspects, such as food, music & dance, clothing, belief system, and traditional practices, of the different ethnic groups in Belize.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Belizean History'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Belizean History') AND name = 'Identity in Belize'),
+    'BS 1.4',
+    'Research and organize a culture day to account for cultural diversity in'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Belizean History'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Belizean History') AND name = 'Identity in Belize'),
+    'BS 1.5',
+    'Discuss and design an infomercial promoting respect and appreciation for Belize’s cultural diversity.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Belizean History'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Belizean History') AND name = 'Identity in Belize'),
+    'BS 1.6',
+    '0bserve and highlight the traditional and modern cultural'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Belizean History'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Belizean History') AND name = 'Identity in Belize'),
+    'BS 1.7',
+    'Investigate and locate on a map of the world the places from which the various ethnic groups originated or had settled before coming to Belize.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Belizean History'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Belizean History') AND name = 'Identity in Belize'),
+    'BS 1.8',
+    'Research and create an annotated timeline to describe the emergence or first major arrival of the Central Americans and the modern Q''eqchi, Mopan and Yucatec ethnic groups.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Belizean History'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Belizean History') AND name = 'Identity in Belize'),
+    'BS 1.9',
+    'Investigate and trace the voyage taken by different groups to come into'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Belizean History'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Belizean History') AND name = 'Identity in Belize'),
+    'BS 1.10',
+    'Hypothesize and report the factors that led to the migration and settlement of groups in Belize. African and Maya History'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Belizean History'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Belizean History') AND name = 'African and Maya History'),
+    'BS 3.11',
+    'Design and annotate a Mundo Maya map highlighting the location of the major settlements of the Maya in the region and Belize.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Belizean History'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Belizean History') AND name = 'African and Maya History'),
+    'BS 3.12',
+    'Conduct research and design a chart comparing the similarities and differences in food, clothing, music, dance, games and technology between the Maya and another ethnic group.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Belizean History'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Belizean History') AND name = 'African and Maya History'),
+    'BS 3.13',
+    'Describe and illustrate some of the structures typically found in ancient'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Belizean History'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Belizean History') AND name = 'Identity in Belize'),
+    'BS 1.11',
+    'Investigate and design an annotated timeline detailing major events that have shaped our identity as a nation such as the Mayan Civilization, slavery, colonialism, Caste War, Anglo Guatemala Dispute, the arrival of the Garinagu and independence.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Belizean History'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Belizean History') AND name = 'Identity in Belize'),
+    'BS 1.12',
+    'Examine and reframe the impact of major events that have contributed to the development of Belize’s Identity such as the Mayan Civilization, slavery, colonialism, Caste War, Anglo Guatemala Dispute, the arrival of the Garinagu and independence.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Belizean History'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Belizean History') AND name = 'Identity in Belize'),
+    'BS 1.13',
+    'Investigate and create a visual representation of key individuals and their contribution to the formation of Belize as a nation.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Belizean History'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Belizean History') AND name = 'Identity in Belize'),
+    'BS 1.14',
+    'Discuss and trace the development of democratic processes in Belize from the public meetings to the present day.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Belizean History'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Belizean History') AND name = 'Identity in Belize'),
+    'BS 1.15',
+    'Investigate and outline the causes, personalities and main events of the protest movements of the 1900s such as the Ex-servicemen revolt and the 1930’s labour movement.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Belizean History'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Belizean History') AND name = 'Identity in Belize'),
+    'BS 1.16',
+    'Design and analyse a timeline of major events leading up to Belize''s Independence in 1981. African and Maya History'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Belizean History'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Belizean History') AND name = 'African and Maya History'),
+    'BS 3.16',
+    'Investigate and decide what it means to be enslaved and why enslaved people were in Belize in the 1700s and early 1800s.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Belizean History'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Belizean History') AND name = 'African and Maya History'),
+    'BS 3.17',
+    'Examine and summarize some features of the lives led by enslaved people in Belize, including their place of origin, occupation, treatment, living conditions, and acts of resistance.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Belizean History'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Belizean History') AND name = 'African and Maya History'),
+    'BS 3.18',
+    'Explore and articulate the influence of chattel slavery on'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Belizean History'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Belizean History') AND name = 'Identity in Belize'),
+    'BS 1.17',
+    'Create a visual representation of what gives Belize its identity such as national symbols, people, landmarks, heritage, archaeological sites, etc.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Belizean History'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Belizean History') AND name = 'Identity in Belize'),
+    'BS 1.18',
+    'Defend Belize’s geographical position as both a Central American and Caribbean country.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Belizean History'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Belizean History') AND name = 'Identity in Belize'),
+    'BS 1.19',
+    'Design a campaign and propose actions by individuals and organizations encouraging patriotism in the preservation and protection of Belize’s national identity. African and Maya History'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Belizean History'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Belizean History') AND name = 'African and Maya History'),
+    'BS 3.19',
+    'Investigate and account for the existence of chattel slavery in Belize.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Belizean History'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Belizean History') AND name = 'African and Maya History'),
+    'BS 3.20',
+    'Examine the methods used by enslaved peoples in Belize to resist enslavement and improve their working and living conditions.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Belizean History'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Belizean History') AND name = 'African and Maya History'),
+    'BS 3.21',
+    'Describe the major events in any particular resistance movement'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Expressive Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Expressive Arts') AND name = 'Dance and Drama'),
+    'EA 1.1',
+    'Move freely in time to music, changing direction, speed and level.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Expressive Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Expressive Arts') AND name = 'Music'),
+    'EA 2.1',
+    'Sing and dramatize a short nursery rhyme using gestures and movement as appropriate.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Expressive Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Expressive Arts') AND name = 'Creative Art Forms'),
+    'EA 3.1',
+    'Draw and colour lines, arcs and shapes using a variety of art mediums such as coloured pencils or markers.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Expressive Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Expressive Arts') AND name = 'Dance and Drama'),
+    'EA 1.5',
+    'Coordinate dance steps and moves with a partner.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Expressive Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Expressive Arts') AND name = 'Music'),
+    'EA 2.5',
+    'Sing short repetitive or rhyming (echoes) traditional songs, adding gestures and movement as appropriate.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Expressive Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Expressive Arts') AND name = 'Dance and Drama'),
+    'EA 1.9',
+    'Coordinate dance steps and moves in small groups by counts.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Expressive Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Expressive Arts') AND name = 'Music'),
+    'EA 2.9',
+    'Recite and perform patriotic songs and the Belizean National Anthem in English and accompanied by a traditional musical instrument.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Expressive Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Expressive Arts') AND name = 'Creative Art Forms'),
+    'EA 3.9',
+    'Illustrate a story in two or more sketches.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Expressive Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Expressive Arts') AND name = 'Three-Dimensional Art'),
+    'EA 4.8',
+    'Decorate a bottle, cup, plate or similar household object using a variety of lines and shapes.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Expressive Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Expressive Arts') AND name = 'Dance and Drama'),
+    'EA 1.13',
+    'Act out a traditional story using speech and gestures.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Expressive Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Expressive Arts') AND name = 'Dance and Drama'),
+    'EA 1.17',
+    'Act in a short skit demonstrating proper stage management, gestures, intonation etc.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Expressive Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Expressive Arts') AND name = 'Dance and Drama'),
+    'EA 1.18',
+    'Role-play a scene showing conflict resolution.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Expressive Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Expressive Arts') AND name = 'Music'),
+    'EA 2.16',
+    'Explain and demonstrate the difference between beat and rhythm.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Expressive Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Expressive Arts') AND name = 'Dance and Drama'),
+    'EA 1.22',
+    'Enact a short monologue, play or skit based on a short comedial script, poem, story or play.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Expressive Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Expressive Arts') AND name = 'Music'),
+    'EA 2.20',
+    'Compare and perform pieces of music associated with various countries in this region.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Expressive Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Expressive Arts') AND name = 'Dance and Drama'),
+    'EA 1.26',
+    'Compose and dramatize a short piece of monologue or dialogue script based on an original story idea.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Expressive Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Expressive Arts') AND name = 'Music'),
+    'EA 2.24',
+    'Investigate and present on the life and achievements of a popular Belizean musician.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Expressive Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Expressive Arts') AND name = 'Dance and Drama'),
+    'EA 1.30',
+    'Design and create costumes, props or masks for use in a short play or performance of an original idea.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Expressive Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Expressive Arts') AND name = 'Dance and Drama'),
+    'EA 1.31',
+    'Create an original dance for one or two people.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Expressive Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Expressive Arts') AND name = 'Music'),
+    'EA 2.28',
+    'Select and perform a piece of music from Belize, by singing or playing an instrument.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.01',
+    'Demonstrate understanding of the organization and basic features of print: - Recognize that words on a page progress from left to right, top to bottom and page by page. - Identify the front cover, back cover, and title page of a book.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.02',
+    'Demonstrate, identify and distinguish basic knowledge of one-to- one letter-sound and formation of letters /s/, /a/ (short a), /t/, /p/, /i/ (short i) and /n/.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.03',
+    'Demonstrate, identify, and distinguish basic knowledge of one-to- one letter-sound and formation of letters /r/, /e/ (short e), /b/, /c/ (hard c), /m/, /d/, /h/ & /o/ (short o).'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.04',
+    'Identify and independently categorize spoken words and pictures that begin with given letter sounds.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.01',
+    'Analyze information and appropriately answer questions about a story, poem, nursery rhyme or non- fiction text read by the teacher using prompts such as (who, when, what, why, where, and how). *Ongoing through all cycles'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.02',
+    'Identify and relate to real life scenarios characters'' emotions such as happy, sad, mad, scared, surprised, in stories. *Ongoing through all cycles'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.01',
+    'Create illustrations to accompany a text and confidently explain through speech, written captions using letters, or short words. (or invented spelling) *Ongoing through all cycles'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.02',
+    'Contribute meaningfully to class discussion and justify whether an event is real or fictional. *Ongoing through all cycles'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.05',
+    'Print and identify all upper- and lower-case letters.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.06',
+    'Segment spoken CVC words into their complete sequence of individual sounds (phonemes).'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.03',
+    'Analyze and arrange in sequential order the main events of a story, nursery rhyme, poem or non- fiction text using pictures.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.04',
+    'Use illustrations and details to identify and describe main'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.03',
+    'Illustrate a story using a sequence of pictures to retell a story.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.04',
+    'Create and illustrate a story with a picture and write a caption using real or invented spelling.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.09',
+    'Recognize and apply final -e and common vowel team conventions for representing long vowel sounds.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.10',
+    'Read on sight approximately 150-200 high frequency words including many that are not phonetically spelt. *Ongoing for all cycles'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.11',
+    'Fluently read and write sentences using all learned spelling patterns. *Ongoing for all cycles'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.05',
+    'Read texts with sufficient accuracy and fluency to support comprehension. *Ongoing for all cycles'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.06',
+    'Perform and outline at least three consecutive actions after reading and following instructions.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.07',
+    'Determine the sequence of events and main idea of a story and explain the main idea orally and written.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.06',
+    'Orally describes a real-life person, object, event, place, experience, or interest.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.07',
+    'Create and write short texts based on various prompts.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.08',
+    'Read and use voice to indicate question marks, full stops, and exclamation marks. *Ongoing for all cycles'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.12',
+    'Build and combine words with a variety of long and short vowel sounds, including multisyllabic words.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.08',
+    'Discuss and examine the meaning of a story by referring to the main events, characters and places portrayed.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.09',
+    'Create and explain a simple, chronological report of an event.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.14',
+    'Analyze and categorize words or word families that have the same vowel sound/spelling patterns. Words (vowel teams): (leave/bead/team, roam/coal) Word Families (word endings): (head/lead/dead, good/wood/hood, dough/bough/though, cow/now/wow, could/ would/should).'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.15',
+    'Read on sight approximately three hundred high-frequency words including place names from around the world.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.10',
+    'Classify and create fact and opinion statements in original speech and writing.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.11',
+    'Evaluate and explain the most important ideas or themes in a fiction/non-fiction text or a short poem.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.12',
+    'Compile and Sequence events to create a timeline from historical or other non-fiction narratives.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.11',
+    'Plan, proofread, edit, and deliver a short speech on given topics applying language conventions and varying sentences.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.12',
+    'Compose a non-fiction report containing at least two informative paragraphs with evidence of their opinion on the topic.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.16',
+    'Evaluate and explain a variety of strategies for finding or deducing the meaning of an unknown word using context clues.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.17',
+    'Build and compare compound words from two root words.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.13',
+    'Analyze and discuss several details after listening to or reading a fiction/ non-fiction text.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.14',
+    'Discuss choices faced by characters in a story and evaluate the choices and moral decisions.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.13',
+    'Discuss and justify the main idea in a logical manner after relating an incident or telling a story orally.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.14',
+    'Compose an original short story of three paragraphs including vivid descriptions, dialogues and figurative language.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.18',
+    'Apply phonics knowledge to sound out unknown words.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.19',
+    'Explain a variety of strategies for finding or deducing the meaning of an unknown word.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.20',
+    'Interpret and analyze words with a wide range of prefixes and suffixes.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.16',
+    'Summarize in one sentence the main idea of a page of non-fiction text.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.17',
+    'Examine and extract the elements of story plots.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.18',
+    'Extract relevant information from a variety of printed and online sources.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.16',
+    'Compose a variety of simple to complex sentences when writing a text applying effective coordinating and subordinating conjunctions.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.17',
+    'Outline and compose a story based on existing knowledge of stories, poems, or plays.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.21',
+    'Interpret and define words with a wide range of prefixes and suffixes.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.22',
+    'Apply phonics knowledge to sound out unknown words.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.19',
+    'Sequence events in stories with complex structures including flashbacks and "stories within stories.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.20',
+    'Examine events from the point of view of different characters to compose reports.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.21',
+    'Discuss, with reference to their own lives, complex moral issues encountered during reading.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.18',
+    'Explain ideas using devices such as similes, metaphors, anecdotes, and analogies.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.19',
+    'Compose a story containing a clearly defined plot, literary devices and detailed descriptions of settings and characters.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.23',
+    'Demonstrate, identify, and distinguish basic knowledge of one-to-one letter-sound and formation of letters /g/ (hard g), /f/, /l/, /u/,/k/, /j/, /z/, /v/ & /w/, /x/, /y/, /q/'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.24',
+    'Identify and segment individual letter sounds in the beginning, middle and ending positions of spoken, written words and picture cards. (CVC)'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.25',
+    'Identify rhyming words from sets of word families.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.22',
+    'Predict and relate to real life scenarios in the next section of a story with a repetitive or predictable pattern.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.23',
+    'Read and discuss simple pictorial stories and fiction or non- fiction texts based on familiar themes of interest.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.20',
+    'Listen attentively to a familiar story and role play scenes using appropriate language skills.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.21',
+    'Listen attentively and correctly perform an action from a written or spoken text'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.26',
+    'Blend, segment and read with confidence a series of words containing beginning consonant blends such as /bl/, /cl/, /gl/, /fl/, /cr/, /br/, /tr/, /dr/, /st/, /fr/ & /gr/.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.27',
+    'Identify and read with confidence words with consonant digraphs /sh/, th & /ch/ in oral and written text.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.28',
+    'Delete phonemes in one- syllable words (“What is “crust” without the ‘c’?”)'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.24',
+    'Compare and contrast characters in familiar stories and respond correctly to a variety of questions.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.25',
+    'Identify the main idea in various texts and compare the characters.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.26',
+    'Analyze stories to identify and discuss connections between individuals, events, and ideas.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.22',
+    'Use rhyming schemes to compose two lines of poetry that rhyme.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.23',
+    'Observe current weather conditions or items of interest to create an oral or written simple report.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.24',
+    'Recall details to role play parts of stories or simple real-life situations to demonstrate central message or theme.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.29',
+    'Organize a series of words that begin with the same letter in correct alphabetical order.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.30',
+    'Appropriately form plurals by adding -es and by changing y/ey to ies in original writing.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.27',
+    'Predict a sequence of events in a story or real life.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.28',
+    'Determine the sequence of events and main idea of a story and draw conclusions.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.25',
+    'Create greeting cards for a variety of purposes, for example get well, Congratulations, birthdays, and anniversaries.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.26',
+    'Compose an original story, of at least five sentences, based on a picture, another story or personal experience, and illustrate it with a picture.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.31',
+    'Read on sight approximately two hundred high frequency words including addresses and place names of Belize, including multi-syllabic and irregularly spelt ones.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.32',
+    'Discover and conclude that some words may have the same sound but different spelling, for example, knew/new, sea/see'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.29',
+    'Choose and explain, with reasons, which are the most significant events in a story.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.30',
+    'Explain and formulate story predictions by giving examples from the text.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.27',
+    'Construct at least one cohesive short paragraph that describes a place, person, object, or event.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.28',
+    'Compose a short story based on a picture sequence, story starters or ending phrases.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.33',
+    'Analyze and Categorize words that have the same vowel sound/spelling patterns. (head/bead, good/moon, dough/rough/thought, cow/low).'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.34',
+    'Read on sight approximately three hundred high frequency words including place names from the'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.31',
+    'Examine and sequence key events after listening to a short fiction or non-fiction text.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.32',
+    'Evaluate and explain the most important ideas or themes in a fiction/non-fiction text or a short poem.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.29',
+    'Compose a non-fiction report containing at least two informative paragraphs.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.30',
+    'Construct a well-developed paragraph that describes a real or fictional person or place which includes a topic sentence, supporting sentences and concluding sentence.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.35',
+    'Explain how suffixes can be used to change the part of speech of a word, for example, culture (n) cultural (adj), or book (n) bookish (adj).'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.36',
+    'Explain and demonstrate that the meaning of a word can depends on the context in which it is used.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.33',
+    'Discuss choices faced by characters in a story, relating them to life choices and moral decisions.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.34',
+    'Compare and contrast the main themes, settings, events, and characters of different stories of the same type.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.31',
+    'Rewrite known stories by changing the characters or setting but retaining the original main idea.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.32',
+    'Compose multi-paragraph pieces using the writing process.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.37',
+    'Explain a variety of strategies for finding or deducing the meaning of an unknown word.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.38',
+    'Read to seek information from the internet, newspapers, tables, charts, diagrams, and maps.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.35',
+    'Interpret the overt and “hidden’ meaning of a poem.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.36',
+    'Compare and contrast different versions of the same story.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.33',
+    'Create an original poem, then compose a story on the same theme.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.34',
+    'Create an original story with a clear structure, introduction, development, and conclusion.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.35',
+    'Compose a report, written in the third person, based on research or observation.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.39',
+    'Read a variety of texts and relate to personal experiences.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.37',
+    'Identify the values and experiences of men, women and children based on reading stories from different countries and different periods of time.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.36',
+    'Compose an informative item in the style of a news report or a newspaper.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.41',
+    'Determine which words rhyme and independently generate rhyming words.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.42',
+    'Read and spell 20-40 high frequency words. *Ongoing for cycles 3 and 4'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.43',
+    'Blend, Segment read, and spell CVC words with fluency and accuracy. *Ongoing for cycles 3 and 4'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.40',
+    'Discuss characters'' emotions in stories and respond to questions about these emotions.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.41',
+    'Identify words and phrases in stories or poems that suggest feelings or appeal to the senses.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.39',
+    'Interpret a scene from a story or nursery rhyme with a picture and a caption made up of one or two letters or short words. (Or invented spelling)'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.40',
+    'Model how to use prepositions such as (above, behind, under, in, on, between), in a sentence to describe the location of a person, animal or thing.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.44',
+    'Read words with common initial and ending consonant clusters, for example, cl, cr, sp, -nd, nch & -lt.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.45',
+    'Decode two-syllable words following basic patterns by breaking the words into syllables.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.42',
+    'Predict and create outcomes of stories using supporting details or patterns.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.43',
+    'List one or two pieces of information from short non-fiction texts to recall details and answer questions, referring explicitly to the text as the basis for the answers.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.41',
+    'Describe a picture, person, place, object, or recent experience, orally or in writing, using inventive spelling where necessary.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.42',
+    'Write short sentences relating to stories read and draw pictures to illustrate.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.46',
+    'Read on sight and understand the meaning of words containing the endings -s (plural), -ing (continuous tense), and -ed (past tense) to read texts accurately.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.44',
+    'Identify the meaning of unknown words using background knowledge of the topic.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.43',
+    'Write a short letter to a friend to invite them to an event, to accept an invitation or to express thanks.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.47',
+    'Discuss and value how similar words can have slightly different meanings, such as happy/glad, contented/satisfied, rigid/hard.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.48',
+    'Compare and analyze the causes of events in stories and real- life descriptions.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.47',
+    'Discover and criticize information from non-fiction texts.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.48',
+    'Determine and formulate the main idea communicated by a video, poem, story, or nonfiction text.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.44',
+    'Develop and explain a short, prepared report.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.45',
+    'Identify the main parts of a friendly letter and compose a letter to a friend.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.49',
+    'Read on sight approximately three hundred high frequency words including place names from the Caribbean region and Central'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.50',
+    'Build and compare words from common root words by adding prefixes and suffixes.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.49',
+    'Assess and explain the most important ideas or themes in a fiction/non-fiction text or a short poem.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.50',
+    'Evaluate and explain the actions, views, and relationships between characters in stories.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.46',
+    'Outline and compose a friendly letter.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.47',
+    'Compose and perform a short humorous or free verse poem on a given theme.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.48',
+    'Plan and develop a paragraph that describes a real or fictional person or place, which includes a topic sentence, supporting sentences and concluding sentence.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.51',
+    'Examine the elements of a story plot.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.52',
+    'Discuss the features of a poem including its structure, rhyme, patterns, and Figures of Speech.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.51',
+    'Evaluate and discuss the ending to a story to create an alternative ending.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.52',
+    'Determine and interpret the theme or themes communicated in a poem.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Language Structure'),
+    'LA 4.49',
+    'Produce simple, compound, and complex sentences to convey messages to various audiences.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.50',
+    'Use the writing process to produce various writing pieces.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.51',
+    'Conduct planned interviews with peers or familiar adults based on a given topic.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.53',
+    'Analyze text displaying different points of view on the same topic and evaluate the merit of each argument.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.54',
+    'Compare and contrast different predictions made about a story and justify a preference with evidence from it.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.53',
+    'Compare and contrast the setting of two familiar stories and explain the impact of setting on the characters’ choices and actions.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.54',
+    'Analyze and evaluate texts in terms of form, structure, and content.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.52',
+    'Compare and contrast information from more than one non- fiction source on the same topic.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.53',
+    'Explain main ideas with evidence drawn from stories, books, internet, or their own experience.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.54',
+    'Compose a short biographical story or historical narrative account of another person’s life.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.55',
+    'Explain and apply a variety of strategies for finding or deducing the meaning of an unknown word.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.55',
+    'Examine the word choices made by a poet and discuss the difference between the language of poetry and that of prose.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.56',
+    'Cite textual evidence to support analysis of what the text states explicitly as well as inferences drawn from the text.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.55',
+    'Conduct short research on poetry and create poems that include poetic devices such as assonance, alliteration, onomatopoeia etc.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.56',
+    'Use figurative language to develop and strengthen writing skills.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.56',
+    'Identify name and sound of all upper- and lower-case letters.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.57',
+    'Interpret instructions given by the means of gestures, symbols and pictures to complete task or make finish products.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.58',
+    'Examine, discuss, and justify with confidence the causes of events in videos and fiction and non-fiction texts.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.57',
+    'Listen attentively to a familiar story and role play scenes using appropriate language skills.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.57',
+    'Correctly read and spell words ending with common spelling patterns, for example, -ss -ck, -ff & -ll, -old, -ing, -op, -end & and.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.59',
+    'Sort words into categories (e.g., colors, clothing) to gain a sense of the concepts the categories represent.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.60',
+    'Formulate an opinion and answer simple questions about their feelings in response to stories and poetry presented orally.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.58',
+    'Use oral and written sentences to express ideas, preferences and needs.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.59',
+    'Demonstrate understanding of word relationships and nuances in word meanings.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.58',
+    'Identify common prefixes and suffixes to define a word.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.61',
+    'Distinguish whether information presented is stating facts or opinions.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.62',
+    'Differentiate between fiction, nonfiction, fact, and fantasy.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.63',
+    'Determine the main idea and explain how it is conveyed through key details in texts.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.64',
+    'Describe characters, settings, and major events in stories, using key details.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.60',
+    'Compose a short poem that rhymes or is based on a given structure such as acrostic or diamante.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.61',
+    'Prepare a drama to recount a familiar story.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.62',
+    'Write, create, and design a paragraph describing a real-life person, object, event, place, experience, or interest.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.59',
+    'Read fluently and maximize the use of context clues skills from the text to define unfamiliar words.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.60',
+    'Select common prefixes and suffixes to modify the meaning of words.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.61',
+    'Read to recall details and describe the relationship between characters.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.65',
+    'Analyze and discuss the difference between prose, poetry, fact, fiction, and non-fiction.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.66',
+    'Recount stories including folktales and fables to determine the main lesson, message or moral.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.63',
+    'Compose short poems that rhyme or to a specified form such as limerick or haiku.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.64',
+    'Develop and explain a simple informative text such as menus and instructions on how to perform a simple task.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.62',
+    'Read on sight approximately three hundred high frequency words including place names from the Caribbean region and other regions. (Cycle 2, 3 and 4)'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.63',
+    'Compare, contrast, and make use of words with similar and opposite meanings in original speech and writing.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.67',
+    'Evaluate and explain the most important ideas or themes in a fiction/non-fiction text or a short poem.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.68',
+    'Discuss what will happen in a story based on cause and effect or inferences about a character''s personality or motivation.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.69',
+    'Discuss conflict in texts and evaluate the resolutions.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.65',
+    'Compose a non-fiction report containing at least two informative paragraphs with evidence of their opinion on the topic.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.66',
+    'Create a story with a simple setting, simple plot and a small number of characters that includes dialogue'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.64',
+    'Determine the meaning of words and phrases as they are used in a text, including figurative and connotative meanings.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.65',
+    'Read and analyze the impact of a specific word choice on meaning and tone.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.70',
+    'Evaluate stories and poems with the same theme/s.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.71',
+    'Read texts and explain how an author/writer develops the point of view of the narrator or speaker.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.67',
+    'Compose a multi-paragraph story with dialogue.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.68',
+    'Write friendly and formal letters of varying lengths and purposes'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.66',
+    'Read and analyze informational texts from non-fiction selection.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.67',
+    'Read prose and poetry orally with accuracy, appropriate rate, and expression on continuous readings.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.72',
+    'Compare and contrast how settings and relationships in stories can influence a character’s choice and action.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.73',
+    'Read and explain how an author uses reasons and evidence to support points of view in a text.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.74',
+    'Criticize information from more than one non-fiction source on the same topic.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.69',
+    'Compose a business letter in full block form.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.70',
+    'Apply the appropriate format to a variety of letter types.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.68',
+    'Read increasingly complex texts with fluency and confidence.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.69',
+    'Read literary works and state view/position on what is read.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Reading Fluency & Accuracy'),
+    'LA 1.70',
+    'Read prose and poetry of appropriate complexity and distinguish the point of view used by the writer.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.75',
+    'Compare and contrast the openings, endings, pace, sequencing, plot structure and characterization of different stories.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Comprehension'),
+    'LA 2.76',
+    'Support claims with logical reasoning and relevant evidence using accurate, credible sources and demonstrating an understanding of the text.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.71',
+    'Deliver a prepared speech for a given purpose, for example to inform, entertain, or persuade.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Language Arts'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Language Arts') AND name = 'Production'),
+    'LA 3.72',
+    'Compose a formal letter, for example, of request, application, or complaint, to an office, business, or institution.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.01',
+    'Identify and count groups of objects through oral exercises such as playing games, singing songs, and saying rhymes, initially to 10 and then beyond, using the counting principles of stable order, one-to-one correspondence, and cardinality.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.02',
+    'Arrange, match, and create groups of up to ten objects to written numerical symbols.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.03',
+    'Count groups of objects, initially to 10 and then beyond, using the counting principles of abstraction and order irrelevance.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.04',
+    'Identify and state how many objects are in a group of up to 10 objects at a glance without having to count them one by one.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.05',
+    'Identify an individual number, a sequence of numbers and the number before, after or between given numbers using a number line.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.06',
+    'Identify and recite numbers 1 to 30 in sequence with fluency and accuracy.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.07',
+    'Compare numbers from 0 to 10 using the less than, greater than and equals signs.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.08',
+    'Identify and write the numeric symbols for numbers from 0 to 10.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.09',
+    'Compose and decompose numbers from 1 - 10, grouping items into given numbers with no remainder.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.10',
+    'Identify the position of an item in a group using ordinal numbers from first to tenth.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.01',
+    'Find and describe examples of points, lines, squares, circles, rectangles and triangles in the classroom, school and the wider environment.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.02',
+    'Explore, classify and compare common shapes through play and use of manipulatives.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.03',
+    'Identify and describe the properties of triangles, squares and rectangles in terms of number of sides and corners.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.04',
+    'Construct and describe 2-D shapes using straws, sticks, clay, building blocks and other materials.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Patterns'),
+    'MA 2.01',
+    'Identify and discuss examples of patterns in the classroom, school and wider environment.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Patterns'),
+    'MA 2.02',
+    'Find and sort objects and shapes based on their color, size, number of sides and other attributes.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Patterns'),
+    'MA 2.03',
+    'Create and describe patterns using objects, actions, shapes, colours, sounds, or numbers.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Patterns'),
+    'MA 2.04',
+    'Group 10 or fewer objects into sets of 2’s, 3’s, 4’s, and 5’s without remainders'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Patterns'),
+    'MA 2.05',
+    'Count objects, initially to 10 and then beyond by 1s and 2s, forwards and backwards.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Measurement'),
+    'MA 7.01',
+    'Compare and discuss the length, height, mass, temperature and capacity of two objects using words such as longer, taller, shorter, lighter, heavier, colder, hotter, more full or emptier.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Measurement'),
+    'MA 7.05',
+    'List and arrange in sequence the days of the week and months of year using ordinal numbers.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Measurement'),
+    'MA 7.06',
+    'Identify and sequence the current dates and days of the month on a calendar or weather chart using ordinal numbers.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Measurement'),
+    'MA 7.07',
+    'Tell, demonstrate and interpret time to the hour using an analogue clock.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Addition & Subtraction'),
+    'MA 3.01',
+    'Add and subtract sets of up to ten objects including with the use of zero'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Addition & Subtraction'),
+    'MA 3.02',
+    'Explore and demonstrate strategies to add and subtract sets of up to ten objects with and without the use of concrete objects.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Addition & Subtraction'),
+    'MA 3.03',
+    'Solve problems involving the adding and subtracting up to 10 objects, using real-life situations.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.01',
+    'Explain and demonstrate how a whole object can be divided into parts of equal and different sizes.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.02',
+    'Describe and identify fractions in everyday situations by using language such as ‘1 out of 2’.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.03',
+    'Compose and decompose a region, shape or set of objects using halves and quarters, showing that the fractional parts are equal.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.04',
+    'Identify, compare and match halves and quarters and objects in parts with the symbols ½ and ¼ using real-life situations.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.05',
+    'Identify and discuss planes in the classroom, school and wider environment.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.06',
+    'Find, describe and compare examples of 3-D objects such as spheres, cubes, cylinders and cones in the classroom, school and the wider environment.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Data'),
+    'MA 9.01',
+    'Gather and compile data from the environment through observation, counting, sorting and grouping of items such as objects and pictures.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Data'),
+    'MA 9.02',
+    'Organize and display data using concrete materials in tally charts and on pictorial representations.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Data'),
+    'MA 9.03',
+    'Create, display and interpret information presented in pictographs using a variety of data sets.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.11',
+    'Identify and count numbers up to 100 using a number and the five counting principles of stable order, one to one correspondence, order irrelevance, cardinality and abstraction.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.12',
+    'Identify and match number names with numeric symbols for numbers from 0-100 both orally and in writing.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.13',
+    'Apply the concept of zero to real- life situations.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.14',
+    'Identify the position and organize items in a group using ordinal numbers from first to one hundredth.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.15',
+    'Compose and decompose 2-digit numbers to form groups of tens and ones.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.16',
+    'Sequence a set of numbers between 0 and 100 in ascending or descending order using a number line.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.17',
+    'Identify the number that is ten more or ten less than a given number using a place value chart and apply it to real life situations.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.18',
+    'Compare numbers from 0 to 100 using the less than, greater than and equal signs.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.07',
+    'Differentiate between horizontal, vertical and diagonal lines and draw rays and angles.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.08',
+    'Identify the similarities and differences between triangles, squares, rectangles and circles.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.09',
+    'Create by drawing or modelling and describe 2-D shapes with a specified number of sides using manipulatives.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Patterns'),
+    'MA 2.06',
+    'Identify and describe patterns in pictures and artistic designs.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Patterns'),
+    'MA 2.07',
+    'Create and describe repeated patterns using actions, objects, colours, sounds, shapes, letters and numbers.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Measurement'),
+    'MA 7.08',
+    'Investigate and compare the perimeter and area of 2-D shapes using non-standard measures.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Measurement'),
+    'MA 7.09',
+    'Measure and compare the length of lines, perimeter of shapes and real objects found in the environment using customary units of feet and inches.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Measurement'),
+    'MA 7.10',
+    'Investigate and discuss the volume of 3-D shapes using non-standard units of measurement.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Measurement'),
+    'MA 7.11',
+    'Measure and compare the volume of containers using the customary units of cups and pints and the mass of objects using customary units of pounds and ounces.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Addition & Subtraction'),
+    'MA 3.04',
+    'Add a 1-digit number to a 2-digit number that ends in a zero and apply to real life situations.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Addition & Subtraction'),
+    'MA 3.05',
+    'Subtract a 1-digit number from a 2-digit number without the need to borrow and apply to real life situations.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Addition & Subtraction'),
+    'MA 3.06',
+    'Add a 1-digit number to any 2-digit number with the answer not exceeding 99 and without regrouping.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Measurement'),
+    'MA 7.12',
+    'Identify and tell the time as half hour, quarter hour to or past the hour using an analogue clock.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Measurement'),
+    'MA 7.13',
+    'Identify, explain and apply the terms a.m. and p.m. to time in real life situations.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Addition & Subtraction'),
+    'MA 3.07',
+    'Add a single or two 2-digit numbers together with the answer not exceeding 100, vertically and horizontally with or without the place value chart and complete number sentence with sums up to 100 using +,=.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Addition & Subtraction'),
+    'MA 3.08',
+    'Subtract a single or 2-digit number from a 2-digit number, vertically and horizontally, without the need to barrow, with or without the place value chart and complete number sentence with differences up to 100 using -,=.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Addition & Subtraction'),
+    'MA 3.09',
+    'Explore and solve problems using the additive identity property.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.05',
+    'Compose and decompose a region, shape or set of objects using halves, thirds, quarters and fifths.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.06',
+    'Identify and match fractional parts with the symbols ½, 1/3, ¼ and ⅕.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.01',
+    'Place and divide up to 50 objects or pictures into groups of 2’s, 3’s, 5’s and 10’s of equal size.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.02',
+    'Investigate that multiplication is the same as repeated addition.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.03',
+    'Multiply two 1-digit numbers together using manipulatives arranged in groups, multiplication arrays and so on.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.10',
+    'Identify, describe and compare 2-D shapes according to specific properties including length of sides and number of vertices through discussion and demonstrations to insert in a table.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.11',
+    'Create and name models of 3-D shapes such as the cube, cuboid, sphere, cylinder, and cone or objects with specified properties, such as number of faces, edges and vertices through discussions and role-playing.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.12',
+    'Investigate and explain the similarities and differences between symmetrical shapes.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Data'),
+    'MA 9.04',
+    'Collect and organize data from pictures, written sources and the environment through observation.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Data'),
+    'MA 9.05',
+    'Organize and display data using concrete materials in tally charts and column representations.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Data'),
+    'MA 9.06',
+    'Collect and Interpret information presented in simple column graphs using a variety of datasets.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.19',
+    'Read, write and match numbers up to 1000 using numerical symbols and words and apply to real life situations.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.20',
+    'Identify and explain the value of each column in a place value chart as ten times more or less than the neighbouring column for numbers between 0 and 999.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.21',
+    'Compare numbers up to 1000 using the symbols for equals (=), less than (<) and greater than (>) and apply to real life situations.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.22',
+    'State, read and write numbers in expanded form, up to 1000.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Patterns'),
+    'MA 2.08',
+    'Sequence and identify the next, or a missing non-consecutive number between 0 and 1000 in ascending and descending order, using a number line.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Patterns'),
+    'MA 2.09',
+    'Create and describe increasing, decreasing, and alternating patterns using numbers, objects, actions, shapes, colours, or sounds.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Patterns'),
+    'MA 2.10',
+    'Count forward and backward by 2''s, 5''s, 10''s and 100''s from any given starting number between 0 and 1000.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.11',
+    'Create and describe horizontal, vertical, diagonal, intersecting, parallel and perpendicular lines.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.12',
+    'Investigate and discuss how the perimeter of common shapes such as triangles, squares and rectangles are calculated.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.13',
+    'Create compound shapes using manipulatives such as pattern blocks, sticks, straws, string or other materials.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.14',
+    'Describe the features of 3-D shapes such as cones, cylinders, cubes, cuboids and pyramids.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Addition & Subtraction'),
+    'MA 3.10',
+    'Add & subtract 2-digit numbers without regrouping using a range of mental and written strategies.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Addition & Subtraction'),
+    'MA 3.11',
+    'Add and subtract 2-digit numbers with regrouping using manipulatives such as base ten blocks or Legos.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Addition & Subtraction'),
+    'MA 3.12',
+    'Add three 2-digit numbers with and without regrouping in unit columns.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Measurement'),
+    'MA 7.14',
+    'Estimate, measure, compare and record the length of lines, distances and the size of objects using the customary unit of inches, feet and yards.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Measurement'),
+    'MA 7.15',
+    'Estimate, measure, compare and record the mass of various objects in the customary unit of pounds and ounces.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Measurement'),
+    'MA 7.16',
+    'Estimate, measure compare and record the capacity of a container using the customary unit of cups, pints, quarts and gallons.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Addition & Subtraction'),
+    'MA 3.13',
+    'Demonstrate and explain the relationship between addition and subtraction.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Addition & Subtraction'),
+    'MA 3.14',
+    'Add & subtract two 3-digit numbers without regrouping using unit columns.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Addition & Subtraction'),
+    'MA 3.15',
+    'Add & Subtract two 3-digits with regrouping using manipulatives such as base ten blocks.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Measurement'),
+    'MA 7.17',
+    'Convert among units within the customary system of length, mass and capacity.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Measurement'),
+    'MA 7.18',
+    'Convert a length of time between minutes and seconds.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Measurement'),
+    'MA 7.19',
+    'Identify, measure and record the temperature of the environment, in either degrees Celsius or Fahrenheit.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.04',
+    'Explore the multiplicative identity of a number, that is if you multiply a number by 1, the product is that original number and solve problems using the multiplicative identity property.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.05',
+    'Represent and solve multiplication problems both horizontally and vertically'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.06',
+    'Multiply a 2-digit number by a 1-digit number'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.07',
+    'Round-off to the nearest ten to estimate when multiplying.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.07',
+    'Describe and illustrate parts of a whole or of a set using fractions with numerators other than one such as ⅔, ¾, ⅖, ⅚, 4/10'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.08',
+    'Compare and sequence fractions with like denominators with the aid of manipulatives such as pictures, number line, fraction strips.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.09',
+    'Add two or more proper fractions with like denominators.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.10',
+    'Read and Convert fractions with tenths to decimals, for example 3/10 is the same as 0.3'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.11',
+    'Read, add and subtract numbers with one decimal place.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.08',
+    'Investigate that division is the same as repeated subtraction.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.09',
+    'Divide single and 2-digit numbers by 2, 3, 4, 5, 10, without remainders.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.10',
+    'Identify and explain the relationship between multiplication and division.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.11',
+    'Solve word problems with real life applications using multiplication and division.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Data'),
+    'MA 9.07',
+    'Collect, analyse and represent data contained in a tally chart or frequency table in different forms like pictographs & bar graphs.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Data'),
+    'MA 9.08',
+    'Identify and discuss situations that involve chance such as certain, impossible or equally likely events and investigate probability using tables and graphs.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.23',
+    'Identify and state the value of a digit based on its position in a number up to 6 digits.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.24',
+    'Read, write and apply numbers up to 100,000 using numerical symbols and words to real life situations.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.25',
+    'Sequence and compare a set of non-consecutive numbers in ascending and descending order up to 100,000 using the place value system.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.26',
+    'State, read and write whole numbers up to 100,000 in expanded form.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.27',
+    'Round whole numbers up to 100,000 to specific place values.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.15',
+    'Identify and draw 2-D shapes based on their attributes up to 10 sides.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.16',
+    'Identify and draw lines of symmetry in plane figures.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.17',
+    'Draw circles of various sizes using a compass and identify the centre, radius, diameter and circumference of the circles.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.18',
+    'Construct common shapes such as triangles, squares and rectangles and calculate the perimeter by adding the lengths of all sides using metric units.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Addition & Subtraction'),
+    'MA 3.16',
+    'Add and subtract positive numbers up to 5-digits, with and without regrouping.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Addition & Subtraction'),
+    'MA 3.17',
+    'Develop and write number sentences using mixed operations of addition and subtraction to solve word problems.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Addition & Subtraction'),
+    'MA 3.18',
+    'Solve problems using the commutative property of addition.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Data'),
+    'MA 9.09',
+    'Collect and represent data on a bar graph, pictograph and dot plot using real-life situation.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Data'),
+    'MA 9.10',
+    'Determine the median, mode, and range for a given set of data with both odd and even number of elements.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Data'),
+    'MA 9.11',
+    'Identify, determine and predict the probability that an event will happen in a real-life situation with a finite number of possible outcomes using the phrase "with a probability of x out of y”.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.12',
+    'Define and find multiples of whole numbers.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.13',
+    'Multiply two 2-digit numbers with and without regrouping.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.14',
+    'Multiply whole numbers up to 100 with one decimal place.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.15',
+    'Discuss and explain why commutative property applies to multiplication.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.12',
+    'Identify, explain and compare equivalent fractions using pictures, number line, fraction strips or other manipulatives.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.13',
+    'Find and solve problems with fractions that are equivalent to another by multiplying both the numerator and the denominator by the same number.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.14',
+    'Compare and sequence groups of proper fractions with like and unlike denominators.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Patterns'),
+    'MA 2.11',
+    'Create and analyse 2-dimensional pattern using only pictures.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Patterns'),
+    'MA 2.12',
+    'Identify and Explain the difference between odd, even numbers, prime and composite numbers and explore and identify patterns for triangular numbers.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Patterns'),
+    'MA 2.13',
+    'Identify and explore pattern rules for given patterns such as missing element of a pattern and patterns for triangular numbers'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Measurement'),
+    'MA 7.20',
+    'Measure, Compare and record the length of lines and the size of objects using meters, centimeters and millimeters.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Measurement'),
+    'MA 7.21',
+    'Discuss and compare the distances to and from various places using kilometers.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Measurement'),
+    'MA 7.22',
+    'Measure, compare, and record the mass of various objects using kilograms and grams and capacity of a container using litre and millilitre.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Measurement'),
+    'MA 7.23',
+    'Record measures of time using minutes, seconds and hours and convert time from minutes to hours, hours to days and days to weeks.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.16',
+    'Explore and discuss divisibility rules for division by 2, 5, and 10 by selecting numbers that follow each rule.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.17',
+    'Divide1-digit and 2-digit numbers by 2, 3, 4, 5, & 10, with and without remainders.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.18',
+    'Divide 2-digit numbers by one-digit numbers using the short form of division without carrying over within the calculation.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.16',
+    'Add and subtract proper fractions with unlike denominators using area models.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.17',
+    'Multiply and divide proper fractions with unlike denominators using area model.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.18',
+    'Identify and write the value of any digit in a number that has up to 2 decimal places using the decimal place value chart.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.19',
+    'State, read and write decimal numbers up to 2 decimal places in expanded form.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.20',
+    'Compare, sequence and round-off numbers with 2 decimal places to the nearest tenth.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.21',
+    'Identify the equivalent decimals forms of 1/4, 1/2 and ¾.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.22',
+    'Add and subtract decimal numbers, up to 2 decimal places.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.19',
+    'Identify the figure and construct 3-D figures from given nets.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.20',
+    'Identify and describe turns using quarter, half, three-quarter and full turn and 0°, 90°, 180°, 270°, 360°.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.21',
+    'Identify and classify an angle as acute, right, obtuse or straight based on the approximate size of the angle.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.28',
+    'Identify and state the value of a digit based on its position in a number up to 7 digits.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.29',
+    'Round off very small and very large numbers using an appropriate method and apply to real life situations.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.30',
+    'Read and write numbers using the Mayan and Roman Numeral numbering system.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.31',
+    'Explore and apply square numbers to real life situations.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.22',
+    'Draw, measure and record the degrees of various angles and interior angles of various shapes using a protractor.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.23',
+    'Identify and name a triangle as being acute, obtuse or right-angled.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.24',
+    'Investigate the sum of the interior angles of triangles and quadrilaterals.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Addition & Subtraction'),
+    'MA 3.19',
+    'Add and subtract numbers up to 7 digits, with and without regrouping.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Addition & Subtraction'),
+    'MA 3.20',
+    'Solve problems and explain the associative property of addition.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.19',
+    'Explain and solve problems using the associative property of multiplication.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.20',
+    'List and demonstrate the squares of numbers up to 10, concretely and pictorially.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.21',
+    'Discuss and find the lowest common multiples for a range whole number.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.22',
+    'Multiply a 3-digit number by a 1-digit number or 2-digit number.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.23',
+    'Multiply a whole number with a number with up to three decimal places.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.24',
+    'Explore and solve problems using divisibility rules for division by 3, 6, and 9.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.25',
+    'Solve problems by dividing any double-digit number by a single-digit number.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.26',
+    'Divide 2-digit, 3-digit and 4-digit numbers by 1-digit numbers, using the short form of division including carrying over within the calculation.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.27',
+    'Divide a number with up to 2 decimal places by a single digit number using the short form of division.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.28',
+    'Differentiate between Factors and Greatest Common Factors and find Factors and Greatest Common Factors of various numbers.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.23',
+    'Reduce a proper fraction to its simplest form.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.24',
+    'Compare and sequence a group containing both mixed numbers and improper fractions and convert improper fraction to mixed number.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.25',
+    'Identify and justify the mixed number that is equivalent to a given decimal.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.26',
+    'Add and subtract mixed numbers in real life situations.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Patterns'),
+    'MA 2.14',
+    'Investigate different ways to arrange a set of items to create a variety of patterns related to daily lives.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Patterns'),
+    'MA 2.15',
+    'Solve problems involving the identification of missing elements in a pattern by investigating relationships between successive elements using addition, subtraction, multiplication and division.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Measurement'),
+    'MA 7.24',
+    'Estimate using metric units, length, mass and capacity of a line or object.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Measurement'),
+    'MA 7.25',
+    'Measure and record length, mass, capacity, and temperature, using metric units, including decimals.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Measurement'),
+    'MA 7.26',
+    'Solve problems using metric units of length, mass, capacity and temperature in real life situations.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Measurement'),
+    'MA 7.27',
+    'Convert between a 12-hour clock and a 24-hour clock and estimate the length of time an event takes in real life situations.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Measurement'),
+    'MA 7.28',
+    'Measure the elapsed time of an event using a stopwatch to the nearest tenth of a second and calculate the elapsed time of an event that are many weeks, months or years apart.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Data'),
+    'MA 9.12',
+    'Collect data and determine the median, mode, and range of the set of data with either an even or an odd number of elements.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Data'),
+    'MA 9.13',
+    'Compute the mean for a set of numbers related to real-life situation and solve real-world problems involving median, mode and range.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Data'),
+    'MA 9.14',
+    'Describe and predict outcomes from data using the language of chance or likelihood.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Data'),
+    'MA 9.15',
+    'Collect and represent real-life date in bar graphs and histograms.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.29',
+    'State, read and write decimal numbers up to 3 decimal places in usual and expanded form.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.30',
+    'Compare, sequence and round off decimal numbers with up to 3 decimal places to the nearest tenth and hundredth.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.31',
+    'Add and subtract decimals, up to 3 decimal places.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.32',
+    'Converting fractions that have 2, 4, 5, 8, 10, 20, 25 or 50 as the denominator to decimal numbers.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Sets'),
+    'MA 8.01',
+    'Create and describe sets based on the common features and attributes of numbers, people, objects and other entities.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Sets'),
+    'MA 8.02',
+    'Identify elements that are not members of a set.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Sets'),
+    'MA 8.03',
+    'Investigate and empty (null) set.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.32',
+    'Read, write and sequence positive and negative integers in ascending and descending order using a number line.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.33',
+    'Construct a number line that shows both positive and negative integers.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.28',
+    'Identify and classify triangles as equilateral, isosceles, scalene, right-angle, acute and obtuse.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.29',
+    'Draw and list properties of triangles with given angles and lengths of side using a ruler and protractor.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.30',
+    'Investigate angles in triangles to deduce relationships between the interior and exterior angles.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.31',
+    'Calculate area of a compound shape constructed from squares, rectangles and triangles.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Addition & Subtraction'),
+    'MA 3.21',
+    'Add or subtract a series of at least five numbers mentally.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Addition & Subtraction'),
+    'MA 3.22',
+    'Add and subtract positive numbers to a negative number using a number line.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Addition & Subtraction'),
+    'MA 3.23',
+    'Add and subtract a range of decimal numbers from the very small to the very large.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Addition & Subtraction'),
+    'MA 3.24',
+    'Identify and explain the difference between the commutative and associative properties of addition.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.29',
+    'Multiply a positive number with a negative number.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.30',
+    'Multiply two decimal numbers with up to 3 decimal places.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.31',
+    'Explore how the use of brackets can change the order of operations in problems involving multiplication and addition or subtraction.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.33',
+    'Explore and demonstrate the steps to find lowest common denominator of two or more fractions.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.34',
+    'Add and subtract two or more fractions with unlike denominators using the lowest common denominator.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.35',
+    'Multiply and divide mixed numbers.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.36',
+    'Divide a whole number or a fraction by a fraction.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.32',
+    'Find a grid square on a map using coordinates and references.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.33',
+    'Locate points and construct shapes and lines on the first quadrant of the coordinate graph using (x,y) coordinates.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.37',
+    'Identify common everyday situations where percent is used and represent various percentages using pictures, shaded areas, and fractional parts using real life situations.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.38',
+    'Identify and investigate the relationship between percentage and fraction with a denominator of 100.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.39',
+    'Discuss and describe real-life situations involving comparisons between percentages.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.32',
+    'Explore and demonstrate divisibility rules for division by 4, 7 and 8.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.33',
+    'Divide a 2-digit number by a 1-digit number with or without remainders'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.34',
+    'Divide a whole number by a 2-digit number using long division.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.35',
+    'Divide a whole number by a decimal between 0 and 1.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.36',
+    'Explain how the use of brackets can change the order of operations in problems involving division and addition or subtraction.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Sets'),
+    'MA 8.04',
+    'Define and list elements of finite and infinite sets.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Sets'),
+    'MA 8.05',
+    'Define and create equal sets with objects and different element.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Sets'),
+    'MA 8.06',
+    'Describe and create Venn diagram with the intersection of two (2) sets using of real world scenarios.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.40',
+    'Construct and define the parts of a circles such as center, radius, diameter and circumference.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.41',
+    'Illustrate how a circle is divided into 360 equal degrees.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.42',
+    'Construct a circle divided into sectors with a given number of degrees using a compass and protractor.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.34',
+    'Read and write very large numbers in standard form, expanded form and scientific notation.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.35',
+    'Round off a whole number to a specified number of significant figures and apply to real life situations.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.36',
+    'Read, write and expand numbers with three or more decimal places.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.37',
+    'Categorize and differentiate between odd, even, prime, and composite numbers.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.38',
+    'Identify and illustrate the square of all integers between 1 and 20 and of the integers 25 and 100.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.39',
+    'Demonstrate and illustrate the concept of cube numbers concretely and pictorially.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Patterns'),
+    'MA 2.16',
+    'Represent and analyse patterns in real life data using tables, graphs, diagrams and manipulatives.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Patterns'),
+    'MA 2.17',
+    'Investigate and solve arithmetic and geometric progressions using real-life data.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Addition & Subtraction'),
+    'MA 3.25',
+    'Add and subtract, mentally numbers with up to three digits.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Addition & Subtraction'),
+    'MA 3.26',
+    'Add and subtract integers with like and unlike signs, using real life situations.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Addition & Subtraction'),
+    'MA 3.27',
+    'Add and subtract numbers with decimals to solve real world problems.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.37',
+    'Multiply and divide any two-digit number by any number between 1 and 20.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.38',
+    'Multiply and divide a positive a number by a negative number.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.39',
+    'Describe real life situations using the terms multiple and factor.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.40',
+    'Identify the prime factor of 1-digit and 2-digit numbers and express natural numbers as products of their prime factors.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.40',
+    'Discuss and solve real world problems that require the adding and subtracting of mixed numbers.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.41',
+    'Discuss and solve real world problems that require the multiplying and dividing of mixed numbers.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.42',
+    'Discuss and solve real world problems with whole number, factions and decimals that involve more than one types of operation.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.43',
+    'Compare a variety of decimals, fractions, and percent using greater than, less than or equal to and solve problems that involves finding the percentage increase or decrease of real-world quantities.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.49',
+    'Express a ratio as part to part and part to whole and solve real-world problems involving ratios with 2 elements.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.50',
+    'Explain the difference between ratios and rates and solve real-world problems involving ratio and rates.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.34',
+    'Research and solve real world problems involving the perimeter and area of triangles and quadrilaterals.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.35',
+    'Draw circles and calculate the circumference, radius and diameter of circles using formulas.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.36',
+    'Identify and construct cubes, cuboids, cylinders, cones, pyramids, and other 3-dimensional objects.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.37',
+    'Investigate how to calculate the surface area and volume of cuboids.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Measurement'),
+    'MA 7.32',
+    'Solve real-world problems that require conversion between units of measurement within the same system and between the customary and metric units of measurement.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Measurement'),
+    'MA 7.34',
+    'Solve problems that include measurements expressed as negative numbers, such as temperature below zero and BCE.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Measurement'),
+    'MA 7.35',
+    'Calculate speed based in actual real-world measurements of time and distance.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Measurement'),
+    'MA 7.36',
+    'Solve problems in which the start time, end time and elapsed time is an unknown quantity.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.38',
+    'Plot a line on the first quadrant of a coordinate graph using given (x,y) coordinates and plot the results of a reflection on a rectangular grid.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.39',
+    'Investigate how a variety of polygons can be found in tessellations of triangles and create tessellations from more than one type of polygons.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Data'),
+    'MA 9.19',
+    'Construct circle graphs and line graphs from frequency tables using real-world data.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Data'),
+    'MA 9.20',
+    'Calculate the mean, median, mode and range of large sets of real-world data.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Sets'),
+    'MA 8.07',
+    'Identify and describe the elements in the union and intersection of two sets based on a Venn diagram using the set notation: { }, ∩, ∪.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Sets'),
+    'MA 8.08',
+    'Create subsets from universal sets and indicate the elements in the subsets using set notation.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Data'),
+    'MA 9.21',
+    'Explore probability and represent the outcome of a probability experiment using fractions and percents.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Data'),
+    'MA 9.22',
+    'Represent the outcome of a probability experiment in a frequency table and on a bar graph.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Data'),
+    'MA 9.23',
+    'Determine probability from data given in bar graphs, pictographs and circle graphs.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.40',
+    'Explain the value of digits in numbers smaller than 0.001 with the use of a place value chart and apply to real life situations.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.41',
+    'Round off decimal numbers up to two significant figures and large numbers to up to three significant figures.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.42',
+    'Categorize and differentiate between whole numbers, prime numbers, composite numbers and integers.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.43',
+    'Define the terms exponent and power to apply the concept of powers using repeated multiplication using 2 as the base number.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.44',
+    'Identify and write the square root of a perfect square.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.45',
+    'Identify and list the cubes of integers from 1 to 5 and of the number 10.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Numbers & Number Operations'),
+    'MA 1.46',
+    'Convert to and from base 10 and base 2 using place value charts.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Addition & Subtraction'),
+    'MA 3.28',
+    'Add and subtract positive and negative numbers to solve mental and real-world problems.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Addition & Subtraction'),
+    'MA 3.29',
+    'Solve and discuss real world word problems using addition and subtraction when there is an unknown quantity.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Addition & Subtraction'),
+    'MA 3.30',
+    'Compare the commutative and associative properties of addition and explain the importance of each using real world examples.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.41',
+    'Mentally multiply any 2-digit number by 4,5, 9, multiples of 10 and 25 & 50 using shortcuts.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.42',
+    'Multiply and divide two negative numbers.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.43',
+    'Identify the factors of negative whole numbers.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.44',
+    'Solve real-world multiplication and division problems to solve word problems in which there is an unknown quantity.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.45',
+    'Explain the importance of the commutative property of multiplication using real world examples.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Multiplication & Division'),
+    'MA 4.46',
+    'Solve problems requiring application of order of operations.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.44',
+    'Convert decimals to fractions for any value between 0 and 1 and vice versa.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    2,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Fraction and Decimals'),
+    'MA 5.45',
+    'Add, subtract, multiply and divide different types of fractions using real-life scenarios.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.40',
+    'Determine the perimeter of a 2D shape when the length of one or more sides is not known.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.41',
+    'Investigate and calculate the area of quadrilaterals and compound shapes'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.42',
+    'Investigate and calculate surface area of cylinders and pyramids.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    3,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Geometry'),
+    'MA 6.43',
+    'Investigate and calculate the volume of cylinders, rectangular pyramids and cones using formulas.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Data'),
+    'MA 9.24',
+    'Create a line graph, bar graph and a histogram based on two or more data sets and make predictions after analysis'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Data'),
+    'MA 9.25',
+    'Use a table of values to plot a line on a coordinate graph.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Data'),
+    'MA 9.26',
+    'Analyze, explain and solve real world problems of mean, median and mode.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Data'),
+    'MA 9.27',
+    'Explain that probability is a measure on a scale of 0-1 of how likely an event is to occur.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Data'),
+    'MA 9.28',
+    'Determine the probability of an event from various types of charts, graphs and tables.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Data'),
+    'MA 9.30',
+    'Explore the probabilities involved with games of chance.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Mathematics'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Mathematics') AND name = 'Data'),
+    'MA 9.31',
+    'Represent the outcome of a probability experiment on a circle graph.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Body Skills & Fitness'),
+    'PE 1.1',
+    'List and explain the rules for staying safe in a Physical Education class.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Body Skills & Fitness'),
+    'PE 1.2',
+    'Move from place to place, forwards, sideways and backwards, by rolling, galloping, skipping, sliding, and leaping.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Body Skills & Fitness'),
+    'PE 1.3',
+    'Make and demonstrate different shapes with the body that are wide, narrow, curled and twisted at low, mid and high levels.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Body Skills & Fitness'),
+    'PE 1.4',
+    'Participate in a variety of movement patterns, while changing directions in response to a whistle or similar signal.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Football'),
+    'PE 2.1',
+    'Demonstrate passing and receiving techniques using the instep or side of the foot.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Football'),
+    'PE 2.2',
+    'Perform a variety of dribbling drills around cones, marks on the ground or other safe obstacles.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Football'),
+    'PE 2.3',
+    'Perform exercises on the spot such as arm curls, leg lifts and jumping up and down.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Football'),
+    'PE 2.4',
+    'Control a moving ball with the feet while changing directions.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 1'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Football'),
+    'PE 2.5',
+    'Participate in relay races with simple rules using a football.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Body Skills & Fitness'),
+    'PE 1.5',
+    'Perform a variety of twisting, stretching and other on the spot exercises.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Body Skills & Fitness'),
+    'PE 1.6',
+    'Execute a single jump rope with self-turned rope forward with single bounce and backward with single bounce.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Football'),
+    'PE 2.6',
+    'Kick a ball safely with the instep or side of the foot towards a partner or other target.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Infant 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Football'),
+    'PE 2.7',
+    'Change direction in a quick, controlled manner while playing dodging and chasing games.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Body Skills & Fitness'),
+    'PE 1.9',
+    'Jump a short rope non-stop for at least 10 seconds, turning the rope both forwards and backwards.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Body Skills & Fitness'),
+    'PE 1.10',
+    'Skip using an individual short rope and a long rope turned by partners.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Body Skills & Fitness'),
+    'PE 1.11',
+    'Demonstrate simple flexibility exercises, for example, stretching arms and legs as high and wide as possible in various directions and at various heights and by twisting and turning the body.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Body Skills & Fitness'),
+    'PE 1.12',
+    'Move individually in general space, changing direction and speed, without interfering with other people while walking, hopping, running, or rolling on the floor.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Football'),
+    'PE 2.11',
+    'Demonstrate the proper way of taking a throw in, corner kick and goal kick.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Football'),
+    'PE 2.12',
+    'Reduce open space by using locomotor movements, walking, running, changing size and shape in body in combination with movement concepts, reducing the angle in the space, reducing distance between player and goal.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 1'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Football'),
+    'PE 2.13',
+    'Participate in small group games by passing a ball to a partner or shooting a stationary ball at a goal or other target with a short run up.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Body Skills & Fitness'),
+    'PE 1.14',
+    'Maintain balance while stretching, curling, twisting, and transferring weight from one part of the body to another.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Body Skills & Fitness'),
+    'PE 1.15',
+    'Maintain balance while moving, changing direction, and coming to an abrupt stop.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Body Skills & Fitness'),
+    'PE 1.16',
+    'Skip a short or long rope continuously that is turned by self or others.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Body Skills & Fitness'),
+    'PE 1.17',
+    'Execute flexibility exercises such as reaching as far as possible in different directions with the arms, lifting the knee to the chest and rotating outstretched arms in a circle, while sitting or standing.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Body Skills & Fitness'),
+    'PE 1.18',
+    'Perform various stretches using static and dynamic activities.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Football'),
+    'PE 2.14',
+    'Dribble, pass and control a football in general space and through obstacles.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Football'),
+    'PE 2.15',
+    'Kick a moving ball, using different techniques to hit a target or goal.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Football'),
+    'PE 2.16',
+    'Apply combined skills in a simplified football game.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Body Skills & Fitness'),
+    'PE 1.19',
+    'Transfer weight from one foot to another to maintain balance, while stationary or traveling, while moving different body parts in a variety of ways.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Football'),
+    'PE 2.17',
+    'Pass, dribble and control a football while changing pace and direction, using different techniques.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Body Skills & Fitness'),
+    'PE 1.23',
+    'Balance, symmetrically and non-symmetrically, on different bases of support, combining levels with shapes.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Body Skills & Fitness'),
+    'PE 1.24',
+    'Create an original individual jump-rope routine that includes basic jumps with a short rope or long rope.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Body Skills & Fitness'),
+    'PE 1.25',
+    'Create a jump-rope routine with a partner, using either a short or long rope that includes basic jumps and tricks such as star jumps, side straddles and jumping in and out of the rope.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Body Skills & Fitness'),
+    'PE 1.26',
+    'Explain the importance of and perform basic stretching exercises and aerobic activities to warm-up the body.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Football'),
+    'PE 2.20',
+    'Control a passed football with the chest, legs or side of the foot and pass the football to a stationary and moving partner in a variety of ways.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Football'),
+    'PE 2.21',
+    'Explain and apply football rules and tactics including commonly used team formations.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Football'),
+    'PE 2.22',
+    'Shoot a stationary or moving football at a goal or other target from a variety of distances and angles.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Football'),
+    'PE 2.23',
+    'Regain control of a football from another player with a safe, clean tackle.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Body Skills & Fitness'),
+    'PE 1.28',
+    'Balance on either leg, demonstrating muscular tension and extensions of free body parts.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Body Skills & Fitness'),
+    'PE 1.29',
+    'Perform a routine that includes a variety of postures and body movements while balancing on a painted line.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Body Skills & Fitness'),
+    'PE 1.30',
+    'Discuss the importance and benefits of stretching and safely perform a variety of stretching exercises.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Body Skills & Fitness'),
+    'PE 1.31',
+    'Participate in fitness exercises that increase flexibility, muscular strength, and muscular endurance.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Body Skills & Fitness'),
+    'PE 1.32',
+    'Create an original routine that combines a variety of twisting, curling, bending, and stretching actions.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Football'),
+    'PE 2.25',
+    'Identify the roles of the eleven positions on a football team and present on one of the roles.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Football'),
+    'PE 2.26',
+    'Shoot a ball to an identified target or goal with the four-step technique.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Football'),
+    'PE 2.27',
+    'Explain and demonstrate the standing position technique to hold a ball from a shot.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Football'),
+    'PE 2.28',
+    'Demonstrate how to control a passed football with the legs or side of the foot and how to pass it to a stationary or moving partner in a variety of ways.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Body Skills & Fitness'),
+    'PE 1.33',
+    'Perform, individually or with a partner, original jump rope routines that include basic jumps and tricks.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Body Skills & Fitness'),
+    'PE 1.34',
+    'Perform a variety of high and low kicks and turns while maintaining balance.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Body Skills & Fitness'),
+    'PE 1.35',
+    'Perform balancing on stilts for several minutes.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Body Skills & Fitness'),
+    'PE 1.36',
+    'Explain the importance of and perform simple warm up or cool down routines that includes a variety of light aerobic exercises and stretches.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Body Skills & Fitness'),
+    'PE 1.37',
+    'Demonstrate appropriate posture while performing different exercises with different variations.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Football'),
+    'PE 2.29',
+    'Control a passed football with the chest, legs or side of the foot and immediately pass it to a partner.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Football'),
+    'PE 2.30',
+    'Identify and demonstrate a range of goalkeeping techniques.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Football'),
+    'PE 2.31',
+    'Dribble a football showing control of pace and direction and demonstrate how to regain possession of a ball from another player with a safe, clean tackle.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Physical Education'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    4,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Physical Education') AND name = 'Football'),
+    'PE 2.32',
+    'Participate in and demonstrate an understanding of tactics in a modified football game.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Science and Technology'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Science and Technology') AND name = 'Energy Resources'),
+    'SC 4.04',
+    'Demonstrate how the human ear detects sound and distinguish between the major components of the outer, middle and inner ear. Introduction to Digital'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Science and Technology'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Science and Technology') AND name = 'Relationships and Communications Plagiarism'),
+    'SC 5.01',
+    'Interact with and explore a range of digital equipment such as cameras, microphones, microscopes, laptops.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Science and Technology'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Science and Technology') AND name = 'Relationships and Communications Plagiarism'),
+    'SC 5.02',
+    'Describe how to position the body, adjust lighting, position equipment and when to take breaks when using digital devices.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Science and Technology'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Science and Technology') AND name = 'Relationships and Communications Plagiarism'),
+    'SC 5.03',
+    'Operate a variety of digital tools such as open/close, save, print, navigate, use input and output devices, log on and log off, and unplugging.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Science and Technology'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 2'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Science and Technology') AND name = 'Relationships and Communications Plagiarism'),
+    'SC 5.04',
+    'Identify, locate and use letters, numbers and special keys on keyboard such as space bar, shift and delete.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Science and Technology'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Science and Technology') AND name = 'Energy Resources'),
+    'SC 4.08',
+    'Demonstrate how heat can be transmitted through solids, liquids, and gases using conduction, convection, radiation.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Science and Technology'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Science and Technology') AND name = 'Energy Resources'),
+    'SC 4.09',
+    'Identify and investigate materials that are good heat insulators and good heat conductors and describe some uses of these materials. Online Safety/Surfing the Web'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Science and Technology'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Science and Technology') AND name = 'Relationships and Communications Plagiarism'),
+    'SC 5.05',
+    'Identify the differences and Similarities between private and personal information and discuss why keeping personal information such as name, location, phone number and home addresses are considered private.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Science and Technology'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Science and Technology') AND name = 'Relationships and Communications Plagiarism'),
+    'SC 5.06',
+    'Discuss and explain the importance of password, passcode, and face Identification as a form of protection for private information.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Science and Technology'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Science and Technology') AND name = 'Relationships and Communications Plagiarism'),
+    'SC 5.07',
+    'Explain that devices Such as computers, laptops and tablets can save'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Science and Technology'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Science and Technology') AND name = 'Plant Diversity'),
+    'SC 6.04',
+    'Diagram typical growth cycles of local animals.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Science and Technology'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 3'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Science and Technology') AND name = 'Plant Diversity'),
+    'SC 6.05',
+    'Show how a variety of local animals require different habitats during their growth cycle and discuss how habitats provide animals with their basic needs.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Science and Technology'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Science and Technology') AND name = 'Energy Resources'),
+    'SC 4.10',
+    'Define matter and explain the properties of solids, liquids, and gases based on the particle nature of matter.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Science and Technology'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Science and Technology') AND name = 'Energy Resources'),
+    'SC 4.11',
+    'Identify solutes and solvents in common solid, liquid, and gaseous solutions and discuss and differentiate between pure substances, mixtures, elements, and compounds by using the particle theory of matter.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Science and Technology'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Science and Technology') AND name = 'Energy Resources'),
+    'SC 4.12',
+    'Demonstrate different methods such as filtration, distillation and chromatography to separate the components of both solutions and mixtures. (Netiquette)'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Science and Technology'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Science and Technology') AND name = 'Relationships and Communications Plagiarism'),
+    'SC 5.08',
+    'Explain proper online etiquette.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Science and Technology'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Science and Technology') AND name = 'Relationships and Communications Plagiarism'),
+    'SC 5.09',
+    'Identify different forms of bullying, including cyberbullying and suggest strategies for dealing with it such as screenshot, saving evidence, block, not replying, report.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Science and Technology'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 4'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Science and Technology') AND name = 'Relationships and Communications Plagiarism'),
+    'SC 5.10',
+    'Identify and discuss online identity theft and security symbols such as padlock, phishing, scam websites.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Science and Technology'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Science and Technology') AND name = 'Energy Resources'),
+    'SC 4.15',
+    'Demonstrate and explain that light is a form of energy, that travels in a straight line, and can be separated into the visible light spectrum. SC. 4.16 Conduct experiment to explore the differences between reflection and refraction of light and describe how reflected and refracted images formed.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Science and Technology'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Science and Technology') AND name = 'Energy Resources'),
+    'SC 4.17',
+    'Explain how the human eye detects images and compare the basic functional operation such as eye lids to shutter and lens to retina of the human eye to that of a camera in focussing an image. Ethical Use of Digital Resources'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Science and Technology'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Science and Technology') AND name = 'Relationships and Communications Plagiarism'),
+    'SC 5.11',
+    'Define good digital citizenship as using technology safely, responsibly, and ethically.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Science and Technology'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 5'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Science and Technology') AND name = 'Relationships and Communications Plagiarism'),
+    'SC 5.12',
+    'Discuss that copying the work of others and presenting it as own is called plagiarism.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Science and Technology'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Science and Technology') AND name = 'Energy Resources'),
+    'SC 4.22',
+    'Analyze the immediate and long- term effects that extraction and uses of natural resources for energy production has on society and the environment and make recommendations for minimizing the effects now and in the future. Relationships and Communications'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Science and Technology'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Science and Technology') AND name = 'Relationships and Communications Plagiarism'),
+    'SC 5.13',
+    'Identify and describe how students, teachers, parents, and other workers use many types of technologies in their daily work and personal lives.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Science and Technology'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Science and Technology') AND name = 'Relationships and Communications Plagiarism'),
+    'SC 5.14',
+    'Explain the similarities and differences between offline and online communications, including rules to follow when communicating face-to face and online and discuss how online communication can be misinterpreted.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Science and Technology'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Science and Technology') AND name = 'Relationships and Communications Plagiarism'),
+    'SC 5.15',
+    'List and explain the advantages of communicating electronically including time and resource saving, cost effectiveness, accessibility to multiple'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Science and Technology'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Science and Technology') AND name = 'Plant Diversity'),
+    'SC 6.19',
+    'Investigate how selected plants have adapted in ways that enable them to survive in their ecosystem.'
+  ),
+  (
+    (SELECT id FROM subjects WHERE subject = 'Science and Technology'),
+    (SELECT id FROM grade_levels WHERE grade_level = 'Standard 6'),
+    1,
+    (SELECT id FROM strands WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Science and Technology') AND name = 'Plant Diversity'),
+    'SC 6.20',
+    'Explore diversity of plants in different ecosystems in Belize.'
+  )
+ON CONFLICT (subject_id, grade_level_id, cycle_id, ilo_code) DO NOTHING;

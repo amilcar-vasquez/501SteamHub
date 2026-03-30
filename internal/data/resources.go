@@ -5,6 +5,7 @@ package data
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"time"
 )
 
@@ -246,8 +247,8 @@ func (m ResourceModel) GetAll(status string, subject string, gradeLevel string, 
 			LEFT JOIN resource_subjects rs ON r.resource_id = rs.resource_id
 			LEFT JOIN resource_grade_levels rgl ON r.resource_id = rgl.resource_id
 			WHERE ($1 = '' OR r.status = $1::resource_status)
-			AND ($2 = '' OR rs.subject::text = $2)
-			AND ($3 = '' OR rgl.grade_level::text = $3)
+		AND ($2 = '' OR s2.subject = $2)
+		AND ($3 = '' OR gl2.grade_level = $3)
 			AND ($4 = 0 OR r.contributor_id = $4)`
 
 		// Main query with joins
@@ -259,7 +260,9 @@ func (m ResourceModel) GetAll(status string, subject string, gradeLevel string, 
 			LEFT JOIN fellows f ON f.user_id = r.contributor_id
 			LEFT JOIN users u ON u.user_id = r.contributor_id
 			LEFT JOIN resource_subjects rs ON r.resource_id = rs.resource_id
-			LEFT JOIN resource_grade_levels rgl ON r.resource_id = rgl.resource_id
+		LEFT JOIN subjects s2 ON rs.subject_id = s2.id
+		LEFT JOIN resource_grade_levels rgl ON r.resource_id = rgl.resource_id
+		LEFT JOIN grade_levels gl2 ON rgl.grade_level_id = gl2.id
 			WHERE ($1 = '' OR r.status = $1::resource_status)
 			AND ($2 = '' OR rs.subject::text = $2)
 			AND ($3 = '' OR rgl.grade_level::text = $3)
@@ -455,9 +458,11 @@ func (m ResourceModel) GetStatusCounts() (*ResourceStatusCounts, error) {
 
 func (m ResourceModel) GetSubjects(resourceID int64) ([]string, error) {
 	query := `
-		SELECT subject FROM resource_subjects
-		WHERE resource_id = $1
-		ORDER BY subject`
+		SELECT s.subject
+		FROM resource_subjects rs
+		JOIN subjects s ON rs.subject_id = s.id
+		WHERE rs.resource_id = $1
+		ORDER BY s.subject`
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -483,9 +488,11 @@ func (m ResourceModel) GetSubjects(resourceID int64) ([]string, error) {
 // GetGradeLevels returns all grade levels for a resource
 func (m ResourceModel) GetGradeLevels(resourceID int64) ([]string, error) {
 	query := `
-		SELECT grade_level FROM resource_grade_levels
-		WHERE resource_id = $1
-		ORDER BY grade_level`
+		SELECT gl.grade_level
+		FROM resource_grade_levels rgl
+		JOIN grade_levels gl ON rgl.grade_level_id = gl.id
+		WHERE rgl.resource_id = $1
+		ORDER BY gl.grade_level`
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -526,11 +533,22 @@ func (m ResourceModel) SetSubjects(resourceID int64, subjects []string) error {
 		return err
 	}
 
-	// Insert new subjects
+	// Insert new subjects - lookup subject_id by name and insert the FK
 	for _, subject := range subjects {
+		var subjectID int64
+		err = tx.QueryRowContext(ctx,
+			"SELECT id FROM subjects WHERE subject = $1",
+			subject).Scan(&subjectID)
+		if err != nil {
+			if err == sql.ErrNoRows {
+				return fmt.Errorf("subject '%s' not found", subject)
+			}
+			return err
+		}
+
 		_, err = tx.ExecContext(ctx,
-			"INSERT INTO resource_subjects (resource_id, subject) VALUES ($1, $2)",
-			resourceID, subject)
+			"INSERT INTO resource_subjects (resource_id, subject_id) VALUES ($1, $2)",
+			resourceID, subjectID)
 		if err != nil {
 			return err
 		}
@@ -557,11 +575,22 @@ func (m ResourceModel) SetGradeLevels(resourceID int64, gradeLevels []string) er
 		return err
 	}
 
-	// Insert new grade levels
+	// Insert new grade levels - lookup grade_level_id by name and insert the FK
 	for _, gradeLevel := range gradeLevels {
+		var gradeLevelID int64
+		err = tx.QueryRowContext(ctx,
+			"SELECT id FROM grade_levels WHERE grade_level = $1",
+			gradeLevel).Scan(&gradeLevelID)
+		if err != nil {
+			if err == sql.ErrNoRows {
+				return fmt.Errorf("grade level '%s' not found", gradeLevel)
+			}
+			return err
+		}
+
 		_, err = tx.ExecContext(ctx,
-			"INSERT INTO resource_grade_levels (resource_id, grade_level) VALUES ($1, $2)",
-			resourceID, gradeLevel)
+			"INSERT INTO resource_grade_levels (resource_id, grade_level_id) VALUES ($1, $2)",
+			resourceID, gradeLevelID)
 		if err != nil {
 			return err
 		}

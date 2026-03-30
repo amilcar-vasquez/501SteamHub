@@ -218,6 +218,17 @@ func (a *app) routes() http.Handler {
 	router.Handler(http.MethodDelete, apiV1Route+"/tokens/user/:user_id",
 		a.authenticate(a.requireActivatedUser(a.requireRole("admin", http.HandlerFunc(a.deleteAllTokensForUserHandler)))))
 
+	// ── ILO (Intended Learning Outcomes) routes ────────────────────────────
+	// Public can view ILOs; fellows can tag resources with ILOs
+	router.Handler(http.MethodGet, apiV1Route+"/ilos", http.HandlerFunc(a.getAllILOsHandler))
+	router.Handler(http.MethodGet, apiV1Route+"/ilos/:id", http.HandlerFunc(a.getILOHandler))
+	router.Handler(http.MethodGet, apiV1Route+"/suggested-ilos", http.HandlerFunc(a.getSuggestedILOsHandler))
+
+	// Resource ILO linking - authenticated users (fellows) can tag resources
+	router.Handler(http.MethodGet, apiV1Route+"/resources/:id/ilos", http.HandlerFunc(a.getResourceILOsHandler))
+	router.Handler(http.MethodPost, apiV1Route+"/resources/:id/ilos",
+		a.requireActivatedUser(http.HandlerFunc(a.attachResourceILOsHandler)))
+
 	// Google OAuth2 routes — used once to obtain a refresh token for
 	// YOUTUBE_REFRESH_TOKEN.  Keep these behind your firewall or restrict them
 	// to admin use; they do not need JWT authentication.

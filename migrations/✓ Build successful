@@ -1,0 +1,29 @@
+                                          Table "public.ilos"
+     Column     |            Type             | Collation | Nullable |             Default              
+----------------+-----------------------------+-----------+----------+----------------------------------
+ id             | integer                     |           | not null | nextval('ilos_id_seq'::regclass)
+ subject_id     | integer                     |           | not null | 
+ grade_level_id | integer                     |           | not null | 
+ cycle_id       | integer                     |           | not null | 
+ strand_id      | integer                     |           | not null | 
+ ilo_code       | text                        |           | not null | 
+ description    | text                        |           | not null | 
+ created_at     | timestamp without time zone |           |          | CURRENT_TIMESTAMP
+ updated_at     | timestamp without time zone |           |          | CURRENT_TIMESTAMP
+Indexes:
+    "ilos_pkey" PRIMARY KEY, btree (id)
+    "idx_ilos_cycle_id" btree (cycle_id)
+    "idx_ilos_grade_level_id" btree (grade_level_id)
+    "idx_ilos_ilo_code" btree (ilo_code)
+    "idx_ilos_strand_id" btree (strand_id)
+    "idx_ilos_subject_grade_cycle" btree (subject_id, grade_level_id, cycle_id)
+    "idx_ilos_subject_id" btree (subject_id)
+    "uq_ilos_subject_grade_cycle_code" UNIQUE CONSTRAINT, btree (subject_id, grade_level_id, cycle_id, ilo_code)
+Foreign-key constraints:
+    "fk_ilos_cycle_id" FOREIGN KEY (cycle_id) REFERENCES cycles(id) ON DELETE CASCADE
+    "fk_ilos_grade_level_id" FOREIGN KEY (grade_level_id) REFERENCES grade_levels(id) ON DELETE CASCADE
+    "fk_ilos_strand_id" FOREIGN KEY (strand_id) REFERENCES strands(id) ON DELETE CASCADE
+    "fk_ilos_subject_id" FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE CASCADE
+Triggers:
+    ilos_updated_at BEFORE UPDATE ON ilos FOR EACH ROW EXECUTE FUNCTION update_updated_at_column()
+

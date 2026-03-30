@@ -76,15 +76,16 @@
   const subjectOptions = [
     { value: 'Computer Science', label: 'code_blocks Computer Science' },
     { value: 'Information Technology', label: 'network_node Information Technology' },
-    { value: 'Science', label: 'science Science' },
+    { value: 'Science and Technology', label: 'science Science and Technology' },
     { value: 'Engineering', label: 'construction Engineering' },
     { value: 'Robotics', label: 'smart_toy Robotics' },
-    { value: 'Arts', label: 'palette Arts' },
+    { value: 'Expressive Arts', label: 'palette Expressive Arts' },
     { value: 'Belizean History', label: 'history Belizean History' },
     { value: 'Mathematics', label: 'calculate Mathematics' },
-    { value: 'English Language Arts', label: 'library_books English Language Arts' },
+    { value: 'Language Arts', label: 'library_books Language Arts' },
     { value: 'Social Studies', label: 'public Social Studies' },
     { value: 'Physical Education', label: 'sports_soccer Physical Education' },
+    { value: 'Health Education', label: 'health_and_safety Health Education' },
   ];
 
   onMount(() => {

@@ -7,15 +7,16 @@
   const SUBJECTS = [
     'Computer Science',
     'Information Technology',
-    'Science',
+    'Science and Technology',
     'Engineering',
     'Robotics',
-    'Arts',
+    'Expressive Arts',
     'Belizean History',
     'Mathematics',
-    'English Language Arts',
+    'Language Arts',
     'Social Studies',
     'Physical Education',
+    'Health Education',
   ];
 
   // Known grade levels from seed migration

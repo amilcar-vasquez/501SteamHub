@@ -54,6 +54,7 @@ export function handleRouteChange() {
     case 'activate':
     case 'submit':
     case 'home':
+    case 'ilo-browser':
       currentRoute.set({ page, params: {} });
       break;
     default:

@@ -10,7 +10,26 @@ class APIError extends Error {
   }
 }
 
+// Check if token is expired before making requests
+function isTokenExpiredClient() {
+  const expiryStr = localStorage.getItem('tokenExpiry');
+  if (!expiryStr) return false;
+  return new Date() > new Date(expiryStr);
+}
+
 async function request(endpoint, options = {}) {
+  // If token is expired and this is an authenticated request, clear auth and redirect
+  if (options.headers?.Authorization && isTokenExpiredClient()) {
+    console.warn('Token expired. Clearing authentication.');
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('authUser');
+    localStorage.removeItem('tokenExpiry');
+    // Redirect to signin
+    if (typeof window !== 'undefined') {
+      window.location.href = '/signin';
+    }
+    throw new APIError('Session expired. Please sign in again.', 401);
+  }
   const url = `${API_BASE_URL}${endpoint}`;
   
   console.log('API Request:', {
@@ -350,5 +369,50 @@ Object.assign(userAPI, {
     });
   },
 });
+
+// ILO API methods
+export const iloAPI = {
+  // GET /v1/ilos - get all ILOs with optional filtering
+  getAll: async (filters = {}) => {
+    const params = new URLSearchParams();
+    if (filters.subject) params.append('subject', filters.subject);
+    if (filters.grade) params.append('grade', filters.grade);
+    if (filters.cycle) params.append('cycle', filters.cycle);
+    if (filters.strand) params.append('strand', filters.strand);
+    
+    const qs = params.toString() ? `?${params.toString()}` : '';
+    return request(`/ilos${qs}`);
+  },
+
+  // GET /v1/ilos/:id - get a specific ILO by ID
+  getById: async (id) => {
+    return request(`/ilos/${id}`);
+  },
+
+  // GET /v1/suggested-ilos - get suggested ILOs for browsing
+  getSuggested: async (filters = {}) => {
+    const params = new URLSearchParams();
+    if (filters.subject) params.append('subject', filters.subject);
+    if (filters.grade) params.append('grade', filters.grade);
+    if (filters.cycle) params.append('cycle', filters.cycle);
+    
+    const qs = params.toString() ? `?${params.toString()}` : '';
+    return request(`/suggested-ilos${qs}`);
+  },
+
+  // GET /v1/resources/:resourceId/ilos - get ILOs linked to a resource
+  getForResource: async (resourceId) => {
+    return request(`/resources/${resourceId}/ilos`);
+  },
+
+  // POST /v1/resources/:resourceId/ilos - attach ILOs to a resource
+  attachToResource: async (resourceId, iloIds, authToken) => {
+    return request(`/resources/${resourceId}/ilos`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${authToken}` },
+      body: JSON.stringify({ ilo_ids: iloIds }),
+    });
+  },
+};
 
 export { APIError };

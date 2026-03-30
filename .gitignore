@@ -9,6 +9,10 @@
 *.dylib
 cmd/api/api
 
+# virtual environment
+.env/
+venv/
+
 # Test binary, built with `go test -c`
 *.test
 

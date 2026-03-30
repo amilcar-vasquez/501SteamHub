@@ -26,15 +26,16 @@
   const subjectOptions = [
     { value: 'Computer Science', label: '💻 Computer Science' },
     { value: 'Information Technology', label: '🖥️ Information Technology' },
-    { value: 'Science', label: '🔬 Science' },
+    { value: 'Science and Technology', label: '🔬 Science and Technology' },
     { value: 'Engineering', label: '⚙️ Engineering' },
     { value: 'Robotics', label: '🤖 Robotics' },
-    { value: 'Arts', label: '🎨 Arts' },
+    { value: 'Expressive Arts', label: '🎨 Expressive Arts' },
     { value: 'Belizean History', label: '🇧🇿 Belizean History' },
     { value: 'Mathematics', label: '➕ Mathematics' },
-    { value: 'English Language Arts', label: '📖 English Language Arts' },
+    { value: 'Language Arts', label: '📖 Language Arts' },
     { value: 'Social Studies', label: '🌍 Social Studies' },
     { value: 'Physical Education', label: '⚽ Physical Education' },
+    { value: 'Health Education', label: '🏥 Health Education' },
   ];
 
   // ── State ─────────────────────────────────────────────────────────────────

@@ -21,15 +21,16 @@
   const subjects = [
     'Computer Science',
     'Information Technology',
-    'Science',
+    'Science and Technology',
     'Engineering',
     'Robotics',
-    'Arts',
+    'Expressive Arts',
     'Belizean History',
     'Mathematics',
-    'English Language Arts',
+    'Language Arts',
     'Social Studies',
-    'Physical Education'
+    'Physical Education',
+    'Health Education'
   ];
   
   const gradeLevels = [

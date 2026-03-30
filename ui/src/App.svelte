@@ -9,6 +9,7 @@
   import AdminDashboard from './pages/AdminDashboard.svelte';
   import ApplyFellow from './pages/ApplyFellow.svelte';
   import ProfileDashboard from './pages/ProfileDashboard.svelte';
+  import ILOBrowser from './pages/ILOBrowser.svelte';
   import { currentRoute, navigateTo, handleRouteChange } from './router.js';
   
   function navigate(event) {
@@ -44,6 +45,8 @@
     <ApplyFellow />
   {:else if currentPage === 'profile'}
     <ProfileDashboard />
+  {:else if currentPage === 'ilo-browser'}
+    <ILOBrowser />
   {:else}
     <Home on:navigate={navigate} />
   {/if}

@@ -24,6 +24,7 @@ type Models struct {
 	ReviewComments        *ReviewCommentModel
 	ResourceStatusHistory *ResourceStatusHistoryModel
 	Admin                 *AdminModel
+	ILOs                  *ILOModel
 }
 
 // NewModels returns a Models struct containing all the initialized models
@@ -45,6 +46,7 @@ func NewModels(db *sql.DB) *Models {
 		ReviewComments:        &ReviewCommentModel{DB: db},
 		ResourceStatusHistory: &ResourceStatusHistoryModel{DB: db},
 		Admin:                 &AdminModel{DB: db},
+		ILOs:                  &ILOModel{DB: db},
 	}
 }
 
@@ -69,5 +71,6 @@ func NewTestModels() *Models {
 		ReviewComments:        &ReviewCommentModel{DB: nil},
 		ResourceStatusHistory: &ResourceStatusHistoryModel{DB: nil},
 		Admin:                 &AdminModel{DB: nil},
+		ILOs:                  &ILOModel{DB: nil},
 	}
 }

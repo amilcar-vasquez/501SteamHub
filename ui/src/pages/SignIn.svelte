@@ -2,7 +2,7 @@
   import TextField from '../components/TextField.svelte';
   import Button from '../components/Button.svelte';
   import { tokenAPI, APIError } from '../api/client.js';
-  import { authToken, currentUser } from '../stores/auth.js';
+  import { setAuthToken, currentUser } from '../stores/auth.js';
   import { createEventDispatcher } from 'svelte';
   
   const dispatch = createEventDispatcher();
@@ -58,15 +58,18 @@
       console.log('Token plaintext:', response.token?.plaintext);
       console.log('User from response:', response.user);
       
-      // Store authentication token and user data
+      // Store authentication token with expiry and user data
       // The token field is named "token" in JSON, not "plaintext"
       const tokenValue = response.token?.token || response.token;
+      const expiryTime = response.token?.expiry;
       console.log('Setting token value:', tokenValue);
-      authToken.set(tokenValue);
+      console.log('Token expiry:', expiryTime);
+      setAuthToken(tokenValue, expiryTime);
       currentUser.set(response.user);
       
       // Verify storage
       console.log('Token after set:', localStorage.getItem('authToken'));
+      console.log('Token expiry after set:', localStorage.getItem('tokenExpiry'));
       console.log('User after set:', localStorage.getItem('authUser'));
       
       console.log('=== SIGN IN SUCCESS ===');

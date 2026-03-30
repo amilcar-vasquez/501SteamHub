@@ -32,8 +32,8 @@ func (a *app) createAuthTokenHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Default TTL to 24 hours if not provided
-	ttl := 24 * time.Hour
+	// Default TTL to 2 hours (industry standard session timeout)
+	ttl := 2 * time.Hour
 
 	// Is there an associated user for the provided email?
 	user, err := a.models.Users.GetByEmail(input.Email)
