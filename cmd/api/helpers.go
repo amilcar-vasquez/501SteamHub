@@ -274,3 +274,25 @@ func (a *app) refString(s string) *string {
 	}
 	return &s
 }
+
+// hasOverlap checks if two string slices have at least one common element
+func hasOverlap(a, b []string) bool {
+	if len(a) == 0 || len(b) == 0 {
+		return false
+	}
+
+	// Create a map for faster lookup
+	aMap := make(map[string]bool)
+	for _, v := range a {
+		aMap[v] = true
+	}
+
+	// Check if any element of b exists in aMap
+	for _, v := range b {
+		if aMap[v] {
+			return true
+		}
+	}
+
+	return false
+}

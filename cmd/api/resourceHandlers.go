@@ -15,17 +15,21 @@ import (
 // createResourceHandler creates a new resource
 func (a *app) createResourceHandler(w http.ResponseWriter, r *http.Request) {
 	var input struct {
-		Title         string                 `json:"title"`
-		Category      string                 `json:"category"`
-		Slug          *string                `json:"slug"`
-		Summary       *string                `json:"summary"`
-		Subjects      []string               `json:"subjects"`
-		GradeLevels   []string               `json:"grade_levels"`
-		DriveLink     *string                `json:"drive_link"`
-		Status        string                 `json:"status"`
-		PublishedURL  *string                `json:"published_url"`
-		ContributorID int64                  `json:"contributor_id"`
-		LessonContent map[string]interface{} `json:"lesson_content,omitempty"`
+		Title           string                 `json:"title"`
+		Category        string                 `json:"category"`
+		Slug            *string                `json:"slug"`
+		Summary         *string                `json:"summary"`
+		Subjects        []string               `json:"subjects"`
+		GradeLevels     []string               `json:"grade_levels"`
+		DriveLink       *string                `json:"drive_link"`
+		Status          string                 `json:"status"`
+		PublishedURL    *string                `json:"published_url"`
+		ContributorID   int64                  `json:"contributor_id"`
+		LessonContent   map[string]interface{} `json:"lesson_content,omitempty"`
+		LinkedResources []struct {
+			ResourceID       int64  `json:"resource_id"`
+			RelationshipType string `json:"relationship_type"`
+		} `json:"linked_resources,omitempty"`
 		VideoMetadata *struct {
 			YouTubeTitle       string   `json:"youtube_title"`
 			YouTubeDescription string   `json:"youtube_description"`
@@ -198,6 +202,65 @@ func (a *app) createResourceHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		a.logger.Info("Lesson created successfully", "lesson_id", lesson.ID)
+	}
+
+	// Process linked resources
+	if len(input.LinkedResources) > 0 {
+		a.logger.Info("Processing linked resources", "parent_resource_id", resource.ID, "count", len(input.LinkedResources))
+
+		for _, linkedInput := range input.LinkedResources {
+			// Fetch the linked resource to validate it exists and check compatibility
+			linkedResource, err := a.models.Resources.Get(linkedInput.ResourceID)
+			if err != nil {
+				a.logger.Warn("Linked resource not found", "linked_resource_id", linkedInput.ResourceID, "error", err.Error())
+				continue // Skip invalid links
+			}
+
+			// Validation: linked resource must have the same contributor
+			if linkedResource.ContributorID != resource.ContributorID {
+				a.logger.Warn("Linked resource has different contributor",
+					"parent_contributor", resource.ContributorID,
+					"linked_contributor", linkedResource.ContributorID)
+				continue // Skip
+			}
+
+			// Validation: must have overlapping subject OR grade level
+			hasSubjectOverlap := hasOverlap(resource.Subjects, linkedResource.Subjects)
+			hasGradeLevelOverlap := hasOverlap(resource.GradeLevels, linkedResource.GradeLevels)
+
+			if !hasSubjectOverlap && !hasGradeLevelOverlap {
+				a.logger.Warn("Linked resource has no overlapping subjects or grade levels",
+					"parent_id", resource.ID,
+					"linked_id", linkedInput.ResourceID)
+				continue // Skip
+			}
+
+			// Check if link already exists
+			exists, err := a.models.ResourceLinks.Exists(resource.ID, linkedInput.ResourceID)
+			if err != nil {
+				a.logger.Error("Error checking if link exists", "error", err.Error())
+				continue
+			}
+			if exists {
+				a.logger.Info("Link already exists, skipping", "parent_id", resource.ID, "linked_id", linkedInput.ResourceID)
+				continue
+			}
+
+			// Insert the valid link
+			err = a.models.ResourceLinks.Insert(resource.ID, linkedInput.ResourceID, linkedInput.RelationshipType)
+			if err != nil {
+				a.logger.Error("Failed to insert linked resource",
+					"parent_id", resource.ID,
+					"linked_id", linkedInput.ResourceID,
+					"error", err.Error())
+				continue
+			}
+
+			a.logger.Info("Linked resource created successfully",
+				"parent_id", resource.ID,
+				"linked_id", linkedInput.ResourceID,
+				"relationship_type", linkedInput.RelationshipType)
+		}
 	}
 
 	// Reload resource to get subjects and grade levels

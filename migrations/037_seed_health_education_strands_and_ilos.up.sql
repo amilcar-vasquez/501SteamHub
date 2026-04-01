@@ -8,7 +8,8 @@ INSERT INTO strands (subject_id, name) VALUES
   ((SELECT id FROM subjects WHERE subject = 'Health Education'), 'Environmental Health and Safety'),
   ((SELECT id FROM subjects WHERE subject = 'Health Education'), 'Social and Emotional Health and Relationships'),
   ((SELECT id FROM subjects WHERE subject = 'Health Education'), 'Personal Safety and Substance Abuse'),
-  ((SELECT id FROM subjects WHERE subject = 'Health Education'), 'Growth, Development, and Mental Well-being');
+  ((SELECT id FROM subjects WHERE subject = 'Health Education'), 'Growth, Development, and Mental Well-being')
+ON CONFLICT (subject_id, name) DO NOTHING;
 
 -- Insert Health Education ILOs
 INSERT INTO ilos (subject_id, grade_level_id, cycle_id, strand_id, ilo_code, description) VALUES

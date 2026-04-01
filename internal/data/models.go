@@ -13,6 +13,7 @@ type Models struct {
 	Fellows               FellowModelInterface
 	FellowApplications    FellowApplicationModelInterface
 	Resources             ResourceModelInterface
+	ResourceLinks         *ResourceLinksModel
 	ResourceReviews       *ResourceReviewModel
 	ResourceAccess        *ResourceAccessModel
 	Contributions         ContributionModelInterface
@@ -35,6 +36,7 @@ func NewModels(db *sql.DB) *Models {
 		Fellows:               &FellowModel{DB: db},
 		FellowApplications:    &FellowApplicationModel{DB: db},
 		Resources:             &ResourceModel{DB: db},
+		ResourceLinks:         &ResourceLinksModel{DB: db},
 		ResourceReviews:       &ResourceReviewModel{DB: db},
 		ResourceAccess:        &ResourceAccessModel{DB: db},
 		Contributions:         &ContributionModel{DB: db},

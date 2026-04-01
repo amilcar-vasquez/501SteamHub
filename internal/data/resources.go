@@ -19,22 +19,23 @@ type LessonContent struct {
 }
 
 type Resource struct {
-	ID              int64          `json:"resource_id"`
-	Title           string         `json:"title"`
-	Category        string         `json:"category"`
-	Slug            *string        `json:"slug,omitempty"`
-	Summary         *string        `json:"summary,omitempty"`
-	DriveLink       *string        `json:"drive_link,omitempty"`
-	Status          string         `json:"status"`
-	PublishedURL    *string        `json:"published_url,omitempty"`
-	ContributorID   int64          `json:"contributor_id"`
-	CreatedAt       time.Time      `json:"created_at"`
-	UpdatedAt       time.Time      `json:"updated_at"`
-	Subjects        []string       `json:"subjects,omitempty"`
-	GradeLevels     []string       `json:"grade_levels,omitempty"`
-	ContributorName string         `json:"contributor_name,omitempty"`
-	ViewCount       int64          `json:"view_count"`
-	LessonContent   *LessonContent `json:"lesson_content,omitempty"`
+	ID              int64             `json:"resource_id"`
+	Title           string            `json:"title"`
+	Category        string            `json:"category"`
+	Slug            *string           `json:"slug,omitempty"`
+	Summary         *string           `json:"summary,omitempty"`
+	DriveLink       *string           `json:"drive_link,omitempty"`
+	Status          string            `json:"status"`
+	PublishedURL    *string           `json:"published_url,omitempty"`
+	ContributorID   int64             `json:"contributor_id"`
+	CreatedAt       time.Time         `json:"created_at"`
+	UpdatedAt       time.Time         `json:"updated_at"`
+	Subjects        []string          `json:"subjects,omitempty"`
+	GradeLevels     []string          `json:"grade_levels,omitempty"`
+	ContributorName string            `json:"contributor_name,omitempty"`
+	ViewCount       int64             `json:"view_count"`
+	LessonContent   *LessonContent    `json:"lesson_content,omitempty"`
+	LinkedResources []*LinkedResource `json:"linked_resources,omitempty"`
 }
 
 type ResourceModel struct {
@@ -167,6 +168,10 @@ func (m ResourceModel) Get(id int64) (*Resource, error) {
 		return nil, err
 	}
 
+	// Load linked resources (non-critical, continue if error)
+	linkedResources, _ := m.GetLinkedResources(id)
+	resource.LinkedResources = linkedResources
+
 	return &resource, nil
 }
 
@@ -225,6 +230,10 @@ func (m ResourceModel) GetBySlug(slug string) (*Resource, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	// Load linked resources (non-critical, continue if error)
+	linkedResources, _ := m.GetLinkedResources(resource.ID)
+	resource.LinkedResources = linkedResources
 
 	return &resource, nil
 }
@@ -597,4 +606,10 @@ func (m ResourceModel) SetGradeLevels(resourceID int64, gradeLevels []string) er
 	}
 
 	return tx.Commit()
+}
+
+// GetLinkedResources retrieves all resources linked from this resource
+func (m ResourceModel) GetLinkedResources(resourceID int64) ([]*LinkedResource, error) {
+	rlm := ResourceLinksModel{DB: m.DB}
+	return rlm.GetByParent(resourceID)
 }
