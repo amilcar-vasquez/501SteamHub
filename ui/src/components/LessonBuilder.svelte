@@ -9,6 +9,9 @@
     blocks: []
   };
 
+  // Autosave callback — invoked when lesson content is automatically saved
+  export let onAutosave = null;
+
   const blockTypes = [
     { value: 'objectives', label: 'Learning Objectives', defaultContent: [] },
     { value: 'materials', label: 'Materials', defaultContent: [] },
@@ -22,6 +25,58 @@
   let selectedBlockType = '';
   const flipDurationMs = 200;
   const dragDisabledDefault = false;
+
+  // Autosave state
+  let autosaveStatus = ''; // '', 'saving', 'saved', 'error'
+  let autosaveMessage = '';
+  let autosaveTimer = null;
+  let lastSavedContent = JSON.stringify(lessonContent);
+
+  // Debounced autosave function  
+  function triggerAutosave() {
+    // Clear any existing timer
+    if (autosaveTimer) {
+      clearTimeout(autosaveTimer);
+    }
+    
+    autosaveStatus = 'saving';
+    autosaveMessage = 'Saving...';
+    
+    // Wait 2 seconds before actually saving (debounce rapid changes)
+    autosaveTimer = setTimeout(() => {
+      try {
+        // Call the parent component's autosave callback if provided
+        if (onAutosave && typeof onAutosave === 'function') {
+          onAutosave(lessonContent);
+        }
+        
+        lastSavedContent = JSON.stringify(lessonContent);
+        autosaveStatus = 'saved';
+        autosaveMessage = 'Saved';
+        
+        // Clear the status after 2 seconds
+        setTimeout(() => {
+          autosaveStatus = '';
+          autosaveMessage = '';
+        }, 2000);
+      } catch (error) {
+        console.error('Autosave error:', error);
+        autosaveStatus = 'error';
+        autosaveMessage = 'Save failed';
+        
+        // Clear the error after 3 seconds
+        setTimeout(() => {
+          autosaveStatus = '';
+          autosaveMessage = '';
+        }, 3000);
+      }
+    }, 2000); // 2 second debounce
+  }
+
+  // Watch for changes to lessonContent and trigger autosave
+  $: if (JSON.stringify(lessonContent) !== lastSavedContent) {
+    triggerAutosave();
+  }
 
   // Pure function to create new block
   function createNewBlock(blockTypeValue) {
@@ -112,10 +167,24 @@
 
 <div class="lesson-builder">
   <div class="builder-header">
-    <h3>Lesson Plan Structure</h3>
-    <p class="helper-text">
-      Build your lesson plan by adding structured blocks. Drag to reorder.
-    </p>
+    <div class="header-left">
+      <h3>Lesson Plan Structure</h3>
+      <p class="helper-text">
+        Build your lesson plan by adding structured blocks. Drag to reorder.
+      </p>
+    </div>
+    {#if autosaveStatus}
+      <div class="autosave-indicator" class:saving={autosaveStatus === 'saving'} class:saved={autosaveStatus === 'saved'} class:error={autosaveStatus === 'error'}>
+        {#if autosaveStatus === 'saving'}
+          <span class="material-symbols-outlined spinning">progress_activity</span>
+        {:else if autosaveStatus === 'saved'}
+          <span class="material-symbols-outlined">check_circle</span>
+        {:else}
+          <span class="material-symbols-outlined">error</span>
+        {/if}
+        <span class="status-text">{autosaveMessage}</span>
+      </div>
+    {/if}
   </div>
   {#if lessonContent.blocks.length === 0}
     <div class="empty-state">
@@ -191,6 +260,17 @@
     gap: 1.5rem;
   }
 
+  .builder-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .header-left {
+    flex: 1;
+  }
+
   .builder-header h3 {
     font-size: 1.25rem;
     font-weight: 600;
@@ -202,6 +282,65 @@
     font-size: 0.875rem;
     color: var(--md-sys-color-on-surface-variant);
     margin: 0;
+  }
+
+  .autosave-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    white-space: nowrap;
+    animation: fadeInAutosave 0.2s ease;
+  }
+
+  .autosave-indicator.saving {
+    color: var(--md-sys-color-primary);
+    background: var(--md-sys-color-primary-container);
+  }
+
+  .autosave-indicator.saved {
+    color: var(--md-sys-color-on-secondary-container);
+    background: var(--md-sys-color-secondary-container);
+  }
+
+  .autosave-indicator.error {
+    color: var(--md-sys-color-on-error-container);
+    background: var(--md-sys-color-error-container);
+  }
+
+  .autosave-indicator .material-symbols-outlined {
+    font-size: 18px;
+  }
+
+  .status-text {
+    line-height: 1;
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes fadeInAutosave {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .spinning {
+    animation: spin 1s linear infinite;
   }
   
   .empty-state {

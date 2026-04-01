@@ -1,7 +1,9 @@
 <script>
   import { onMount } from 'svelte';
   import { currentUser, authToken } from '../stores/auth.js';
+  import { draftResource } from '../stores/draftResource.js';
   import { resourceAPI, iloAPI } from '../api/client.js';
+  import { saveDraftToLocalStorage, loadDraftFromLocalStorage, clearDraftFromLocalStorage, hasDraftInLocalStorage } from '../utils/localStorage.js';
   import TextField from '../components/TextField.svelte';
   import TextArea from '../components/TextArea.svelte';
   import Select from '../components/Select.svelte';
@@ -27,6 +29,15 @@
   let errors = {};
   let loading = false;
   let successMessage = '';
+  let savingDraft = false;
+  let draftSaveStatus = ''; // 'saving', 'saved', 'error'
+  let draftSaveMessage = '';
+  let draftResourceId = null; // Track the current draft resource ID
+
+  // ── LocalStorage persistence ───────────────────────────────────────────────
+  let restoredFromLocalStorage = false;
+  let showRestoredBanner = false;
+  let localStorageAutoSaveTimer = null;
 
   // ── ILO Selection ──────────────────────────────────────────────────────────
   let selectedILOs = [];
@@ -199,8 +210,43 @@
     const ALLOWED_ROLES = ['Fellow', 'admin', 'DSC', 'SubjectExpert', 'TeamLead', 'Secretary'];
     if (!ALLOWED_ROLES.includes($currentUser.role_name)) {
       navigateTo('/dashboard/apply-fellow');
+      return;
+    }
+
+    // Try to load draft from localStorage
+    const savedDraft = loadDraftFromLocalStorage();
+    if (savedDraft) {
+      formData = savedDraft.formData;
+      lessonContent = savedDraft.lessonContent;
+      videoDetails = savedDraft.videoDetails;
+      draftResourceId = savedDraft.draftResourceId;
+      restoredFromLocalStorage = true;
+      showRestoredBanner = true;
+
+      // Auto-hide the banner after 5 seconds
+      setTimeout(() => {
+        showRestoredBanner = false;
+      }, 5000);
+
+      console.log('Restored form state from localStorage', { timestamp: savedDraft.timestamp });
     }
   });
+
+  // Auto-save form state to localStorage on changes
+  function autoSaveToLocalStorage() {
+    if (localStorageAutoSaveTimer) {
+      clearTimeout(localStorageAutoSaveTimer);
+    }
+    localStorageAutoSaveTimer = setTimeout(() => {
+      saveDraftToLocalStorage(formData, lessonContent, videoDetails, draftResourceId);
+      console.log('Auto-saved form state to localStorage');
+    }, 1000); // Save after 1 second of inactivity
+  }
+
+  // Watch for changes to formData, lessonContent, and videoDetails
+  $: if (formData && lessonContent && videoDetails) {
+    autoSaveToLocalStorage();
+  }
 
   function validateForm() {
     errors = {};
@@ -272,6 +318,127 @@
     return Object.keys(errors).length === 0;
   }
 
+  /**
+   * Save current resource state as a draft
+   * Validates only required fields for a draft (title and category)
+   */
+  async function handleSaveDraft() {
+    // Minimal validation for draft — require title, category, subjects, and grade_levels
+    const draftErrors = {};
+    
+    if (!formData.title.trim()) {
+      draftErrors.title = 'Title is required';
+    } else if (formData.title.length < 3) {
+      draftErrors.title = 'Title must be at least 3 characters';
+    }
+    
+    if (!formData.category) {
+      draftErrors.category = 'Category is required';
+    }
+    
+    if (formData.subjects.length === 0) {
+      draftErrors.subjects = 'At least one subject is required';
+    }
+    
+    if (formData.grade_levels.length === 0) {
+      draftErrors.grade_levels = 'At least one grade level is required';
+    }
+    
+    if (Object.keys(draftErrors).length > 0) {
+      errors = draftErrors;
+      return;
+    }
+    
+    savingDraft = true;
+    draftSaveStatus = 'saving';
+    draftSaveMessage = 'Saving draft...';
+    
+    try {
+      const resourceData = {
+        ...formData,
+        drive_link: formData.drive_link.trim() || null,
+        status: 'Draft', // Save as draft, not submitted for review
+        contributor_id: $currentUser.user_id,
+      };
+      
+      // Include lesson_content if this is a lesson plan
+      if (formData.category === 'LessonPlan' && lessonContent.blocks.length > 0) {
+        resourceData.lesson_content = lessonContent;
+      }
+      
+      // Include video_metadata if this is a video
+      if (formData.category === 'Video') {
+        resourceData.video_metadata = {
+          youtube_title: videoDetails.youtube_title.trim() || formData.title,
+          youtube_description: videoDetails.youtube_description.trim() || formData.summary || '',
+          tags: videoDetails.tags.split(',').map(t => t.trim()).filter(Boolean),
+          privacy_status: videoDetails.privacy_status,
+          made_for_kids: videoDetails.made_for_kids,
+          category_id: 27,
+        };
+      }
+      
+      let response;
+      
+      // If we already have a draft ID, update it; otherwise create a new one
+      if (draftResourceId) {
+        response = await resourceAPI.update(draftResourceId, resourceData, $authToken);
+        draftSaveMessage = 'Draft updated';
+      } else {
+        response = await resourceAPI.create(resourceData, $authToken);
+        draftResourceId = response.resource.id;
+        draftSaveMessage = 'Draft saved';
+        // Update the store
+        draftResource.set(
+          response.resource.id,
+          formData,
+          lessonContent,
+          formData.category === 'Video' ? videoDetails : null
+        );
+      }
+      
+      draftSaveStatus = 'saved';
+      errors = {};
+
+      // Update localStorage with the latest draft data
+      saveDraftToLocalStorage(formData, lessonContent, videoDetails, draftResourceId);
+      
+      // Clear the status message after 3 seconds
+      setTimeout(() => {
+        draftSaveStatus = '';
+        draftSaveMessage = '';
+      }, 3000);
+      
+    } catch (error) {
+      console.error('Draft save error:', error);
+      console.error('Validation errors:', error.errors);
+      console.error('Resource data that was sent:', {
+        ...resourceData,
+        lesson_content: resourceData.lesson_content ? '[lesson blocks]' : null,
+        video_metadata: resourceData.video_metadata ? '[video metadata]' : null,
+      });
+      
+      draftSaveStatus = 'error';
+      
+      // Extract validation errors from the API response
+      if (error.errors && typeof error.errors === 'object') {
+        errors = error.errors;
+        const errorFields = Object.keys(error.errors).join(', ');
+        draftSaveMessage = `Validation failed: ${errorFields}`;
+      } else {
+        draftSaveMessage = error.message || 'Failed to save draft';
+      }
+      
+      // Clear the error message after 5 seconds
+      setTimeout(() => {
+        draftSaveStatus = '';
+        draftSaveMessage = '';
+      }, 5000);
+    } finally {
+      savingDraft = false;
+    }
+  }
+
   async function handleSubmit() {
     console.log('=== SUBMIT RESOURCE START ===');
     console.log('Current User:', $currentUser);
@@ -280,10 +447,10 @@
     console.log('Lesson Content:', lessonContent);
     
     if (!validateForm()) {
-      console.log('Validation failed:', errors);
+      console.log('Validation failed with errors:', errors);
       return;
     }
-    
+
     loading = true;
     successMessage = '';
     
@@ -323,6 +490,9 @@
       
       // Success!
       successMessage = 'Resource submitted successfully! 🎉';
+      
+      // Clear localStorage since resource was successfully submitted
+      clearDraftFromLocalStorage();
       
       // If resource has a slug, offer to view it
       if (response.resource?.slug) {
@@ -396,11 +566,21 @@
     }
   }
 
+  /**
+   * Autosave callback for lesson content changes
+   * Called by LessonBuilder when lesson content is modified
+   */
+  function handleLessonAutosave(updatedLessonContent) {
+    // Lesson content is already reactive, so just mark the draft as dirty
+    draftResource.markDirty();
+  }
+
   function handleCancel() {
     if (confirm('Are you sure you want to cancel? All unsaved changes will be lost.')) {
       navigateTo('/home');
     }
   }
+
 </script>
 
 <div class="submit-resource">
@@ -427,6 +607,44 @@
         <strong>Success!</strong>
         <p>{@html successMessage}</p>
       </div>
+    </div>
+  {/if}
+
+  {#if showRestoredBanner}
+    <div class="restored-banner">
+      <span class="material-symbols-outlined">history</span>
+      <div>
+        <strong>Draft Restored</strong>
+        <p>Your draft was recovered from your last session. You can continue editing or start fresh.</p>
+      </div>
+      <button
+        type="button"
+        class="banner-action"
+        on:click={() => {
+          clearDraftFromLocalStorage();
+          showRestoredBanner = false;
+          formData = {
+            title: '',
+            category: '',
+            subjects: [],
+            grade_levels: [],
+            summary: '',
+            drive_link: '',
+          };
+          lessonContent = { version: 1, blocks: [] };
+          videoDetails = {
+            youtube_title: '',
+            youtube_description: '',
+            tags: '',
+            privacy_status: 'unlisted',
+            made_for_kids: true,
+          };
+          draftResourceId = null;
+          selectedILOs = [];
+        }}
+      >
+        Discard
+      </button>
     </div>
   {/if}
 
@@ -472,7 +690,7 @@
         <!-- Lesson Builder (if Lesson Plan) -->
         {#if formData.category === 'LessonPlan'}
           <div class="canvas-section lesson-plan-canvas">
-            <LessonBuilder bind:lessonContent />
+            <LessonBuilder bind:lessonContent onAutosave={handleLessonAutosave} />
             {#if errors.lesson_content}
               <p class="error-text">{errors.lesson_content}</p>
             {/if}
@@ -708,10 +926,22 @@
       <Button
         variant="outlined"
         type="button"
-        disabled={loading}
+        disabled={loading || savingDraft}
+        on:click={handleSaveDraft}
       >
-        Save Draft
+        {#if savingDraft}
+          <span class="material-symbols-outlined spinning">progress_activity</span>
+          Saving...
+        {:else}
+          <span class="material-symbols-outlined">save</span>
+          Save Draft
+        {/if}
       </Button>
+      {#if draftSaveStatus}
+        <span class="draft-save-status" class:saving={draftSaveStatus === 'saving'} class:saved={draftSaveStatus === 'saved'} class:error={draftSaveStatus === 'error'}>
+          {draftSaveMessage}
+        </span>
+      {/if}
     </div>
 
     <Button
@@ -866,6 +1096,58 @@
   .error-banner p {
     margin: 0;
     color: var(--md-sys-color-on-surface);
+  }
+
+  .restored-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--md-sys-spacing-md);
+    padding: var(--md-sys-spacing-lg);
+    margin: var(--md-sys-spacing-lg) var(--md-sys-spacing-xl) 0;
+    background-color: rgba(79, 195, 247, 0.1);
+    border-left: 4px solid var(--md-sys-color-primary);
+    border-radius: var(--md-sys-shape-corner-sm);
+  }
+
+  .restored-banner .material-symbols-outlined {
+    font-size: 24px;
+    color: var(--md-sys-color-primary);
+    flex-shrink: 0;
+  }
+
+  .restored-banner > div {
+    flex: 1;
+  }
+
+  .restored-banner strong {
+    color: var(--md-sys-color-primary);
+    font-size: 16px;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .restored-banner p {
+    margin: 0;
+    color: var(--md-sys-color-on-surface);
+    font-size: 14px;
+  }
+
+  .banner-action {
+    padding: 6px 16px;
+    background: transparent;
+    border: 1px solid var(--md-sys-color-primary);
+    border-radius: 6px;
+    color: var(--md-sys-color-primary);
+    font-weight: 500;
+    font-size: 13px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+
+  .banner-action:hover {
+    background-color: rgba(6, 158, 201, 0.1);
   }
 
   /* WORKSPACE CONTAINER */
@@ -1066,6 +1348,43 @@
     flex: 1;
     display: flex;
     justify-content: center;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .draft-save-status {
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 4px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    animation: fadeInOut 0.3s ease;
+  }
+
+  .draft-save-status.saving {
+    color: var(--md-sys-color-primary);
+    background: transparent;
+  }
+
+  .draft-save-status.saved {
+    color: var(--md-sys-color-on-surface-variant);
+    background: transparent;
+  }
+
+  .draft-save-status.error {
+    color: var(--md-sys-color-error);
+    background: transparent;
+  }
+
+  @keyframes fadeInOut {
+    0% {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   @keyframes spin {
