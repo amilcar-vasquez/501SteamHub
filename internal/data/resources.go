@@ -254,10 +254,12 @@ func (m ResourceModel) GetAll(status string, subject string, gradeLevel string, 
 			SELECT COUNT(DISTINCT r.resource_id)
 			FROM resources r
 			LEFT JOIN resource_subjects rs ON r.resource_id = rs.resource_id
+			LEFT JOIN subjects s2 ON rs.subject_id = s2.id
 			LEFT JOIN resource_grade_levels rgl ON r.resource_id = rgl.resource_id
+			LEFT JOIN grade_levels gl2 ON rgl.grade_level_id = gl2.id
 			WHERE ($1 = '' OR r.status = $1::resource_status)
-		AND ($2 = '' OR s2.subject = $2)
-		AND ($3 = '' OR gl2.grade_level = $3)
+			AND ($2 = '' OR s2.subject = $2)
+			AND ($3 = '' OR gl2.grade_level = $3)
 			AND ($4 = 0 OR r.contributor_id = $4)`
 
 		// Main query with joins
@@ -269,12 +271,12 @@ func (m ResourceModel) GetAll(status string, subject string, gradeLevel string, 
 			LEFT JOIN fellows f ON f.user_id = r.contributor_id
 			LEFT JOIN users u ON u.user_id = r.contributor_id
 			LEFT JOIN resource_subjects rs ON r.resource_id = rs.resource_id
-		LEFT JOIN subjects s2 ON rs.subject_id = s2.id
-		LEFT JOIN resource_grade_levels rgl ON r.resource_id = rgl.resource_id
-		LEFT JOIN grade_levels gl2 ON rgl.grade_level_id = gl2.id
+			LEFT JOIN subjects s2 ON rs.subject_id = s2.id
+			LEFT JOIN resource_grade_levels rgl ON r.resource_id = rgl.resource_id
+			LEFT JOIN grade_levels gl2 ON rgl.grade_level_id = gl2.id
 			WHERE ($1 = '' OR r.status = $1::resource_status)
-			AND ($2 = '' OR rs.subject::text = $2)
-			AND ($3 = '' OR rgl.grade_level::text = $3)
+			AND ($2 = '' OR s2.subject = $2)
+			AND ($3 = '' OR gl2.grade_level = $3)
 			AND ($4 = 0 OR r.contributor_id = $4)
 			ORDER BY r.created_at DESC
 			LIMIT $5 OFFSET $6`
