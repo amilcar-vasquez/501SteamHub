@@ -6,7 +6,7 @@ INSERT INTO subjects (subject) VALUES
     ('Science'),
     ('Engineering'),
     ('Robotics'),
-    ('Arts'),
+    ('Expressive Arts'),
     ('Belizean History'),
     ('Mathematics'),
     ('English Language Arts'),

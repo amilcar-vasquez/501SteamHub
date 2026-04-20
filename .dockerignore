@@ -1,0 +1,62 @@
+# Git
+.git
+.gitignore
+.gitmodules
+
+# Build artifacts
+*.o
+*.a
+*.so
+*.dylib
+*.test
+*.out
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Dependencies
+vendor/
+node_modules/
+
+# Temporary files
+*.log
+*.tmp
+tmp/
+
+# Docker
+.dockerignore
+Dockerfile
+docker-compose.yml
+
+# Documentation
+docs/
+README.md
+
+# Test files
+*_test.go
+coverage.out
+test_data.py
+
+# Environment
+.env
+.envrc
+
+# Backups
+Backups/
+*.dump
+
+# Build directories
+dist/
+build/
+
+# Private storage
+private_storage/
+
+# Application artifacts
+*.exe
+api

@@ -1,0 +1,66 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: steamhub_postgres
+    environment:
+      POSTGRES_USER: ${DB_USER:-501SteamHub}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-STEAMAdmin501}
+      POSTGRES_DB: ${DB_NAME:-501SteamHub}
+    ports:
+      - "${DB_PORT:-5433}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./migrations:/migrations:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-501SteamHub}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - steamhub_network
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: steamhub_api
+    environment:
+      DB_DSN: "postgresql://${DB_USER:-501SteamHub}:${DB_PASSWORD:-STEAMAdmin501}@postgres:5432/${DB_NAME:-501SteamHub}?sslmode=disable"
+      ENVIRONMENT: ${ENVIRONMENT:-production}
+      PORT: ${API_PORT:-4000}
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_USERNAME: ${SMTP_USERNAME}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      YOUTUBE_CLIENT_ID: ${YOUTUBE_CLIENT_ID}
+      YOUTUBE_CLIENT_SECRET: ${YOUTUBE_CLIENT_SECRET}
+      YOUTUBE_REFRESH_TOKEN: ${YOUTUBE_REFRESH_TOKEN}
+      YOUTUBE_REDIRECT_URI: ${YOUTUBE_REDIRECT_URI}
+      CORS_TRUSTED_ORIGINS: ${CORS_TRUSTED_ORIGINS:-http://localhost:3000 http://localhost:5173}
+      LIMITER_RPS: ${LIMITER_RPS:-10}
+      LIMITER_BURST: ${LIMITER_BURST:-20}
+    ports:
+      - "${API_PORT:-4001}:4000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./migrations:/app/migrations:ro
+    networks:
+      - steamhub_network
+    restart: unless-stopped
+    entrypoint: |
+      sh -c "
+      echo 'Running database migrations...'
+      migrate -path /app/migrations -database \$$DB_DSN up
+      echo 'Migrations complete, starting API...'
+      /app/api
+      "
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  steamhub_network:
+    driver: bridge

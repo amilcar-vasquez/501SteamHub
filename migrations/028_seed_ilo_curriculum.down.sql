@@ -3,23 +3,42 @@
 -- Note: Reverse order of operations to handle FK dependencies
 
 -- Part 4: Delete Health Education ILOs (from 037)
-DELETE FROM ilos 
+DELETE FROM ilos
 WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Health Education')
   AND ilo_code LIKE 'HE %';
 
--- Part 3: Delete all other seeded ILOs (from 035)
-DELETE FROM ilos 
-WHERE ilo_code IN (
-  'BS 1.1', 'BS 1.2', 'BS 1.4', 'BS 1.5', 'BS 1.6', 'BS 1.7', 'BS 1.8', 'BS 1.9', 'BS 1.10',
-  'BS 1.11', 'BS 1.12', 'BS 1.13', 'BS 1.14', 'BS 1.15', 'BS 1.16', 'BS 1.17', 'BS 1.18', 'BS 1.19'
+-- Part 3: Delete all seeded ILOs from full 035 dataset (629 records)
+DELETE FROM ilos
+WHERE subject_id IN (
+  SELECT id FROM subjects
+  WHERE subject IN (
+    'Belizean History',
+    'Expressive Arts',
+    'Language Arts',
+    'Mathematics',
+    'Physical Education',
+    'Science and Technology'
+  )
+)
+AND (
+  ilo_code LIKE 'BS %'
+  OR ilo_code LIKE 'EA %'
+  OR ilo_code LIKE 'LA %'
+  OR ilo_code LIKE 'MA %'
+  OR ilo_code LIKE 'PE %'
+  OR ilo_code LIKE 'SC %'
+  OR ilo_code LIKE 'TC %'
 );
 
 -- Part 2: Delete all seeded strands (from 034 and 037)
-DELETE FROM strands 
+DELETE FROM strands
 WHERE name IN (
   'Identity in Belize',
   'Civics Education',
   'African and Maya History',
+  'Sustainable Development and Climate Change',
+  'Financial Education',
+  'Road and Personal Safety',
   'Dance and Drama',
   'Music',
   'Creative Art Forms',
@@ -39,9 +58,15 @@ WHERE name IN (
   'Data',
   'Body Skills & Fitness',
   'Football',
+  'Running, Jumping & Throwing',
+  'Games with Bats, Balls & Nets',
+  'Benefits and Burdens of Science and Technology',
+  'Energy Conversions',
+  'Changes in an Ecosystem',
   'Energy Resources',
   'Relationships and Communications Plagiarism',
   'Plant Diversity',
+  'Heredity and Human Reproduction',
   'Personal Health, Nutrition, and Disease Prevention',
   'Environmental Health and Safety',
   'Social and Emotional Health and Relationships',
