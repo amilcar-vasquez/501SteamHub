@@ -6,8 +6,9 @@
 //   import { getReviewComments, createReviewComment, resolveReviewComment } from '$lib/api/reviewComments';
 
 import { APIError } from '../../api/client.js';
+import { getApiBaseUrl } from '../config/apiBaseUrl.js';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/v1';
+const API_BASE_URL = getApiBaseUrl();
 
 async function request(endpoint, options = {}) {
   const url = `${API_BASE_URL}${endpoint}`;

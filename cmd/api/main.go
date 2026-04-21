@@ -27,6 +27,7 @@ const version = "1.0.0"
 
 var dbDSN = os.Getenv("DB_DSN")
 var smtpHost = os.Getenv("SMTP_HOST")
+var corsTrustedOrigins = os.Getenv("CORS_TRUSTED_ORIGINS")
 
 // YouTube / Google Drive OAuth2 credentials (required for video auto-upload).
 var ytClientID = os.Getenv("YOUTUBE_CLIENT_ID")
@@ -99,9 +100,10 @@ func loadConfig() configuration {
 	flag.StringVar(&cfg.db.dsn, "db-dsn", defaultDSN, "PostgreSQL DSN")
 
 	// CORS trusted origins settings
+	cfg.cors.trustedOrigins = parseTrustedOrigins(corsTrustedOrigins)
 	flag.Func("cors-trusted-origins", "Trusted CORS origins (space separated)",
 		func(val string) error {
-			cfg.cors.trustedOrigins = strings.Fields(val)
+			cfg.cors.trustedOrigins = parseTrustedOrigins(val)
 			return nil
 		})
 
@@ -126,6 +128,16 @@ func loadConfig() configuration {
 	flag.Parse()
 
 	return cfg
+}
+
+func parseTrustedOrigins(val string) []string {
+	if val == "" {
+		return nil
+	}
+
+	// Accept both comma-separated and whitespace-separated formats.
+	normalized := strings.ReplaceAll(val, ",", " ")
+	return strings.Fields(normalized)
 }
 
 // sets up a structured logger using slog that writes to both stdout and a log file

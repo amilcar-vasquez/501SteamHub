@@ -40,7 +40,7 @@ services:
       LIMITER_RPS: ${LIMITER_RPS:-10}
       LIMITER_BURST: ${LIMITER_BURST:-20}
     ports:
-      - "${API_PORT:-4001}:4000"
+      - "${API_PORT:-4000}:4000"
     depends_on:
       postgres:
         condition: service_healthy
@@ -56,6 +56,19 @@ services:
       echo 'Migrations complete, starting API...'
       /app/api
       "
+
+  ui:
+    build:
+      context: .
+      dockerfile: ui/Dockerfile
+    container_name: steamhub_ui
+    ports:
+      - "${UI_PORT:-3000}:3000"
+    networks:
+      - steamhub_network
+    restart: unless-stopped
+    environment:
+      API_URL: http://api:4000
 
 volumes:
   postgres_data:

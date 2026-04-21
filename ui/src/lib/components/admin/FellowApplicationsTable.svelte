@@ -3,6 +3,7 @@
   import { onMount } from 'svelte';
   import { authToken } from '../../../stores/auth.js';
   import { adminAPI } from '../../../api/client.js';
+  import { getApiBaseUrl } from '../../config/apiBaseUrl.js';
 
   let token = null;
   authToken.subscribe(v => (token = v));
@@ -73,7 +74,8 @@
     documentLoading = true;
     selectedDocumentName = `${app.first_name}_${app.last_name}_MOE_Document`;
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/admin/moe-documents?path=${encodeURIComponent(app.moe_doc_path)}`, {
+      const apiBaseUrl = getApiBaseUrl();
+      const response = await fetch(`${apiBaseUrl}/admin/moe-documents?path=${encodeURIComponent(app.moe_doc_path)}`, {
         headers: { 'Authorization': `Bearer ${token}` },
       });
       if (!response.ok) throw new Error('Failed to fetch document');

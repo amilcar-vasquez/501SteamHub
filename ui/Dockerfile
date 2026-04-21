@@ -13,6 +13,7 @@ RUN npm ci
 COPY ui/ .
 
 # Build the application
+# Uses relative API paths (/api/v1/*) for universal compatibility
 RUN npm run build
 
 # Stage 2: Serve with Nginx

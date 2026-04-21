@@ -1,5 +1,7 @@
+import { getApiBaseUrl } from '../lib/config/apiBaseUrl.js';
+
 // API configuration
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/v1';
+const API_BASE_URL = getApiBaseUrl();
 
 class APIError extends Error {
   constructor(message, status, errors = {}) {

@@ -7,6 +7,7 @@
   import Button from '../components/Button.svelte';
   import { currentUser, authToken } from '../stores/auth.js';
   import { fellowApplicationAPI } from '../api/client.js';
+  import { getApiBaseUrl } from '../lib/config/apiBaseUrl.js';
   import { navigateTo } from '../router.js';
 
   // ── Options (mirrored from SubmitResource.svelte) ─────────────────────────
@@ -222,8 +223,7 @@
     formData.append('moe_document', moeDocFile);
 
     try {
-      // Use the configured API base URL (from Vite environment)
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:4000/v1';
+      const apiUrl = getApiBaseUrl();
       const response = await fetch(`${apiUrl}/fellow-applications/moe-document/upload`, {
         method: 'POST',
         headers: {
