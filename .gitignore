@@ -77,6 +77,8 @@ lerna-debug.log*
 !.env.example
 !.env.template
 .envrc
+env.compose
+env.docker
 
 # Configuration files with secrets
 config.local.*

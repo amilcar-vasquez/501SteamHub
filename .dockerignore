@@ -45,6 +45,8 @@ test_data.py
 # Environment
 .env
 .envrc
+env.compose
+env.docker
 
 # Backups
 Backups/
