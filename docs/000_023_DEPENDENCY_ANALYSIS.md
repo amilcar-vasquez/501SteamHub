@@ -38,7 +38,7 @@ Refactor to INT    Building  Links     Seed     Data     Index
 ## 📋 AFFECTED BASE MIGRATIONS (000-023)
 
 ### ✓ Migration 003: Fellows
-- **Creates:** fellows table with first_name, last_name, moe_identifier
+- **Creates:** fellows table with first_name, last_name, bemis_number
 - **Status:** UNCHANGED - remains in migrations/003_create_fellows.up.sql
 - **Impact:** New 024 will ADD more columns (source_application_id, verified fields)
 - **Conflict Risk:** NONE (additive changes only)
@@ -67,7 +67,7 @@ Refactor to INT    Building  Links     Seed     Data     Index
 ### ✓ Migration 019: Fellow Applications
 - **Creates:** fellow_applications with full_name VARCHAR
 - **Status:** UNCHANGED - remains in migrations/019_create_fellow_applications.up.sql
-- **Impact:** New 024 will ADD first_name, last_name, moe_identifier columns
+- **Impact:** New 024 will ADD first_name, last_name, bemis_number columns
 - **Conflict Risk:** NONE (additive changes only)
 
 ### ✓ Migration 023: Steam Points
@@ -87,7 +87,7 @@ Step 1: Apply 001-023 (foundation)
    └─ Creates resource_grade_levels with (resource_id, grade_level) PK
 
 Step 2: Apply new 024 (Fellow refactoring)
-   └─ Adds first_name, last_name, moe_identifier to fellow_applications
+   └─ Adds first_name, last_name, bemis_number to fellow_applications
    └─ Adds traceability fields to fellows
 
 Step 3: Apply new 025 (PK refactoring) ← THE BIG STEP
@@ -104,20 +104,20 @@ Step 4: Apply 026-031 (ILO infrastructure, resource links, etc.)
    └─ No issues because old VARCHAR column is kept as UNIQUE for backward compat
 ```
 
-### Scenario 2: Existing Deployment (Already has 001-039)
+### Scenario 2: Existing Deployment (Already has consolidated 001-031)
 ```
-Current schema_migrations: [1, 2, ..., 23, 24, 25, 26, 27, ..., 39]
-                                        └─ Currently: Old migration 27-39
-                                           Status: Already applied with VARCHAR PKs
+Current schema_migrations: [1, 2, ..., 23, 24, 25, 26, 27, ..., 31]
+                                        └─ Currently: Consolidated migration set
+                                           Status: Applied with INTEGER PK refactor complete
 
 Deploy consolidated version:
    └─ Migrations 1-23: Already done (skipped)
-   └─ Migrations 24-31: New versions - database still has old 24-39 applied
-   └─ Result: System continues working (has old foreign keys, old indexes, etc.)
-   └─ Compatibility: 100% - no schema differences because all changes happened
+   └─ Migrations 24-31: Already applied
+   └─ Result: System continues working with consolidated migration chain
+   └─ Compatibility: 100% within the consolidated range
 
-NOTE: Existing systems keep old 024-039 applied. New systems get consolidated 024-031.
-      Both result in identical schemas.
+NOTE: References to post-031 migration numbers are legacy and ignored.
+      Active migration chain is consolidated to 024-031.
 ```
 
 ---
@@ -136,15 +136,15 @@ NOTE: Existing systems keep old 024-039 applied. New systems get consolidated 02
 - Both can be run multiple times safely
 
 ### 3. Base Migrations (001-023) Never Change
-- Consolidation only affects 024-039
+- Consolidation only affects 024-031 in the current migration strategy
 - Foundation is untouched
 - Zero risk to existing systems
 
 ### 4. Both Deployment Paths Lead to Same Schema
 ```
-Path A (Old): 1→23 + 24→39                 (39 migrations total)
-Path B (New): 1→23 + 24→31                 (31 migrations total)
-Result:      IDENTICAL SCHEMAS ✓
+Path A: 1→23 + 24→31                        (31 migrations total)
+Path B: 1→23 + 24→31                        (31 migrations total)
+Result: IDENTICAL SCHEMAS ✓
 ```
 
 ---
@@ -166,7 +166,7 @@ Result:      IDENTICAL SCHEMAS ✓
 
 **Deployment Scenarios:**
 - ✓ Fresh: Uses 024-031 consolidated
-- ✓ Existing: Keeps 024-039, compatible
+- ✓ Existing: Uses 024-031 consolidated chain, compatible
 - ✓ Container: Simplified with fewer migration files
 - ✓ Backward Compat: 100% maintained
 

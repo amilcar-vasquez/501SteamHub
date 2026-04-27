@@ -82,14 +82,14 @@ CREATE TABLE IF NOT EXISTS fellows (
     user_id                   INT UNIQUE NOT NULL,
     first_name                VARCHAR(100) NOT NULL,
     last_name                 VARCHAR(100) NOT NULL,
-    moe_identifier            VARCHAR(50) UNIQUE NOT NULL,
+    bemis_number            VARCHAR(50) UNIQUE NOT NULL,
     school                    VARCHAR(150),
     subject_specialization    VARCHAR(100),
     district                  VARCHAR(100),
     profile_status            VARCHAR(50) DEFAULT 'pending', -- pending, approved, rejected
     steam_points              NUMERIC(10, 2) DEFAULT 0.0,  -- Cumulative STEAM Points earned through contributions
     source_application_id     BIGINT,  -- Link to fellow_applications for traceability
-    moe_identifier_verified   BOOLEAN DEFAULT FALSE,  -- Whether MOE identifier has been verified
+    bemis_number_verified   BOOLEAN DEFAULT FALSE,  -- Whether BEMIS number has been verified
     verified_at               TIMESTAMP,  -- When verification occurred
     verified_by               INT,  -- Which user verified the identifier
     created_at                TIMESTAMP DEFAULT NOW(),
@@ -100,7 +100,7 @@ CREATE TABLE IF NOT EXISTS fellows (
 
 -- Create indexes for potentially querying/sorting by steam points and verification status
 CREATE INDEX idx_fellows_steam_points ON fellows (steam_points DESC);
-CREATE INDEX idx_fellows_verified ON fellows (moe_identifier_verified, verified_at);
+CREATE INDEX idx_fellows_verified ON fellows (bemis_number_verified, verified_at);
 
 -- -----------------------------------------------
 -- SOURCE: 'migrations/004_create_subjects_and_grade_levels.up.sql'
@@ -433,7 +433,7 @@ CREATE TABLE IF NOT EXISTS fellow_applications (
     user_id              INT NOT NULL,
     first_name           VARCHAR(100) NOT NULL,  -- Split from full_name in consolidated design
     last_name            VARCHAR(100) NOT NULL,  -- Split from full_name in consolidated design
-    moe_identifier       VARCHAR(50) NOT NULL,  -- Ministry of Education identifier
+    bemis_number       VARCHAR(50) NOT NULL,  -- BEMIS number
     moe_doc_path         TEXT,  -- Path to MOE documentation
     organization         VARCHAR(200) NOT NULL,
     subjects             TEXT[]  NOT NULL DEFAULT '{}',
@@ -566,11 +566,10 @@ $$;
 -- It is retained here for backward compatibility with existing systems.
 --
 -- Original purpose: Refactor fellow applications to use first_name/last_name instead of full_name,
--- add MOE identifier tracking, and add verification fields to fellows table.
+-- add BEMIS number tracking, and add verification fields to fellows table.
 -- For fresh deployments: All changes are part of 019 and 003 creation.
 -- For existing systems: This migration provides upgrade path from pre-consolidated schemas.
 
--- Idempotent: Only migrate if full_name column still exists
 DO $$
 BEGIN
     -- Add new columns to fellow_applications if they don't exist
@@ -581,7 +580,7 @@ BEGIN
         ALTER TABLE fellow_applications
         ADD COLUMN IF NOT EXISTS first_name VARCHAR(100),
         ADD COLUMN IF NOT EXISTS last_name VARCHAR(100),
-        ADD COLUMN IF NOT EXISTS moe_identifier VARCHAR(50),
+        ADD COLUMN IF NOT EXISTS bemis_number VARCHAR(50),
         ADD COLUMN IF NOT EXISTS moe_doc_path TEXT;
         
         -- Migrate data from full_name to first_name and last_name
@@ -597,16 +596,16 @@ BEGIN
           END
         WHERE first_name IS NULL OR last_name IS NULL;
         
-        -- Provide default MOE identifiers for existing records
+        -- Provide default BEMIS numbers for existing records
         UPDATE fellow_applications
-        SET moe_identifier = 'MOE_' || application_id::text
-        WHERE moe_identifier IS NULL;
+        SET bemis_number = 'BEMIS_' || application_id::text
+        WHERE bemis_number IS NULL;
         
         -- Make new columns NOT NULL (after migration)
         ALTER TABLE fellow_applications
         ALTER COLUMN first_name SET NOT NULL,
         ALTER COLUMN last_name SET NOT NULL,
-        ALTER COLUMN moe_identifier SET NOT NULL;
+        ALTER COLUMN bemis_number SET NOT NULL;
         
         -- Drop full_name column after successful migration
         ALTER TABLE fellow_applications DROP COLUMN full_name;
@@ -614,7 +613,7 @@ BEGIN
         -- Add verification columns to fellows if they don't exist
         ALTER TABLE fellows
         ADD COLUMN IF NOT EXISTS source_application_id BIGINT,
-        ADD COLUMN IF NOT EXISTS moe_identifier_verified BOOLEAN DEFAULT FALSE,
+        ADD COLUMN IF NOT EXISTS bemis_number_verified BOOLEAN DEFAULT FALSE,
         ADD COLUMN IF NOT EXISTS verified_at TIMESTAMP,
         ADD COLUMN IF NOT EXISTS verified_by BIGINT;
         
@@ -630,7 +629,7 @@ BEGIN
         ON fellow_applications(user_id)
         WHERE status = 'Pending';
         
-        CREATE INDEX IF NOT EXISTS idx_fellows_verified ON fellows (moe_identifier_verified, verified_at);
+        CREATE INDEX IF NOT EXISTS idx_fellows_verified ON fellows (bemis_number_verified, verified_at);
         CREATE INDEX IF NOT EXISTS idx_fellow_applications_moe_doc_path ON fellow_applications (moe_doc_path);
     END IF;
 END

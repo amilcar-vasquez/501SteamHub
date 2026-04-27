@@ -1,13 +1,13 @@
 -- Rollback Migration: 028_seed_ilo_curriculum
--- Reverses: 034_seed_strands + 034c_adjust_subjects_for_ilos + 035_seed_ilos + 037_seed_health_education_strands_and_ilos
+-- Reverses: consolidated curriculum seed data from this migration
 -- Note: Reverse order of operations to handle FK dependencies
 
--- Part 4: Delete Health Education ILOs (from 037)
+-- Part 4: Delete Health Education ILOs
 DELETE FROM ilos
 WHERE subject_id = (SELECT id FROM subjects WHERE subject = 'Health Education')
   AND ilo_code LIKE 'HE %';
 
--- Part 3: Delete all seeded ILOs from full 035 dataset (629 records)
+-- Part 3: Delete all seeded ILOs from the consolidated dataset (629 records)
 DELETE FROM ilos
 WHERE subject_id IN (
   SELECT id FROM subjects
@@ -30,7 +30,7 @@ AND (
   OR ilo_code LIKE 'TC %'
 );
 
--- Part 2: Delete all seeded strands (from 034 and 037)
+-- Part 2: Delete all seeded strands
 DELETE FROM strands
 WHERE name IN (
   'Identity in Belize',

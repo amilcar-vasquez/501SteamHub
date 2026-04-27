@@ -1,15 +1,17 @@
 # Migration Consolidation Analysis Report
 
-## Current Migration Timeline (024-039)
+## Current Migration Timeline (024-031)
+
+> Note: Any references in this historical analysis to migration numbers above 031 are legacy context and should be ignored for current implementation work.
 
 ### PHASE 1: Fellow Onboarding Refactoring (024-025)
 **Purpose:** Restructure fellow_applications data model
 
 **024_refactor_fellow_onboarding.up.sql**
-- ✓ Add first_name, last_name, moe_identifier to fellow_applications
+- ✓ Add first_name, last_name, bemis_number to fellow_applications
 - ✓ Migrate data from full_name → first_name + last_name
 - ✓ Drop full_name column
-- ✓ Add traceability to fellows: source_application_id, moe_identifier_verified, verified_at, verified_by
+- ✓ Add traceability to fellows: source_application_id, bemis_number_verified, verified_at, verified_by
 - ✓ Create unique index: unique_pending_application_per_user
 - ✓ Create index: idx_fellows_verified
 
@@ -75,7 +77,7 @@
 
 ---
 
-### PHASE 4: ILO Infrastructure (031-035, 034c, 037-038)
+### PHASE 4: ILO Infrastructure (027-031 consolidated)
 **Purpose:** Create learning outcome system
 
 **031_create_cycles.up.sql**
@@ -133,7 +135,7 @@
 
 ---
 
-### PHASE 5: Resource Linking (039)
+### PHASE 5: Resource Linking (029 consolidated)
 **Purpose:** Add relationship tracking between resources
 
 **039_create_resource_links.up.sql**
@@ -189,7 +191,7 @@ All migrations are well-structured with proper idempotency (IF NOT EXISTS, ON CO
 
 ### Migrations that are NOT consolidated but form the foundation:
 - **001-002**: Roles and users
-- **003**: Fellows table (first_name, last_name, moe_identifier, etc.)
+- **003**: Fellows table (first_name, last_name, bemis_number, etc.)
 - **004**: Subjects and grade_levels tables **(VARCHAR PKs - foundation for refactoring)**
 - **005**: Resources table
 - **006**: Resource ↔ Subject junction table **(uses VARCHAR FK to subjects)**
@@ -233,7 +235,7 @@ All migrations are well-structured with proper idempotency (IF NOT EXISTS, ON CO
 7. **029_populate_test_data.up** (keep as-is for optional use, was 026)
 8. **030_add_ilo_search_index.up** (was 038)
 
-### Total: 8 consolidated migrations (vs 16 current from 024-039)
+### Total: 8 consolidated migrations in the 024-031 range
 
 ---
 

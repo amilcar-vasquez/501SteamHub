@@ -1,10 +1,10 @@
 -- Consolidated Migration: 028_seed_ilo_curriculum
--- Combines: 034_seed_strands + 034c_adjust_subjects_for_ilos + 035_seed_ilos + 037_seed_health_education_strands_and_ilos
+-- Combines: legacy strand/ILO seed sources consolidated into a single migration
 -- Purpose: Seed curriculum data including strands, subject adjustments, and ILOs
 -- WARNING: This is a large migration with extensive seed data (~629 ILOs)
 
 -- ============================================================================
--- Part 1: From 034c_adjust_subjects_for_ilos - Subject name updates
+-- Part 1: Subject name updates
 -- ============================================================================
 UPDATE subjects SET subject = 'Science and Technology' WHERE subject = 'Science';
 UPDATE subjects SET subject = 'Expressive Arts' WHERE subject = 'Arts';
@@ -14,7 +14,7 @@ INSERT INTO subjects (subject) VALUES ('Health Education')
 ON CONFLICT (subject) DO NOTHING;
 
 -- ============================================================================
--- Part 2: From 034_seed_strands + 037 - Curriculum strands for all subjects
+-- Part 2: Curriculum strands for all subjects
 -- ============================================================================
 INSERT INTO strands (subject_id, name) VALUES
   ((SELECT id FROM subjects WHERE subject = 'Belizean History'), 'Identity in Belize'),

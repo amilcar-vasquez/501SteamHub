@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS fellow_applications (
     user_id              INT NOT NULL,
     first_name           VARCHAR(100) NOT NULL,  -- Split from full_name in consolidated design
     last_name            VARCHAR(100) NOT NULL,  -- Split from full_name in consolidated design
-    moe_identifier       VARCHAR(50) NOT NULL,  -- Ministry of Education identifier
+    bemis_number       VARCHAR(50) NOT NULL,  -- BEMIS number
     moe_doc_path         TEXT,  -- Path to MOE documentation
     organization         VARCHAR(200) NOT NULL,
     subjects             TEXT[]  NOT NULL DEFAULT '{}',

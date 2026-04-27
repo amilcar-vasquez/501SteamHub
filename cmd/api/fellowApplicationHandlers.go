@@ -51,6 +51,7 @@ func (a *app) applyForFellowHandler(w http.ResponseWriter, r *http.Request) {
 		FirstName       string   `json:"first_name"`
 		LastName        string   `json:"last_name"`
 		Organization    string   `json:"organization"`
+		BemisNumber     string   `json:"bemis_number"`
 		MoeIdentifier   string   `json:"moe_identifier"`
 		MoeDocPath      string   `json:"moe_doc_path"`
 		Subjects        []string `json:"subjects"`
@@ -65,12 +66,17 @@ func (a *app) applyForFellowHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	bemisNumber := strings.TrimSpace(input.BemisNumber)
+	if bemisNumber == "" {
+		bemisNumber = strings.TrimSpace(input.MoeIdentifier)
+	}
+
 	app := &data.FellowApplication{
 		UserID:          user.ID,
 		FirstName:       input.FirstName,
 		LastName:        input.LastName,
 		Organization:    input.Organization,
-		MoeIdentifier:   input.MoeIdentifier,
+		BemisNumber:     bemisNumber,
 		MoeDocPath:      input.MoeDocPath,
 		Subjects:        input.Subjects,
 		GradeLevels:     input.GradeLevels,
@@ -84,8 +90,8 @@ func (a *app) applyForFellowHandler(w http.ResponseWriter, r *http.Request) {
 	v.Check(len(app.FirstName) <= 100, "first_name", "must not exceed 100 characters")
 	v.Check(app.LastName != "", "last_name", "must be provided")
 	v.Check(len(app.LastName) <= 100, "last_name", "must not exceed 100 characters")
-	v.Check(app.MoeIdentifier != "", "moe_identifier", "must be provided")
-	v.Check(len(app.MoeIdentifier) <= 50, "moe_identifier", "must not exceed 50 characters")
+	v.Check(app.BemisNumber != "", "bemis_number", "must be provided")
+	v.Check(len(app.BemisNumber) <= 50, "bemis_number", "must not exceed 50 characters")
 	v.Check(app.MoeDocPath != "", "moe_doc_path", "must be provided")
 	v.Check(app.Organization != "", "organization", "must be provided")
 	v.Check(len(app.Organization) <= 200, "organization", "must not exceed 200 characters")

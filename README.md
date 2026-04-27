@@ -127,7 +127,7 @@ Draft → Submitted → UnderReview ──→ NeedsRevision
 - **Reviewer Dashboard** — see real-time count of resources per status
 
 ### 👥 Fellow System
-- **Extended Profiles** — school, district, MOE identifier (Ministry of Education), subject specialization
+- **Extended Profiles** — school, district, BEMIS number (Ministry of Education), subject specialization
 - **STEAM Points Tracking** — cumulative contribution score via weighted algorithm (FR-27)
 - **Application Workflow** — User → applies → DSC/Admin approves → role upgraded to Fellow
 - **Application Status Tracking** — Pending / Approved / Rejected (with audit trail)

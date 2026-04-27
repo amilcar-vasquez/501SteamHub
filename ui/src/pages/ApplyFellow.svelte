@@ -43,7 +43,7 @@
   let formData = {
     first_name: '',
     last_name: '',
-    moe_identifier: '',
+    bemis_number: '',
     organization: '',
     subjects: [],
     grade_levels: [],
@@ -111,10 +111,10 @@
       errors.last_name = 'Last name must be 100 characters or less';
     }
 
-    if (!formData.moe_identifier.trim()) {
-      errors.moe_identifier = 'MOE Identifier is required';
-    } else if (formData.moe_identifier.length > 50) {
-      errors.moe_identifier = 'MOE Identifier must be 50 characters or less';
+    if (!formData.bemis_number.trim()) {
+      errors.bemis_number = 'BEMIS Number is required';
+    } else if (formData.bemis_number.length > 50) {
+      errors.bemis_number = 'BEMIS Number must be 50 characters or less';
     }
 
     if (!formData.organization.trim()) {
@@ -349,11 +349,11 @@
               </div>
 
               <TextField
-                label="MOE Identifier"
-                bind:value={formData.moe_identifier}
-                error={errors.moe_identifier}
+                label="BEMIS Number"
+                bind:value={formData.bemis_number}
+                error={errors.bemis_number}
                 required
-                placeholder="Your Ministry of Education identifier"
+                placeholder="Your BEMIS number"
               />
 
               <TextField

@@ -5,6 +5,7 @@ package main
 import (
 	"errors"
 	"net/http"
+	"strings"
 
 	"github.com/amilcar-vasquez/501SteamHub/internal/data"
 	"github.com/amilcar-vasquez/501SteamHub/internal/validator"
@@ -16,6 +17,7 @@ func (a *app) createFellowHandler(w http.ResponseWriter, r *http.Request) {
 		UserID                int64  `json:"user_id"`
 		FirstName             string `json:"first_name"`
 		LastName              string `json:"last_name"`
+		BemisNumber           string `json:"bemis_number"`
 		MoeIdentifier         string `json:"moe_identifier"`
 		School                string `json:"school"`
 		SubjectSpecialization string `json:"subject_specialization"`
@@ -29,11 +31,16 @@ func (a *app) createFellowHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	bemisNumber := strings.TrimSpace(input.BemisNumber)
+	if bemisNumber == "" {
+		bemisNumber = strings.TrimSpace(input.MoeIdentifier)
+	}
+
 	fellow := &data.Fellow{
 		UserID:                input.UserID,
 		FirstName:             input.FirstName,
 		LastName:              input.LastName,
-		MoeIdentifier:         input.MoeIdentifier,
+		BemisNumber:           bemisNumber,
 		School:                a.refString(input.School),
 		SubjectSpecialization: a.refString(input.SubjectSpecialization),
 		District:              a.refString(input.District),
@@ -43,7 +50,7 @@ func (a *app) createFellowHandler(w http.ResponseWriter, r *http.Request) {
 	v := validator.New()
 	v.Check(fellow.FirstName != "", "first_name", "must be provided")
 	v.Check(fellow.LastName != "", "last_name", "must be provided")
-	v.Check(fellow.MoeIdentifier != "", "moe_identifier", "must be provided")
+	v.Check(fellow.BemisNumber != "", "bemis_number", "must be provided")
 
 	if !v.IsEmpty() {
 		a.failedValidationResponse(w, r, v.Errors)
@@ -214,6 +221,7 @@ func (a *app) updateFellowHandler(w http.ResponseWriter, r *http.Request) {
 	var input struct {
 		FirstName             *string `json:"first_name"`
 		LastName              *string `json:"last_name"`
+		BemisNumber           *string `json:"bemis_number"`
 		MoeIdentifier         *string `json:"moe_identifier"`
 		School                *string `json:"school"`
 		SubjectSpecialization *string `json:"subject_specialization"`
@@ -233,8 +241,10 @@ func (a *app) updateFellowHandler(w http.ResponseWriter, r *http.Request) {
 	if input.LastName != nil {
 		fellow.LastName = *input.LastName
 	}
-	if input.MoeIdentifier != nil {
-		fellow.MoeIdentifier = *input.MoeIdentifier
+	if input.BemisNumber != nil {
+		fellow.BemisNumber = *input.BemisNumber
+	} else if input.MoeIdentifier != nil {
+		fellow.BemisNumber = *input.MoeIdentifier
 	}
 	if input.School != nil {
 		fellow.School = input.School
@@ -252,7 +262,7 @@ func (a *app) updateFellowHandler(w http.ResponseWriter, r *http.Request) {
 	v := validator.New()
 	v.Check(fellow.FirstName != "", "first_name", "must be provided")
 	v.Check(fellow.LastName != "", "last_name", "must be provided")
-	v.Check(fellow.MoeIdentifier != "", "moe_identifier", "must be provided")
+	v.Check(fellow.BemisNumber != "", "bemis_number", "must be provided")
 
 	if !v.IsEmpty() {
 		a.failedValidationResponse(w, r, v.Errors)

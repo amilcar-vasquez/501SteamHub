@@ -23,7 +23,7 @@ BEGIN
         DROP CONSTRAINT IF EXISTS fk_fellows_verified_by,
         DROP CONSTRAINT IF EXISTS fk_fellows_source_application,
         DROP COLUMN IF EXISTS source_application_id,
-        DROP COLUMN IF EXISTS moe_identifier_verified,
+        DROP COLUMN IF EXISTS bemis_number_verified,
         DROP COLUMN IF EXISTS verified_at,
         DROP COLUMN IF EXISTS verified_by;
         
@@ -42,7 +42,7 @@ BEGIN
         ALTER TABLE fellow_applications
         DROP COLUMN IF EXISTS first_name,
         DROP COLUMN IF EXISTS last_name,
-        DROP COLUMN IF EXISTS moe_identifier,
+        DROP COLUMN IF EXISTS bemis_number,
         DROP COLUMN IF EXISTS moe_doc_path;
     END IF;
 END

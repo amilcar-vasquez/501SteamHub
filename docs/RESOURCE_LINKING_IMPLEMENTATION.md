@@ -5,7 +5,7 @@ Implemented a complete resource linking system that allows resources to be linke
 
 ## Database Changes
 
-### New Table: `resource_links` (Migration 039)
+### New Table: `resource_links` (Migration 029)
 ```sql
 CREATE TABLE resource_links (
     link_id              SERIAL PRIMARY KEY,
@@ -191,7 +191,7 @@ After resource creation, processes linked resources with:
 
 ## Migration Steps
 
-1. Run migration 039:
+1. Run migration 029:
    ```bash
    migrate -path ./migrations -database "postgres://..." up
    ```

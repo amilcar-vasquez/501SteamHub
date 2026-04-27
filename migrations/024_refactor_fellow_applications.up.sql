@@ -3,7 +3,7 @@
 -- It is retained here for backward compatibility with existing systems.
 --
 -- Original purpose: Refactor fellow applications to use first_name/last_name instead of full_name,
--- add MOE identifier tracking, and add verification fields to fellows table.
+-- add BEMIS number tracking, and add verification fields to fellows table.
 -- For fresh deployments: All changes are part of 019 and 003 creation.
 -- For existing systems: This migration provides upgrade path from pre-consolidated schemas.
 
@@ -18,7 +18,7 @@ BEGIN
         ALTER TABLE fellow_applications
         ADD COLUMN IF NOT EXISTS first_name VARCHAR(100),
         ADD COLUMN IF NOT EXISTS last_name VARCHAR(100),
-        ADD COLUMN IF NOT EXISTS moe_identifier VARCHAR(50),
+        ADD COLUMN IF NOT EXISTS bemis_number VARCHAR(50),
         ADD COLUMN IF NOT EXISTS moe_doc_path TEXT;
         
         -- Migrate data from full_name to first_name and last_name
@@ -34,16 +34,16 @@ BEGIN
           END
         WHERE first_name IS NULL OR last_name IS NULL;
         
-        -- Provide default MOE identifiers for existing records
+        -- Provide default BEMIS numbers for existing records
         UPDATE fellow_applications
-        SET moe_identifier = 'MOE_' || application_id::text
-        WHERE moe_identifier IS NULL;
+        SET bemis_number = 'BEMIS_' || application_id::text
+        WHERE bemis_number IS NULL;
         
         -- Make new columns NOT NULL (after migration)
         ALTER TABLE fellow_applications
         ALTER COLUMN first_name SET NOT NULL,
         ALTER COLUMN last_name SET NOT NULL,
-        ALTER COLUMN moe_identifier SET NOT NULL;
+        ALTER COLUMN bemis_number SET NOT NULL;
         
         -- Drop full_name column after successful migration
         ALTER TABLE fellow_applications DROP COLUMN full_name;
@@ -51,7 +51,7 @@ BEGIN
         -- Add verification columns to fellows if they don't exist
         ALTER TABLE fellows
         ADD COLUMN IF NOT EXISTS source_application_id BIGINT,
-        ADD COLUMN IF NOT EXISTS moe_identifier_verified BOOLEAN DEFAULT FALSE,
+        ADD COLUMN IF NOT EXISTS bemis_number_verified BOOLEAN DEFAULT FALSE,
         ADD COLUMN IF NOT EXISTS verified_at TIMESTAMP,
         ADD COLUMN IF NOT EXISTS verified_by BIGINT;
         
@@ -77,7 +77,7 @@ BEGIN
         ON fellow_applications(user_id)
         WHERE status = 'Pending';
         
-        CREATE INDEX IF NOT EXISTS idx_fellows_verified ON fellows (moe_identifier_verified, verified_at);
+        CREATE INDEX IF NOT EXISTS idx_fellows_verified ON fellows (bemis_number_verified, verified_at);
         CREATE INDEX IF NOT EXISTS idx_fellow_applications_moe_doc_path ON fellow_applications (moe_doc_path);
     END IF;
 END

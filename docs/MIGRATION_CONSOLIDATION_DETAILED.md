@@ -1,10 +1,12 @@
 # MIGRATION CONSOLIDATION - DETAILED IMPLEMENTATION PLAN
 
 ## 📋 Executive Summary
-**Current:** 39 migrations (16 from 024-039)
+**Current:** consolidated migration set through 031
 **Proposed:** Consolidate to 8 migrations in 024-031 range
 **Risk Level:** MEDIUM (requires careful merging of transactions)
 **Down Migrations:** All down migrations exist, will need to create new consolidated downs
+
+> Note: References in this historical planning document to migration numbers above 031 are legacy context and should be ignored for current implementation work.
 
 ---
 
@@ -19,11 +21,11 @@
 **Contains:**
 ```
 FROM 024:
-- Add first_name, last_name, moe_identifier to fellow_applications
+- Add first_name, last_name, bemis_number to fellow_applications
 - Migrate data from full_name → split into first_name + last_name
 - Drop full_name column
 - Make new columns NOT NULL
-- Add source_application_id, moe_identifier_verified, verified_at, verified_by to fellows
+- Add source_application_id, bemis_number_verified, verified_at, verified_by to fellows
 - Create indexes
 
 FROM 025:
@@ -205,14 +207,14 @@ FROM 037_seed_health_education: Additional seed
 - Impact: New consolidated 025 will refactor to use grade_level_id (INTEGER) FK
 
 **Migration 003: `003_create_fellows.up.sql`** (UNCHANGED)
-- Creates: fellows table with first_name, last_name, moe_identifier
+- Creates: fellows table with first_name, last_name, bemis_number
 - Status: Foundation table - remains as-is
-- Impact: New consolidated 024 will add source_application_id, moe_identifier_verified, verified_at, verified_by
+- Impact: New consolidated 024 will add source_application_id, bemis_number_verified, verified_at, verified_by
 
 **Migration 019: `019_create_fellow_applications.up.sql`** (UNCHANGED)
 - Creates: fellow_applications with full_name VARCHAR
 - Status: Foundation table - remains as-is
-- Impact: New consolidated 024 will add first_name, last_name, moe_identifier, etc.
+- Impact: New consolidated 024 will add first_name, last_name, bemis_number, etc.
 
 **Migration 023: `023_add_steam_points_to_fellows.up.sql`** (UNCHANGED)
 - Adds: steam_points to fellows table
@@ -246,7 +248,7 @@ Phase 1 - Foundation (001-023): Already deployed on all systems
   └─ 023: Add steam_points to fellows
 
 Phase 2 - Consolidations (024-031): New structure
-  ├─ 024: Refactor Fellow Applications (adds first_name, last_name, moe_identifier)
+  ├─ 024: Refactor Fellow Applications (adds first_name, last_name, bemis_number)
   │        Also modifies: fellows table (adds source_application_id, verification fields)
   │        Depends on: 003 (fellows), 019 (fellow_applications)
   │
@@ -379,19 +381,16 @@ Before applying consolidations, verify:
 
 ### For Rollback Scenarios:
 ```
-Existing database with migrations 001-039 applied:
-  schema_migrations shows: [1, 2, ..., 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, ..., 39]
+Consolidated database state:
+  schema_migrations shows: [1, 2, ..., 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
 
-After consolidation (fresh clone):
-  schema_migrations will show: [1, 2, ..., 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
-
-Running migrations on fresh system:
+Running migrations on a fresh system:
   - Applies 1-31 sequentially
-  - No conflict with old systems (they already have 001-039)
-  - Both systems end up with identical schemas
+  - No conflict inside the consolidated migration chain
+  - The final schema matches the consolidated deployment state
 ```
 
-**⚠️ CRITICAL NOTE:** Once consolidation is implemented, the NEW migrations 024-031 should be used for all NEW deployments, but existing deployments that already have 001-039 will continue working (they have already applied all the schema changes).
+**⚠️ CRITICAL NOTE:** Once consolidation is implemented, the NEW migrations 024-031 should be used for all NEW deployments. References above 031 are legacy context only and can be ignored.
 
 ---
 

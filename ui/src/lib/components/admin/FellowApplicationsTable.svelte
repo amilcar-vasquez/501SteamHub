@@ -219,8 +219,8 @@
                       <span class="body-small info-value">{app.last_name}</span>
                     </div>
                     <div class="info-row">
-                      <span class="label-small info-label">MOE Identifier:</span>
-                      <span class="body-small info-value">{app.moe_identifier}</span>
+                      <span class="label-small info-label">BEMIS Number:</span>
+                      <span class="body-small info-value">{app.bemis_number || app.moe_identifier || '—'}</span>
                     </div>
                   </div>
 

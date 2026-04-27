@@ -5,6 +5,8 @@ package data
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
+	"fmt"
 	"time"
 )
 
@@ -13,17 +15,30 @@ type Fellow struct {
 	UserID                int64      `json:"user_id"`
 	FirstName             string     `json:"first_name"`
 	LastName              string     `json:"last_name"`
-	MoeIdentifier         string     `json:"moe_identifier"`
+	BemisNumber           string     `json:"bemis_number"`
 	School                *string    `json:"school,omitempty"`
 	SubjectSpecialization *string    `json:"subject_specialization,omitempty"`
 	District              *string    `json:"district,omitempty"`
 	ProfileStatus         string     `json:"profile_status"`
 	SteamPoints           float64    `json:"steam_points"` // Accumulated 501 STEAM Points from contributions (FR-27)
 	SourceApplicationID   *int64     `json:"source_application_id,omitempty"`
-	MoeIdentifierVerified bool       `json:"moe_identifier_verified"`
+	BemisNumberVerified   bool       `json:"bemis_number_verified"`
 	VerifiedAt            *time.Time `json:"verified_at,omitempty"`
 	VerifiedBy            *int64     `json:"verified_by,omitempty"`
 	CreatedAt             time.Time  `json:"created_at"`
+}
+
+// MarshalJSON includes a temporary moe_identifier alias for v1 API compatibility.
+func (f Fellow) MarshalJSON() ([]byte, error) {
+	type fellowAlias Fellow
+
+	return json.Marshal(struct {
+		fellowAlias
+		MoeIdentifier string `json:"moe_identifier,omitempty"`
+	}{
+		fellowAlias:   fellowAlias(f),
+		MoeIdentifier: f.BemisNumber,
+	})
 }
 
 type FellowModel struct {
@@ -32,22 +47,26 @@ type FellowModel struct {
 
 // Insert a new fellow into the database
 func (m FellowModel) Insert(fellow *Fellow) error {
+	identifierColumn := getFellowIdentifierColumn(m.DB)
+	verificationColumn := getFellowVerificationColumn(m.DB)
+
 	query := `
-		INSERT INTO fellows (user_id, first_name, last_name, moe_identifier, school, subject_specialization, district, profile_status, source_application_id, moe_identifier_verified, verified_at, verified_by)
+		INSERT INTO fellows (user_id, first_name, last_name, %s, school, subject_specialization, district, profile_status, source_application_id, %s, verified_at, verified_by)
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
 		RETURNING fellow_id, created_at`
+	query = fmt.Sprintf(query, quoteIdentifier(identifierColumn), quoteIdentifier(verificationColumn))
 
 	args := []any{
 		fellow.UserID,
 		fellow.FirstName,
 		fellow.LastName,
-		fellow.MoeIdentifier,
+		fellow.BemisNumber,
 		fellow.School,
 		fellow.SubjectSpecialization,
 		fellow.District,
 		fellow.ProfileStatus,
 		fellow.SourceApplicationID,
-		fellow.MoeIdentifierVerified,
+		fellow.BemisNumberVerified,
 		fellow.VerifiedAt,
 		fellow.VerifiedBy,
 	}
@@ -64,10 +83,14 @@ func (m FellowModel) Get(id int64) (*Fellow, error) {
 		return nil, ErrRecordNotFound
 	}
 
+	identifierColumn := getFellowIdentifierColumn(m.DB)
+	verificationColumn := getFellowVerificationColumn(m.DB)
+
 	query := `
-		SELECT fellow_id, user_id, first_name, last_name, moe_identifier, school, subject_specialization, district, profile_status, steam_points, source_application_id, moe_identifier_verified, verified_at, verified_by, created_at
+		SELECT fellow_id, user_id, first_name, last_name, %s, school, subject_specialization, district, profile_status, steam_points, source_application_id, %s, verified_at, verified_by, created_at
 		FROM fellows
 		WHERE fellow_id = $1`
+	query = fmt.Sprintf(query, quoteIdentifier(identifierColumn), quoteIdentifier(verificationColumn))
 
 	var fellow Fellow
 
@@ -79,14 +102,14 @@ func (m FellowModel) Get(id int64) (*Fellow, error) {
 		&fellow.UserID,
 		&fellow.FirstName,
 		&fellow.LastName,
-		&fellow.MoeIdentifier,
+		&fellow.BemisNumber,
 		&fellow.School,
 		&fellow.SubjectSpecialization,
 		&fellow.District,
 		&fellow.ProfileStatus,
 		&fellow.SteamPoints,
 		&fellow.SourceApplicationID,
-		&fellow.MoeIdentifierVerified,
+		&fellow.BemisNumberVerified,
 		&fellow.VerifiedAt,
 		&fellow.VerifiedBy,
 		&fellow.CreatedAt,
@@ -110,10 +133,14 @@ func (m FellowModel) GetByUserID(userID int64) (*Fellow, error) {
 		return nil, ErrRecordNotFound
 	}
 
+	identifierColumn := getFellowIdentifierColumn(m.DB)
+	verificationColumn := getFellowVerificationColumn(m.DB)
+
 	query := `
-		SELECT fellow_id, user_id, first_name, last_name, moe_identifier, school, subject_specialization, district, profile_status, steam_points, source_application_id, moe_identifier_verified, verified_at, verified_by, created_at
+		SELECT fellow_id, user_id, first_name, last_name, %s, school, subject_specialization, district, profile_status, steam_points, source_application_id, %s, verified_at, verified_by, created_at
 		FROM fellows
 		WHERE user_id = $1`
+	query = fmt.Sprintf(query, quoteIdentifier(identifierColumn), quoteIdentifier(verificationColumn))
 
 	var fellow Fellow
 
@@ -125,14 +152,14 @@ func (m FellowModel) GetByUserID(userID int64) (*Fellow, error) {
 		&fellow.UserID,
 		&fellow.FirstName,
 		&fellow.LastName,
-		&fellow.MoeIdentifier,
+		&fellow.BemisNumber,
 		&fellow.School,
 		&fellow.SubjectSpecialization,
 		&fellow.District,
 		&fellow.ProfileStatus,
 		&fellow.SteamPoints,
 		&fellow.SourceApplicationID,
-		&fellow.MoeIdentifierVerified,
+		&fellow.BemisNumberVerified,
 		&fellow.VerifiedAt,
 		&fellow.VerifiedBy,
 		&fellow.CreatedAt,
@@ -152,23 +179,27 @@ func (m FellowModel) GetByUserID(userID int64) (*Fellow, error) {
 
 // Update a fellow
 func (m FellowModel) Update(fellow *Fellow) error {
+	identifierColumn := getFellowIdentifierColumn(m.DB)
+	verificationColumn := getFellowVerificationColumn(m.DB)
+
 	query := `
 		UPDATE fellows
-		SET first_name = $1, last_name = $2, moe_identifier = $3, school = $4, subject_specialization = $5, district = $6, profile_status = $7, steam_points = $8, source_application_id = $9, moe_identifier_verified = $10, verified_at = $11, verified_by = $12
+		SET first_name = $1, last_name = $2, %s = $3, school = $4, subject_specialization = $5, district = $6, profile_status = $7, steam_points = $8, source_application_id = $9, %s = $10, verified_at = $11, verified_by = $12
 		WHERE fellow_id = $13
 		RETURNING fellow_id`
+	query = fmt.Sprintf(query, quoteIdentifier(identifierColumn), quoteIdentifier(verificationColumn))
 
 	args := []any{
 		fellow.FirstName,
 		fellow.LastName,
-		fellow.MoeIdentifier,
+		fellow.BemisNumber,
 		fellow.School,
 		fellow.SubjectSpecialization,
 		fellow.District,
 		fellow.ProfileStatus,
 		fellow.SteamPoints,
 		fellow.SourceApplicationID,
-		fellow.MoeIdentifierVerified,
+		fellow.BemisNumberVerified,
 		fellow.VerifiedAt,
 		fellow.VerifiedBy,
 		fellow.ID,
